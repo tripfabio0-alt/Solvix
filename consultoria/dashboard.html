@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | crIArc Consultoria Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body class="app-body">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">▲</span> crIArc Pro
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active"><a href="#">📊 Visão Geral</a></li>
+                <li><a href="#">📁 Projetos</a></li>
+                <li><a href="#">🎫 Chamados</a></li>
+                <li><a href="#">📅 Agenda</a></li>
+                <li><a href="#">⚙️ Configurações</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">US</div>
+                <div class="user-info">
+                    <span class="user-name">Usuário</span>
+                    <span class="user-role">Admin</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="app-main">
+        <header class="topbar">
+            <h1>Visão Geral</h1>
+            <div class="topbar-actions">
+                <button class="btn-primary" onclick="alert('Funcionalidade a ser integrada com Supabase!')">+ Novo Chamado</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- KPIs -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <span class="kpi-label">Horas Mês</span>
+                    <span class="kpi-value">45h</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Faturamento Projetado</span>
+                    <span class="kpi-value text-green">R$ 12.500</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Chamados Abertos</span>
+                    <span class="kpi-value">04</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Despesas Infra/API</span>
+                    <span class="kpi-value text-red">R$ 150</span>
+                </div>
+            </div>
+
+            <!-- Main Panels -->
+            <div class="panels-grid">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Feed de Atividades</h2>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="activity-list">
+                            <li>
+                                <div class="activity-time">10:30</div>
+                                <div class="activity-desc">Chamado #402 atualizado (Revisão Front-end)</div>
+                            </li>
+                            <li>
+                                <div class="activity-time">09:15</div>
+                                <div class="activity-desc">Nova reunião agendada: Briefing Alpha</div>
+                            </li>
+                            <li>
+                                <div class="activity-time">Ontem</div>
+                                <div class="activity-desc">Upload de Wireframe no Supabase Storage concluído</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Andamento de Projetos</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="project-progress">
+                            <div class="progress-info">
+                                <span>ERP Cloud Migration</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 75%"></div></div>
+                        </div>
+                        <div class="project-progress">
+                            <div class="progress-info">
+                                <span>App Delivery Integrado</span>
+                                <span>30%</span>
+                            </div>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
