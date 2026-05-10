@@ -1,155 +1,437 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solvix | Ecossistema Inteligente</title>
-    <meta name="description"
-        content="A Infraestrutura para o seu Próximo Salto. Hospedamos e desenvolvemos ferramentas inteligentes que transformam processos complexos em operações escaláveis.">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@500;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
-</head>
+    <title>Solvix — Soluções em IA para problemas reais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #020617;
+            --surface-color: #0f172a;
+            --surface-hover: #1e293b;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --border-hover: rgba(255, 255, 255, 0.1);
+            --accent-color: #4af;
+            --accent-purple: #8a4dff;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+        }
 
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            backdrop-filter: blur(12px);
+            background: rgba(2, 6, 23, 0.7);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-switch img {
+            width: 28px;
+            cursor: pointer;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            border-radius: 4px;
+            filter: opacity(0.6);
+        }
+
+        .lang-switch img:hover, .lang-switch img.active {
+            transform: scale(1.15);
+            filter: opacity(1);
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 120px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 60px;
+        }
+
+        .hero-text {
+            max-width: 580px;
+        }
+
+        .hero-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 56px;
+            line-height: 1.15;
+            margin: 0 0 20px 0;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 40%, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #94a3b8;
+            margin: 0 0 36px 0;
+            line-height: 1.6;
+        }
+
+        button.btn-primary {
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-purple));
+            border: none;
+            padding: 16px 32px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            font-family: inherit;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(138, 77, 255, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(138, 77, 255, 0.5);
+        }
+
+        .cube-container {
+            perspective: 1000px;
+            width: 240px;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cube {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 15s infinite linear;
+        }
+
+        .face {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(51, 204, 255, 0.1), rgba(138, 77, 255, 0.1));
+            backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 80px;
+            font-weight: 700;
+            color: white;
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.05);
+        }
+
+        .front  { transform: translateZ(100px); }
+        .back   { transform: rotateY(180deg) translateZ(100px); }
+        .right  { transform: rotateY(90deg) translateZ(100px); }
+        .left   { transform: rotateY(-90deg) translateZ(100px); }
+        .top    { transform: rotateX(90deg) translateZ(100px); }
+        .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+        @keyframes rotateCube {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(180deg); }
+        }
+
+        .section {
+            padding: 100px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .section-desc {
+            color: #94a3b8;
+            font-size: 16px;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--surface-color);
+            padding: 36px 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-hover);
+            background: var(--surface-hover);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            margin: 0 0 12px 0;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Active Workspace Card Styles */
+        .card.active-workspace {
+            border-color: rgba(74, 170, 255, 0.25);
+            box-shadow: 0 4px 20px rgba(74, 170, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .card.active-workspace:hover {
+            border-color: rgba(74, 170, 255, 0.5);
+            box-shadow: 0 12px 30px rgba(74, 170, 255, 0.15);
+            background: #111e36;
+        }
+
+        .card.active-workspace h3 {
+            color: var(--text-primary);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 10px;
+            background: rgba(74, 170, 255, 0.15);
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .card-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent-color);
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 24px;
+            text-decoration: none;
+            transition: gap 0.2s ease;
+        }
+
+        .card.active-workspace:hover .card-link {
+            gap: 10px;
+        }
+
+        footer {
+            padding: 40px 60px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            header {
+                padding: 20px 30px;
+            }
+            .hero {
+                flex-direction: column;
+                padding: 60px 30px;
+                text-align: center;
+                gap: 50px;
+            }
+            .hero-text h1 {
+                font-size: 40px;
+            }
+            .hero-text p {
+                font-size: 16px;
+            }
+            .section {
+                padding: 60px 30px;
+            }
+        }
+    </style>
+</head>
 <body>
-    <header class="navbar">
-        <div class="container nav-content">
-            <div class="logo">
-                <span class="logo-icon">▲</span> Solvix
+
+    <header>
+        <div class="logo" onclick="window.location.href='/'">SOLVIX</div>
+        
+        <div class="nav-menu">
+            <a href="/consultoria" class="nav-link" data-pt="Área do Cliente" data-en="Client Area">Área do Cliente</a>
+            <div class="lang-switch">
+                <img src="https://flagcdn.com/w40/br.png" alt="Português" id="flag-pt" class="active" onclick="setLang('pt')">
+                <img src="https://flagcdn.com/w40/us.png" alt="English" id="flag-en" onclick="setLang('en')">
             </div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#solucoes">Soluções</a></li>
-                    <li><a href="#metodo">Método</a></li>
-                    <li><a href="#" class="btn-primary">Acessar Conta</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
 
     <main>
         <section class="hero">
-            <div class="container hero-wrapper">
-                <div class="hero-text-content">
-                    <div class="glow-sphere"></div>
-                    <h1 class="hero-title">A <span class="text-gradient">Infraestrutura</span> para o seu Próximo Salto.
-                    </h1>
-                    <p class="hero-subtitle">Hospedamos e desenvolvemos ferramentas inteligentes que transformam
-                        processos complexos em operações escaláveis.</p>
-                    <div class="hero-actions">
-                        <a href="#solucoes" class="btn-primary btn-lg">Ver Soluções Disponíveis</a>
-                    </div>
-                </div>
+            <div class="hero-text">
+                <h1 data-pt="Soluções em IA para problemas reais" data-en="AI solutions for real problems">
+                    Soluções em IA para problemas reais
+                </h1>
+                
+                <p data-pt="A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com inteligência artificial."
+                   data-en="Solvix builds intelligent tools that transform complex business challenges into scalable AI-powered solutions.">
+                    A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com inteligência artificial.
+                </p>
+                
+                <button class="btn-primary" data-pt="Criar solução com IA" data-en="Build your AI solution" onclick="document.getElementById('tools-section').scrollIntoView({ behavior: 'smooth' })">
+                    Criar solução com IA
+                </button>
+            </div>
 
-                <div class="isometric-container">
-                    <div class="isometric-scene" id="iso-scene">
-                        <!-- Conectores (linhas falsas) -->
-                        <div class="iso-cable cable-1"></div>
-                        <div class="iso-cable cable-2"></div>
-                        <div class="iso-cable cable-3"></div>
-                        <div class="iso-cable cable-4"></div>
-
-                        <!-- Center Node -->
-                        <div class="iso-card iso-center">
-                            <h3>Solvix</h3>
-                        </div>
-
-                        <!-- Card 1: Data Source -->
-                        <div class="iso-card iso-card-1">
-                            <div class="iso-card-title">🗄️ Banco de Dados</div>
-                            <div class="iso-card-item"><span>Supabase</span> <span class="text-green">Ativo</span></div>
-                            <div class="iso-card-item"><span>Storage</span> <span class="text-green">Online</span></div>
-                        </div>
-
-                        <!-- Card 2: AI Dashboard -->
-                        <div class="iso-card iso-card-2">
-                            <div class="iso-card-title">📊 Consultoria Pro</div>
-                            <div class="iso-card-item"><span>Horas</span> <span>45h</span></div>
-                            <div class="iso-card-item"><span>Receita</span> <span class="text-green">R$ 12.5k</span>
-                            </div>
-                            <div class="iso-card-chart"></div>
-                        </div>
-
-                        <!-- Card 3: Model Training -->
-                        <div class="iso-card iso-card-3">
-                            <div class="iso-card-title">🧠 Agente de IA</div>
-                            <div class="iso-card-item" style="border:none; padding:0; background:transparent;">
-                                <span>Aprendizado</span> <span>72%</span></div>
-                            <div class="iso-progress">
-                                <div class="iso-progress-fill" style="width: 72%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Card 4: Automations -->
-                        <div class="iso-card iso-card-4">
-                            <div class="iso-card-title">⚡ Integrações</div>
-                            <div class="iso-card-item"><span>Google Calendar</span></div>
-                            <div class="iso-card-item"><span>WhatsApp</span></div>
-                        </div>
-                    </div>
+            <div class="cube-container">
+                <div class="cube">
+                    <div class="face front">S</div>
+                    <div class="face back">S</div>
+                    <div class="face right">S</div>
+                    <div class="face left">S</div>
+                    <div class="face top">S</div>
+                    <div class="face bottom">S</div>
                 </div>
             </div>
         </section>
 
-        <section id="metodo" class="method-section">
-            <div class="container">
-                <h2 class="section-title">O Ecosistema <span class="text-gradient">Solvix</span></h2>
-                <div class="method-grid">
-                    <div class="method-card">
-                        <div class="method-icon">01</div>
-                        <h3>Estratégia</h3>
-                        <p>Mapeamos os gargalos operacionais do seu negócio e definimos arquiteturas de alta conversão.
-                        </p>
-                    </div>
-                    <div class="method-card">
-                        <div class="method-icon">02</div>
-                        <h3>Processo</h3>
-                        <p>Desenvolvemos fluxos transparentes que garantem controle total sobre entregas e
-                            lucratividade.</p>
-                    </div>
-                    <div class="method-card">
-                        <div class="method-icon">03</div>
-                        <h3>IA Ativa</h3>
-                        <p>Automatizamos a execução usando agentes autônomos integrados a ecossistemas maduros.</p>
+        <section class="section" id="tools-section">
+            <h2 data-pt="Ferramentas de IA" data-en="AI Tools">Ferramentas de IA</h2>
+            <p class="section-desc" data-pt="Explore nossa gama de soluções inteligentes desenvolvidas sob medida para elevar a eficiência operacional." data-en="Explore our range of custom intelligent solutions designed to elevate operational efficiency.">
+                Explore nossa gama de soluções inteligentes desenvolvidas sob medida para elevar a eficiência operacional.
+            </p>
+
+            <div class="cards">
+                <div class="card">
+                    <h3 data-pt="SaaS com IA" data-en="AI SaaS Platforms">SaaS com IA</h3>
+                    <p data-pt="Softwares sob medida potencializados por inteligência artificial." data-en="Custom software powered by artificial intelligence.">
+                        Softwares sob medida potencializados por inteligência artificial.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3 data-pt="Sistemas de Automação" data-en="Automation Systems">Sistemas de Automação</h3>
+                    <p data-pt="Reduza o trabalho manual com automação de processos inteligente." data-en="Reduce manual work with intelligent process automation.">
+                        Reduza o trabalho manual com automação de processos inteligente.
+                    </p>
+                </div>
+
+                <!-- Active Workspace Card: links to /consultoria as requested! -->
+                <div class="card active-workspace" onclick="window.location.href='/consultoria'">
+                    <span class="card-badge" data-pt="Ativo" data-en="Active">Ativo</span>
+                    <h3 data-pt="Workspace de Consultoria" data-en="Consultant Workspace">Workspace de Consultoria</h3>
+                    <p data-pt="Ambiente integrado para controle de escopo, prazos, chamados e geração automatizada de regras lógicas." data-en="Integrated environment for scope control, deadlines, issues and automated logic rule generation.">
+                        Ambiente integrado para controle de escopo, prazos, chamados e geração automatizada de regras lógicas.
+                    </p>
+                    <div class="card-link">
+                        <span data-pt="Acessar Área de Trabalho" data-en="Access Workspace">Acessar Área de Trabalho</span>
+                        <span>→</span>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <section id="solucoes" class="solutions-section">
-            <div class="container">
-                <h2 class="section-title">Diretório de Apps</h2>
-                <div class="solutions-grid">
-                    <div class="solution-card active">
-                        <div class="card-badge">Operante</div>
-                        <h3 class="solution-title">Consultoria Pro</h3>
-                        <p class="solution-desc">Ferramenta definitiva de gestão para consultores de tecnologia.
-                            Controle de chamados, escopo blindado e transparência para o cliente final.</p>
-                        <a href="/consultoria" class="btn-secondary">Acessar App →</a>
-                    </div>
-
-                    <div class="solution-card disabled">
-                        <div class="card-badge badge-soon">Em Breve</div>
-                        <h3 class="solution-title">Booking Agent</h3>
-                        <p class="solution-desc">Skill de Inteligência Artificial para captação, qualificação e
-                            agendamento automático via Google Calendar e WhatsApp.</p>
-                        <a href="#" class="btn-secondary disabled-btn" tabindex="-1">Aguarde</a>
-                    </div>
+                <div class="card">
+                    <h3 data-pt="Inteligência de Dados" data-en="Data Intelligence">Inteligência de Dados</h3>
+                    <p data-pt="Transforme dados complexos de negócios em sistemas inteligentes de decisão." data-en="Transform complex business data into intelligent decision systems.">
+                        Transforme dados complexos de negócios em sistemas inteligentes de decisão.
+                    </p>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="container footer-content">
-            <div class="logo">Solvix Ecosystem</div>
-            <p>© 2026 Solvix. Powered by Antigravity Design.</p>
-        </div>
+    <footer data-pt="© 2026 Solvix — Soluções de IA para problemas reais" data-en="© 2026 Solvix — AI solutions for real problems">
+        © 2026 Solvix — Soluções de IA para problemas reais
     </footer>
 
-    <script src="assets/js/main.js"></script>
-</body>
+    <script>
+        function setLang(lang) {
+            // Update active state on flags
+            if (lang === 'pt') {
+                document.getElementById('flag-pt').classList.add('active');
+                document.getElementById('flag-en').classList.remove('active');
+            } else {
+                document.getElementById('flag-pt').classList.remove('active');
+                document.getElementById('flag-en').classList.add('active');
+            }
 
+            // Translate all elements with data-pt
+            document.querySelectorAll("[data-pt]").forEach(el => {
+                el.innerText = lang === "pt"
+                    ? el.getAttribute("data-pt")
+                    : el.getAttribute("data-en");
+            });
+
+            // Translate document title
+            document.title = lang === "pt"
+                ? "Solvix — Soluções em IA para problemas reais"
+                : "Solvix — AI solutions for real problems";
+        }
+    </script>
+</body>
 </html>
