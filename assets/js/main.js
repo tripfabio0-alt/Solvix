@@ -46,4 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
         card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
         observer.observe(card);
     });
+
+    // 3D Isometric Mouse Tracking
+    const scene = document.getElementById('iso-scene');
+    if (scene) {
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            
+            // Base transform: rotateX(60deg) rotateZ(-45deg)
+            scene.style.transform = `rotateX(${60 + y}deg) rotateZ(${-45 + x}deg)`;
+        });
+    }
 });

@@ -26,12 +26,58 @@
 
     <main>
         <section class="hero">
-            <div class="container hero-content">
-                <div class="glow-sphere"></div>
-                <h1 class="hero-title">A <span class="text-gradient">Infraestrutura</span> para o seu Próximo Salto.</h1>
-                <p class="hero-subtitle">Hospedamos e desenvolvemos ferramentas inteligentes que transformam processos complexos em operações escaláveis.</p>
-                <div class="hero-actions">
-                    <a href="#solucoes" class="btn-primary btn-lg">Ver Soluções Disponíveis</a>
+            <div class="container hero-wrapper">
+                <div class="hero-text-content">
+                    <div class="glow-sphere"></div>
+                    <h1 class="hero-title">A <span class="text-gradient">Infraestrutura</span> para o seu Próximo Salto.</h1>
+                    <p class="hero-subtitle">Hospedamos e desenvolvemos ferramentas inteligentes que transformam processos complexos em operações escaláveis.</p>
+                    <div class="hero-actions">
+                        <a href="#solucoes" class="btn-primary btn-lg">Ver Soluções Disponíveis</a>
+                    </div>
+                </div>
+
+                <div class="isometric-container">
+                    <div class="isometric-scene" id="iso-scene">
+                        <!-- Conectores (linhas falsas) -->
+                        <div class="iso-cable cable-1"></div>
+                        <div class="iso-cable cable-2"></div>
+                        <div class="iso-cable cable-3"></div>
+                        <div class="iso-cable cable-4"></div>
+
+                        <!-- Center Node -->
+                        <div class="iso-card iso-center">
+                            <h3>crIArc</h3>
+                        </div>
+
+                        <!-- Card 1: Data Source -->
+                        <div class="iso-card iso-card-1">
+                            <div class="iso-card-title">🗄️ Banco de Dados</div>
+                            <div class="iso-card-item"><span>Supabase</span> <span class="text-green">Ativo</span></div>
+                            <div class="iso-card-item"><span>Storage</span> <span class="text-green">Online</span></div>
+                        </div>
+
+                        <!-- Card 2: AI Dashboard -->
+                        <div class="iso-card iso-card-2">
+                            <div class="iso-card-title">📊 Consultoria Pro</div>
+                            <div class="iso-card-item"><span>Horas</span> <span>45h</span></div>
+                            <div class="iso-card-item"><span>Receita</span> <span class="text-green">R$ 12.5k</span></div>
+                            <div class="iso-card-chart"></div>
+                        </div>
+
+                        <!-- Card 3: Model Training -->
+                        <div class="iso-card iso-card-3">
+                            <div class="iso-card-title">🧠 Agente de IA</div>
+                            <div class="iso-card-item" style="border:none; padding:0; background:transparent;"><span>Aprendizado</span> <span>72%</span></div>
+                            <div class="iso-progress"><div class="iso-progress-fill" style="width: 72%"></div></div>
+                        </div>
+
+                        <!-- Card 4: Automations -->
+                        <div class="iso-card iso-card-4">
+                            <div class="iso-card-title">⚡ Integrações</div>
+                            <div class="iso-card-item"><span>Google Calendar</span></div>
+                            <div class="iso-card-item"><span>WhatsApp</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
