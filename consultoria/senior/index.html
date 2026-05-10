@@ -11,6 +11,9 @@
     <style>
         body, html { margin: 0; padding: 0; background: #0f1117; }
     </style>
+    <!-- Supabase SDK & Cliente -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/assets/js/supabaseClient.js"></script>
 </head>
 <body>
     <div id="root"></div>
@@ -86,18 +89,7 @@ function App() {
   const [copied,setCopied]=useState(false);
   const [dragOver,setDragOver]=useState(false);
   const [mode,setMode]=useState("text");
-  
-  // Gemini Auth State
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini_api_key") || "");
-  const [showSettings, setShowSettings] = useState(false);
-
   const fileRef=useRef();
-
-  const handleSaveApiKey = (key) => {
-    setApiKey(key);
-    localStorage.setItem("gemini_api_key", key);
-    setShowSettings(false);
-  };
 
   const handleFile=async(file)=>{
     if(!file||!file.type.startsWith("image/"))return;
@@ -108,10 +100,6 @@ function App() {
 
   const generate=async()=>{
     if(!input.trim()&&!image)return;
-    if(!apiKey) {
-      setError("Configure sua API Key do Google Gemini nas configurações ⚙️.");
-      return;
-    }
     setLoading(true);setError("");setResult(null);
     try{
       let parts = [];
@@ -135,14 +123,18 @@ function App() {
         contents: [{ role: "user", parts: parts }]
       };
 
-      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(payload),
+      // Chamando a Edge Function do Supabase
+      const { data, error: invokeError } = await window.supabaseClient.functions.invoke('gemini-proxy', {
+        body: payload
       });
+
+      if (invokeError) {
+        throw new Error(`Erro na API: ${invokeError.message || 'Falha ao se comunicar com o Supabase'}`);
+      }
       
-      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(`API ${res.status}: ${e?.error?.message||res.statusText}`);}
-      const data=await res.json();
+      if (data?.error) {
+         throw new Error(`Erro Gemini: ${data.error?.message || 'Falha na resposta do Google'}`);
+      }
       const raw=data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
       if(!raw)throw new Error("Resposta vazia da API do Gemini.");
       if(!raw.includes("##TITULO##"))throw new Error("O Gemini retornou em um formato inesperado. Tente novamente.");
@@ -166,7 +158,6 @@ function App() {
           <div style={{fontSize:10,color:"#64748b",letterSpacing:"0.08em"}}>POWERED BY GOOGLE GEMINI</div>
         </div>
         <div style={{marginLeft:"auto",display:"flex",gap:12,alignItems:"center"}}>
-          <button onClick={() => setShowSettings(!showSettings)} style={{background:"transparent",border:"none",color:"#94a3b8",cursor:"pointer",fontSize:20}}>⚙️</button>
           <div style={{display:"flex",gap:6}}>
             {["#ef4444","#f59e0b","#22c55e"].map((c,i)=><div key={i} style={{width:10,height:10,borderRadius:"50%",background:c,opacity:.7}}/>)}
           </div>
@@ -174,24 +165,6 @@ function App() {
       </div>
 
       <div style={{maxWidth:900,margin:"0 auto",padding:"28px 24px"}}>
-
-        {/* Settings Modal */}
-        {showSettings && (
-          <div style={{background:"#13171f",border:"1px solid #f59e0b",borderRadius:8,padding:20,marginBottom:20}}>
-            <h3 style={{margin:"0 0 10px 0",color:"#f1f5f9",fontSize:14}}>Configuração da API (Gemini)</h3>
-            <p style={{fontSize:12,color:"#94a3b8",marginBottom:12}}>Para gerar as regras, cole sua chave de API gratuita do Google AI Studio.</p>
-            <div style={{display:"flex",gap:10}}>
-              <input 
-                type="password" 
-                value={apiKey} 
-                onChange={(e) => setApiKey(e.target.value)} 
-                placeholder="AIzaSy..." 
-                style={{flex:1,padding:10,background:"#0a0d14",border:"1px solid #1e293b",borderRadius:4,color:"#f1f5f9",fontFamily:"inherit"}}
-              />
-              <button onClick={() => handleSaveApiKey(apiKey)} style={{background:"#f59e0b",color:"#000",border:"none",borderRadius:4,padding:"0 20px",fontWeight:"bold",cursor:"pointer"}}>Salvar</button>
-            </div>
-          </div>
-        )}
 
         {/* Mode Toggle */}
         <div style={{display:"flex",gap:4,marginBottom:16,background:"#0a0d14",border:"1px solid #1e293b",borderRadius:6,padding:4,width:"fit-content"}}>
