@@ -61,7 +61,7 @@
         window.onload = async () => {
             const { data } = await window.supabaseClient.auth.getSession();
             if (data.session) {
-                window.location.href = 'dashboard.html';
+                window.location.href = '/consultoria/dashboard.html';
             }
         };
     </script>

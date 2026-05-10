@@ -128,7 +128,7 @@
             
             if (error || !data.session) {
                 // Se não estiver logado, chuta de volta pra tela de login
-                window.location.href = 'index.html';
+                window.location.href = '/consultoria/index.html';
                 return;
             }
 
@@ -152,7 +152,7 @@
 
         async function handleLogout() {
             await window.supabaseClient.auth.signOut();
-            window.location.href = 'index.html';
+            window.location.href = '/consultoria/index.html';
         }
     </script>
 </body>
