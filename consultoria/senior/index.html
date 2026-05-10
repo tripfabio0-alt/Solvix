@@ -155,20 +155,15 @@ function App() {
       {/* Header */}
       <div style={{borderBottom:"1px solid var(--border-color)",background:"rgba(5, 5, 10, 0.8)",backdropFilter:"blur(12px)",padding:"18px 32px",display:"flex",alignItems:"center",gap:24,position:"sticky",top:0,zIndex:100}}>
         
-        <a href="/consultoria/dashboard.html" style={{textDecoration:"none", color:"var(--text-secondary)", display:"flex", alignItems:"center", gap:8, fontSize:13, fontWeight:500, transition:"0.2s"}} onMouseOver={e=>e.currentTarget.style.color="var(--text-primary)"} onMouseOut={e=>e.currentTarget.style.color="var(--text-secondary)"}>
-           <span>←</span> Voltar
+        <div style={{fontFamily:"var(--font-heading)", fontSize:18, fontWeight:700, display:"flex", alignItems:"center", gap:16, color:"var(--text-primary)"}}>
+            <span style={{display:"flex", alignItems:"center", gap:8}}><span style={{color:"var(--accent-color)"}}>▲</span> crIArc Pro</span>
+            <div style={{width:1, height:20, background:"var(--border-color)"}}></div>
+            <span style={{fontSize:15, fontWeight:600, color:"var(--text-secondary)", letterSpacing:"0.05em"}}>GERADOR DE REGRAS LSP</span>
+        </div>
+
+        <a href="/consultoria/dashboard.html" style={{marginLeft:"auto", textDecoration:"none", color:"var(--text-secondary)", display:"flex", alignItems:"center", gap:8, fontSize:13, fontWeight:500, transition:"0.2s"}} onMouseOver={e=>e.currentTarget.style.color="var(--text-primary)"} onMouseOut={e=>e.currentTarget.style.color="var(--text-secondary)"}>
+           Voltar <span>→</span>
         </a>
-
-        <div style={{width:1, height:24, background:"var(--border-color)"}}></div>
-
-        <div style={{fontFamily:"var(--font-heading)", fontSize:18, fontWeight:700, display:"flex", alignItems:"center", gap:8, color:"var(--text-primary)"}}>
-            <span style={{color:"var(--accent-color)"}}>▲</span> crIArc Pro
-        </div>
-
-        <div style={{marginLeft:"auto", textAlign:"right"}}>
-          <div style={{fontFamily:"var(--font-heading)",fontSize:14,fontWeight:600,color:"var(--text-primary)",letterSpacing:"0.05em"}}>GERADOR DE REGRAS LSP</div>
-          <div style={{fontSize:10,color:"var(--accent-color)",letterSpacing:"0.08em", fontWeight:600, marginTop:2}}>POWERED BY GOOGLE GEMINI</div>
-        </div>
       </div>
 
       <div style={{maxWidth:900,margin:"0 auto",padding:"28px 24px"}}>
@@ -225,13 +220,6 @@ function App() {
           />
 
           <div style={{padding:"16px 20px",borderTop:"1px solid var(--border-color)",background:"rgba(255,255,255,0.02)",display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
-            {mode==="text"&&(
-              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
-                {["Validar operador ao apontar OP","Bloquear pedido sem estoque","Log de alteração de quantidade"].map(ex=>(
-                  <button key={ex} onClick={()=>setInput(ex)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid var(--border-color)",borderRadius:8,padding:"6px 12px",color:"var(--text-secondary)",fontSize:11,fontFamily:"inherit",cursor:"pointer",transition:"0.2s"}}>{ex}</button>
-                ))}
-              </div>
-            )}
             {mode==="image"&&(
               <button onClick={()=>fileRef.current?.click()} style={{background:"rgba(255,255,255,0.05)",border:"1px solid var(--border-color)",borderRadius:8,padding:"8px 16px",color:"var(--text-secondary)",fontSize:12,fontFamily:"inherit",cursor:"pointer",transition:"0.2s"}}>
                 📎 {image?"TROCAR IMAGEM":"SELECIONAR IMAGEM"}
