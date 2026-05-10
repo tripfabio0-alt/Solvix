@@ -1,1443 +1,280 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solvix — AI solutions for real problems</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* Base Reset & Variables */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --bg-color: #020617;
-            --card-bg: #0f172a;
-            --accent-blue: #00bfff;
-            --accent-purple: #8a4dff;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --gradient-primary: linear-gradient(90deg, #00bfff, #8a4dff);
-        }
-
-        body {
-            background: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* Multilingual Switching Logic */
-        html[lang="pt"] [lang="en"] { display: none !important; }
-        html[lang="en"] [lang="pt"] { display: none !important; }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
-        /* Header Navbar */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 60px;
-            position: sticky;
-            top: 0;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--gradient-primary);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #000;
-            font-size: 16px;
-        }
-
-        .logo {
-            font-family: 'Outfit', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: white;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 28px;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: white;
-        }
-
-        /* Language Switcher */
-        .lang-switch {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .lang-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.3s, transform 0.2s;
-        }
-
-        .lang-item:hover, .lang-item.active {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-
-        .lang-item img {
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            object-fit: cover;
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .lang-code {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 100px 60px;
-            max-width: 1300px;
-            margin: 0 auto;
-            gap: 40px;
-        }
-
-        .hero-text {
-            max-width: 540px;
-        }
-
-        .hero-text h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 56px;
-            line-height: 1.15;
-            margin-bottom: 24px;
-            font-weight: 800;
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #00bfff, #8a4dff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-text p {
-            font-size: 17px;
-            color: var(--text-secondary);
-            margin-bottom: 36px;
-            line-height: 1.6;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        button, .btn {
-            background: var(--gradient-primary);
-            border: none;
-            padding: 16px 30px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 15px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        button:hover, .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(138, 77, 255, 0.35);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: white;
-            box-shadow: none;
-            transform: translateY(-2px);
-        }
-
-        /* Trusted By Logos */
-        .trusted-by {
-            padding: 20px 0 60px 0;
-            text-align: center;
-        }
-
-        .trusted-by p {
-            font-size: 13px;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-            font-weight: 600;
-        }
-
-        .logo-row {
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            opacity: 0.5;
-            flex-wrap: wrap;
-        }
-
-        .partner-logo {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            color: #64748b;
-        }
-
-        /* 3D Rotating Cube Container & Floating Cards */
-        .hero-animation {
-            position: relative;
-            width: 480px;
-            height: 480px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cube-wrapper {
-            perspective: 1000px;
-            width: 220px;
-            height: 220px;
-        }
-
-        #cube {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotateCube 12s infinite linear;
-        }
-
-        .face {
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            background: rgba(15, 23, 42, 0.3);
-            backdrop-filter: blur(8px);
-            border: 1.5px solid rgba(0, 191, 255, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Outfit', sans-serif;
-            font-size: 90px;
-            font-weight: 800;
-            color: white;
-            box-shadow: inset 0 0 30px rgba(0, 191, 255, 0.1), 0 0 30px rgba(138, 77, 255, 0.05);
-        }
-
-        .front  { transform: translateZ(110px); }
-        .back   { transform: rotateY(180deg) translateZ(110px); }
-        .right  { transform: rotateY(90deg) translateZ(110px); }
-        .left   { transform: rotateY(-90deg) translateZ(110px); }
-        .top    { transform: rotateX(90deg) translateZ(110px); }
-        .bottom { transform: rotateX(-90deg) translateZ(110px); }
-
-        @keyframes rotateCube {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
-        }
-
-        /* Floating Dashboard Metrics */
-        .floating-metric {
-            position: absolute;
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-size: 12px;
-            width: 170px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            animation: hoverFloat 4s infinite ease-in-out;
-        }
-
-        .floating-1 {
-            top: 20px;
-            left: 0;
-            animation-delay: 0s;
-        }
-
-        .floating-2 {
-            bottom: 40px;
-            left: -10px;
-            animation-delay: 1.5s;
-            width: 180px;
-        }
-
-        .floating-3 {
-            top: 60px;
-            right: 0;
-            animation-delay: 0.7s;
-            width: 180px;
-        }
-
-        @keyframes hoverFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .metric-title {
-            color: var(--text-secondary);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .metric-value {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .text-green { color: #10b981; }
-        .mini-chart {
-            height: 3px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            margin-top: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        .mini-chart-fill {
-            height: 100%;
-            background: var(--accent-blue);
-            width: 72%;
-        }
-
-        /* Section Layouts */
-        .section {
-            padding: 120px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-tag {
-            color: var(--accent-blue);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .section-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 38px;
-            font-weight: 700;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        /* Section: O Problema */
-        .problem-layout {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 80px;
-        }
-
-        .problem-visualization {
-            flex: 1;
-            height: 350px;
-            background: radial-gradient(circle at center, rgba(0, 191, 255, 0.1) 0%, transparent 70%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .problem-connection {
-            width: 100%;
-            height: 150px;
-            border-top: 1px dashed rgba(0, 191, 255, 0.2);
-            position: relative;
-            transform: rotate(-15deg);
-        }
-
-        .problem-connection::before {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: var(--accent-blue);
-            border-radius: 50%;
-            top: -6px;
-            left: 0;
-            box-shadow: 0 0 15px var(--accent-blue);
-            animation: moveDot 6s infinite linear;
-        }
-
-        @keyframes moveDot {
-            to { left: 100%; }
-        }
-
-        .problem-text {
-            flex: 1.1;
-        }
-
-        .problem-text h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 34px;
-            margin-bottom: 24px;
-            line-height: 1.3;
-        }
-
-        .problem-text p {
-            color: var(--text-secondary);
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
-
-        /* Section: Nosso Processo */
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-top: 40px;
-            position: relative;
-        }
-
-        .process-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 16px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .process-num {
-            font-family: 'Outfit', sans-serif;
-            font-size: 15px;
-            color: var(--accent-blue);
-            margin-bottom: 16px;
-            font-weight: 700;
-        }
-
-        .process-num span {
-            font-size: 32px;
-            color: white;
-            margin-right: 4px;
-        }
-
-        .process-card h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-
-        .process-card p {
-            color: var(--text-secondary);
-            font-size: 13.5px;
-            line-height: 1.6;
-        }
-
-        /* Section: O Que Fazemos (Grid 6 cards) */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .tool-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 36px 30px;
-            border-radius: 16px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255,255,255,0.12);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-        }
-
-        .tool-card h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .tool-card p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Specific link style for the Consultant tools */
-        .tool-card.active-workspace {
-            border-color: rgba(0, 191, 255, 0.25);
-            box-shadow: 0 4px 20px rgba(0, 191, 255, 0.04);
-            cursor: pointer;
-        }
-
-        .tool-card.active-workspace:hover {
-            border-color: rgba(0, 191, 255, 0.5);
-            box-shadow: 0 12px 30px rgba(0, 191, 255, 0.15);
-            background: #111e36;
-        }
-
-        .tool-card-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            font-size: 9px;
-            background: rgba(0, 191, 255, 0.15);
-            color: var(--accent-blue);
-            padding: 3px 8px;
-            border-radius: 100px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .tool-card-link {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--accent-blue);
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 20px;
-        }
-
-        /* Section: Nosso Diferencial */
-        .split-layout {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 80px;
-        }
-
-        .split-text {
-            flex: 1;
-        }
-
-        .split-text h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 36px;
-            margin-bottom: 24px;
-            line-height: 1.3;
-        }
-
-        .split-text p {
-            color: var(--text-secondary);
-            font-size: 16px;
-            margin-bottom: 32px;
-        }
-
-        .diferencial-icons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .diferencial-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .diferencial-bullet {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-blue);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-blue);
-        }
-
-        .split-visualization {
-            flex: 1.1;
-        }
-
-        /* Beautiful Mock Dashboard */
-        .mock-dashboard {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
-
-        .dash-header {
-            background: rgba(255,255,255,0.02);
-            border-bottom: 1px solid var(--border-color);
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .dash-body {
-            padding: 24px;
-        }
-
-        .dash-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .dash-metric {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border-color);
-            padding: 16px;
-            border-radius: 10px;
-        }
-
-        .dash-metric-num {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .dash-metric-pct {
-            font-size: 11px;
-            color: #10b981;
-        }
-
-        .dash-chart {
-            height: 100px;
-            background: linear-gradient(0deg, rgba(0, 191, 255, 0.05) 0%, transparent 100%);
-            border-bottom: 1.5px solid var(--accent-blue);
-            border-radius: 4px;
-            position: relative;
-            margin-bottom: 24px;
-        }
-
-        .dash-chart::before {
-            content: 'Performance';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
-
-        .dash-insights {
-            background: rgba(138, 77, 255, 0.05);
-            border: 1px solid rgba(138, 77, 255, 0.2);
-            padding: 16px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-
-        .dash-insights-title {
-            color: var(--accent-purple);
-            font-weight: 700;
-            margin-bottom: 6px;
-            letter-spacing: 0.05em;
-        }
-
-        /* Section: Sobre a Solvix */
-        .sobre-layout {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 80px;
-        }
-
-        .sobre-text {
-            flex: 1;
-        }
-
-        .sobre-text h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 36px;
-            margin-bottom: 24px;
-        }
-
-        .sobre-bullets {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 24px;
-        }
-
-        .sobre-bullet-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            font-size: 14.5px;
-            color: var(--text-secondary);
-        }
-
-        .sobre-bullet-icon {
-            color: var(--accent-blue);
-            font-weight: 700;
-        }
-
-        .sobre-globe {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 380px;
-            background: radial-gradient(circle at center, rgba(138, 77, 255, 0.1) 0%, transparent 70%);
-            position: relative;
-        }
-
-        .globe-animation {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            border: 1px solid rgba(138, 77, 255, 0.2);
-            position: relative;
-            box-shadow: 0 0 50px rgba(138, 77, 255, 0.15);
-            animation: rotateGlobe 20s infinite linear;
-        }
-
-        .globe-grid-1 {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%;
-            border: 1px dashed rgba(0, 191, 255, 0.2);
-            transform: rotateX(75deg);
-        }
-
-        .globe-grid-2 {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%;
-            border: 1px dashed rgba(138, 77, 255, 0.2);
-            transform: rotateY(75deg);
-        }
-
-        @keyframes rotateGlobe {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Section: CTA (Call to Action) */
-        .cta-section {
-            padding: 100px 0;
-            background: radial-gradient(circle at center, rgba(138, 77, 255, 0.08) 0%, transparent 60%);
-            text-align: center;
-        }
-
-        .cta-section h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 40px;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .cta-section p {
-            color: var(--text-secondary);
-            font-size: 18px;
-            margin-bottom: 36px;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border-color);
-            padding: 80px 0 40px 0;
-            font-size: 13.5px;
-            color: var(--text-secondary);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .footer-col h4 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 14px;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .footer-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-col ul a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-col ul a:hover {
-            color: white;
-        }
-
-        .newsletter-input-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .newsletter-input-group input {
-            flex: 1;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-color);
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: white;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .newsletter-input-group button {
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 13px;
-        }
-
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-            padding-top: 40px;
-            font-size: 13px;
-            color: #475569;
-        }
-
-        .footer-bottom-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-bottom-links a {
-            color: #475569;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-bottom-links a:hover {
-            color: var(--text-secondary);
-        }
-
-        /* Responsiveness */
-        @media (max-width: 1024px) {
-            header {
-                padding: 20px 40px;
-            }
-            .hero {
-                flex-direction: column;
-                text-align: center;
-                padding: 60px 40px;
-            }
-            .hero-text {
-                max-width: 100%;
-            }
-            .hero-buttons {
-                justify-content: center;
-            }
-            .hero-animation {
-                width: 100%;
-                max-width: 450px;
-                height: 450px;
-                margin: 0 auto;
-            }
-            .problem-layout, .split-layout, .sobre-layout {
-                flex-direction: column;
-                gap: 50px;
-            }
-            .process-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .hero-text h1 {
-                font-size: 38px;
-            }
-            .process-grid, .cards-grid, .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            .diferencial-icons {
-                grid-template-columns: 1fr;
-            }
-            .dash-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solvix — AI solutions for real problems</title>
+<meta name="description" content="A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com IA.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Header Navbar -->
-    <header>
-        <a href="#" class="logo-container">
-            <div class="logo-icon">▲</div>
-            <div class="logo">SOLVIX</div>
-        </a>
-        
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#solucoes" data-pt="Soluções" data-en="Solutions"><span lang="pt">Soluções</span><span lang="en">Solutions</span></a></li>
-                <li><a href="#processo" data-pt="Como Funciona" data-en="How It Works"><span lang="pt">Como Funciona</span><span lang="en">How It Works</span></a></li>
-                <li><a href="#sobre" data-pt="Sobre" data-en="About"><span lang="pt">Sobre</span><span lang="en">About</span></a></li>
-                <li><a href="/consultoria" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px; font-weight: 500;" data-pt="Área do Cliente" data-en="Client Area"><span lang="pt">Área do Cliente</span><span lang="en">Client Area</span></a></li>
-            </ul>
-        </nav>
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="Logo.png" alt="Solvix">
+    <span>SOLVIX</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#solucoes" class="i18n" data-pt="Soluções" data-en="Solutions">Soluções</a></li>
+    <li><a href="#processo" class="i18n" data-pt="Como Funciona" data-en="How It Works">Como Funciona</a></li>
+    <li><a href="#ferramentas" class="i18n" data-pt="Casos de Uso" data-en="Use Cases">Casos de Uso</a></li>
+    <li><a href="#sobre" class="i18n" data-pt="Sobre" data-en="About">Sobre</a></li>
+    <li><a href="#" class="i18n" data-pt="Recursos" data-en="Resources">Recursos</a></li>
+    <li><a href="#contato" class="i18n" data-pt="Contato" data-en="Contact">Contato</a></li>
+  </ul>
+  <div class="lang-sw">
+    <span id="lpt" class="active" onclick="setLang('pt')"><img src="https://flagcdn.com/w40/br.png" alt="PT"> PT</span>
+    <span id="len" onclick="setLang('en')"><img src="https://flagcdn.com/w40/us.png" alt="EN"> EN</span>
+  </div>
+</nav>
 
-        <!-- Rounded Flag Buttons as requested -->
-        <div class="lang-switch">
-            <div class="lang-item active" id="lang-pt" onclick="setLang('pt')">
-                <img src="brazil.png" alt="Português">
-                <span class="lang-code">PT</span>
-            </div>
-            <div class="lang-item" id="lang-en" onclick="setLang('en')">
-                <img src="usa.png" alt="English">
-                <span class="lang-code">EN</span>
-            </div>
-        </div>
-    </header>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>AI solutions<br>for <em>real problems</em></h1>
+    <p class="i18n" data-pt="A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com Inteligência Artificial." data-en="Solvix builds intelligent tools that transform complex business challenges into scalable AI-powered solutions.">A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com Inteligência Artificial.</p>
+    <div class="hero-btns">
+      <button class="btn-primary i18n" data-pt="Criar minha solução com IA →" data-en="Build my AI solution →">Criar minha solução com IA →</button>
+      <button class="btn-outline i18n" data-pt="Ver soluções →" data-en="See solutions →">Ver soluções →</button>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="cube-wrap">
+      <div class="cube">
+        <div class="face f-fr">S</div>
+        <div class="face f-bk">S</div>
+        <div class="face f-ri">S</div>
+        <div class="face f-le">S</div>
+        <div class="face f-tp">S</div>
+        <div class="face f-bt">S</div>
+      </div>
+    </div>
+    <div class="fl-card c1">
+      <div class="fl-label">Automação</div>
+      <div class="fl-val">-72%<span class="green"> Trabalho Manual</span></div>
+    </div>
+    <div class="fl-card c2">
+      <div class="fl-label">IA Ativa</div>
+      <div class="fl-val">1,248</div>
+      <div style="font-size:10px;color:#94a3b8;margin-top:2px">Processos Otimizados</div>
+    </div>
+    <div class="fl-card c3">
+      <div class="fl-label">Performance de Sistema</div>
+      <div class="fl-val">98.6%</div>
+      <div style="font-size:10px;color:#94a3b8;margin-top:2px">Uptime</div>
+    </div>
+  </div>
+</section>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-text">
-                <h1 lang="pt">AI solutions for <span class="gradient-text">real problems</span></h1>
-                <h1 lang="en">AI solutions for <span class="gradient-text">real problems</span></h1>
-                
-                <p lang="pt">A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com IA.</p>
-                <p lang="en">Solvix builds intelligent tools that transform complex business challenges into scalable AI-powered solutions.</p>
-                
-                <div class="hero-buttons">
-                    <button onclick="document.getElementById('cta-section').scrollIntoView({ behavior: 'smooth' })">
-                        <span lang="pt">Criar minha solução com IA</span>
-                        <span lang="en">Build your AI solution</span>
-                        <span>→</span>
-                    </button>
-                    <a href="#solucoes" class="btn btn-secondary">
-                        <span lang="pt">Ver soluções</span>
-                        <span lang="en">See solutions</span>
-                        <span>→</span>
-                    </a>
-                </div>
-            </div>
+<!-- TRUST -->
+<div class="trust">
+  <p class="i18n" data-pt="Confiado por empresas e consultores que inovam" data-en="Trusted by innovative companies and consultants">Confiado por empresas e consultores que inovam</p>
+  <div class="trust-logos">
+    <span>LUMEN</span><span>◆ vertex</span><span>◎ quantix</span><span>◆ nexora</span><span>⊕ datakly</span>
+  </div>
+</div>
 
-            <div class="hero-animation">
-                <div class="cube-wrapper">
-                    <!-- Rotating 3D Cube as requested -->
-                    <div id="cube">
-                        <div class="face front">S</div>
-                        <div class="face back">S</div>
-                        <div class="face right">S</div>
-                        <div class="face left">S</div>
-                        <div class="face top">S</div>
-                        <div class="face bottom">S</div>
-                    </div>
-                </div>
+<!-- O PROBLEMA -->
+<div class="sec" id="solucoes">
+  <span class="sec-tag i18n" data-pt="O PROBLEMA" data-en="THE PROBLEM">O PROBLEMA</span>
+  <div class="problem">
+    <div class="problem-vis"></div>
+    <div class="problem-txt">
+      <h2 class="i18n" data-pt="A maioria das empresas tem problemas. Poucas têm as ferramentas para resolvê-los." data-en="Most companies have problems. Few have the tools to solve them.">A maioria das empresas tem problemas. Poucas têm as ferramentas para resolvê-los.</h2>
+      <p class="i18n" data-pt="Empresas geralmente dependem de softwares genéricos que nunca foram criados para suas necessidades operacionais reais." data-en="Companies usually rely on generic software never built for their actual operational needs.">Empresas geralmente dependem de softwares genéricos que nunca foram criados para suas necessidades operacionais reais.</p>
+      <p class="i18n" data-pt="Isso gera ineficiências, retrabalho e limitações técnicas." data-en="This creates inefficiencies, rework, and technical limitations.">Isso gera ineficiências, retrabalho e limitações técnicas.</p>
+      <p class="i18n" data-pt="A Solvix aborda o problema de forma diferente." data-en="Solvix approaches the problem differently.">A Solvix aborda o problema de forma diferente.</p>
+      <p class="i18n" data-pt="Em vez de forçar sua empresa a se adaptar ao software, nós criamos sistemas inteligentes feitos especificamente para o seu problema." data-en="Instead of forcing your company to adapt to software, we create intelligent systems made specifically for your problem.">Em vez de forçar sua empresa a se adaptar ao software, nós criamos sistemas inteligentes feitos especificamente para o seu problema.</p>
+    </div>
+  </div>
+</div>
 
-                <!-- Floating Metric Cards to replicate mockups -->
-                <div class="floating-metric floating-1">
-                    <div class="metric-title" lang="pt">Automação</div>
-                    <div class="metric-title" lang="en">Automation</div>
-                    <div class="metric-value">
-                        <span>-72%</span>
-                        <span style="font-size: 10px; color: var(--text-secondary); font-weight: normal;" lang="pt">Trabalho Manual</span>
-                        <span style="font-size: 10px; color: var(--text-secondary); font-weight: normal;" lang="en">Manual Work</span>
-                    </div>
-                </div>
+<!-- NOSSO PROCESSO -->
+<div class="sec" id="processo">
+  <span class="sec-tag i18n" data-pt="NOSSO PROCESSO" data-en="OUR PROCESS">NOSSO PROCESSO</span>
+  <h3 class="sec-title i18n" data-pt="Do problema à solução inteligente" data-en="From problem to intelligent solution">Do problema à solução inteligente</h3>
+  <div class="process-grid">
+    <div class="p-card">
+      <div class="p-icon">🔍</div>
+      <div class="p-num">1</div>
+      <h4 class="i18n" data-pt="Descoberta do problema" data-en="Problem Discovery">Descoberta do problema</h4>
+      <p class="i18n" data-pt="Analisamos o desafio, fluxo de trabalho ou limitação da sua plataforma." data-en="We analyze the challenge, workflow, or limitation of your platform.">Analisamos o desafio, fluxo de trabalho ou limitação da sua plataforma.</p>
+    </div>
+    <div class="p-card">
+      <div class="p-icon">🧠</div>
+      <div class="p-num">2</div>
+      <h4 class="i18n" data-pt="Arquitetura de IA" data-en="AI Architecture">Arquitetura de IA</h4>
+      <p class="i18n" data-pt="Projetamos uma solução personalizada e inteligente para o seu problema." data-en="We design a personalized and intelligent solution for your problem.">Projetamos uma solução personalizada e inteligente para o seu problema.</p>
+    </div>
+    <div class="p-card">
+      <div class="p-icon">⚡</div>
+      <div class="p-num">3</div>
+      <h4 class="i18n" data-pt="Desenvolvimento da solução" data-en="Solution Development">Desenvolvimento da solução</h4>
+      <p class="i18n" data-pt="Construímos um sistema ou ferramenta SaaS escalável e de alta performance." data-en="We build a scalable, high-performance SaaS system or tool.">Construímos um sistema ou ferramenta SaaS escalável e de alta performance.</p>
+    </div>
+    <div class="p-card">
+      <div class="p-icon">🔄</div>
+      <div class="p-num">4</div>
+      <h4 class="i18n" data-pt="Evolução contínua" data-en="Continuous Evolution">Evolução contínua</h4>
+      <p class="i18n" data-pt="A solução evolui conforme sua empresa cresce e novas necessidades surgem." data-en="The solution evolves as your company grows and new needs arise.">A solução evolui conforme sua empresa cresce e novas necessidades surgem.</p>
+    </div>
+  </div>
+</div>
 
-                <div class="floating-metric floating-2">
-                    <div class="metric-title" lang="pt">IA Ativa</div>
-                    <div class="metric-title" lang="en">Active AI</div>
-                    <div class="metric-value">
-                        <span>1,248</span>
-                        <span style="font-size: 10px; color: #10b981; font-weight: bold;">+30%</span>
-                    </div>
-                    <div class="mini-chart"><div class="mini-chart-fill"></div></div>
-                </div>
+<!-- O QUE FAZEMOS -->
+<div class="sec" id="ferramentas">
+  <span class="sec-tag i18n" data-pt="O QUE FAZEMOS" data-en="WHAT WE DO">O QUE FAZEMOS</span>
+  <h3 class="sec-title i18n" data-pt="Ferramentas de IA desenhadas para o mundo real" data-en="AI tools designed for the real world">Ferramentas de IA desenhadas para o mundo real</h3>
+  <div class="tools-grid">
+    <div class="t-card">
+      <div class="t-icon">💻</div>
+      <h4 class="i18n" data-pt="Plataformas SaaS com IA" data-en="AI SaaS Platforms">Plataformas SaaS com IA</h4>
+      <p class="i18n" data-pt="Soluções completas e personalizadas com IA no core." data-en="Complete, personalized solutions with AI at the core.">Soluções completas e personalizadas com IA no core.</p>
+    </div>
+    <div class="t-card">
+      <div class="t-icon">🛠️</div>
+      <h4 class="i18n" data-pt="Ferramentas para Consultores" data-en="Consultant Tools">Ferramentas para Consultores</h4>
+      <p class="i18n" data-pt="Mais produtividade e decisões inteligentes no dia a dia." data-en="More productivity and smart decisions every day.">Mais produtividade e decisões inteligentes no dia a dia.</p>
+    </div>
+    <div class="t-card">
+      <div class="t-icon">⚙️</div>
+      <h4 class="i18n" data-pt="Sistemas de Automação" data-en="Automation Systems">Sistemas de Automação</h4>
+      <p class="i18n" data-pt="Automatize tarefas repetitivas e reduza custos operacionais." data-en="Automate repetitive tasks and reduce operational costs.">Automatize tarefas repetitivas e reduza custos operacionais.</p>
+    </div>
+    <div class="t-card">
+      <div class="t-icon">🔗</div>
+      <h4 class="i18n" data-pt="Engines de Workflows" data-en="Workflow Engines">Engines de Workflows</h4>
+      <p class="i18n" data-pt="Orquestre processos complexos com inteligência." data-en="Orchestrate complex processes with intelligence.">Orquestre processos complexos com inteligência.</p>
+    </div>
+    <div class="t-card">
+      <div class="t-icon">📊</div>
+      <h4 class="i18n" data-pt="Assistentes de Análise de Dados" data-en="Data Analysis Assistants">Assistentes de Análise de Dados</h4>
+      <p class="i18n" data-pt="Transforme dados em insights com IA avançada." data-en="Transform data into insights with advanced AI.">Transforme dados em insights com IA avançada.</p>
+    </div>
+    <div class="t-card">
+      <div class="t-icon">🌐</div>
+      <h4 class="i18n" data-pt="Integrações de Plataformas" data-en="Platform Integrations">Integrações de Plataformas</h4>
+      <p class="i18n" data-pt="Conecte sistemas e potencialize seu ecossistema digital." data-en="Connect systems and enhance your digital ecosystem.">Conecte sistemas e potencialize seu ecossistema digital.</p>
+    </div>
+  </div>
+</div>
 
-                <div class="floating-metric floating-3">
-                    <div class="metric-title" lang="pt">Uptime Sistema</div>
-                    <div class="metric-title" lang="en">System Uptime</div>
-                    <div class="metric-value text-green">
-                        <span>98.6%</span>
-                        <span style="font-size: 10px; color: var(--text-secondary); font-weight: normal;">Uptime</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+<!-- NOSSO DIFERENCIAL -->
+<div class="sec">
+  <span class="sec-tag i18n" data-pt="NOSSO DIFERENCIAL" data-en="OUR DIFFERENCE">NOSSO DIFERENCIAL</span>
+  <div class="diff">
+    <div class="diff-text">
+      <h2 class="i18n" data-pt="Não criamos apenas software. Criamos ferramentas inteligentes." data-en="We don't just build software. We build intelligent tools.">Não criamos apenas software. Criamos ferramentas inteligentes.</h2>
+      <p class="i18n" data-pt="Softwares tradicionais executam instruções predefinidas. Soluções da Solvix usam IA para aprender, adaptar e melhorar continuamente." data-en="Traditional software runs predefined instructions. Solvix solutions use AI to learn, adapt, and continuously improve.">Softwares tradicionais executam instruções predefinidas. Soluções da Solvix usam IA para aprender, adaptar e melhorar continuamente.</p>
+      <div class="diff-tags">
+        <span class="i18n" data-pt="Menos trabalho manual" data-en="Less manual work">Menos trabalho manual</span>
+        <span class="i18n" data-pt="Mais automação" data-en="More automation">Mais automação</span>
+        <span class="i18n" data-pt="Maior eficiência" data-en="Greater efficiency">Maior eficiência</span>
+        <span class="i18n" data-pt="Sistemas escaláveis" data-en="Scalable systems">Sistemas escaláveis</span>
+      </div>
+    </div>
+    <div class="diff-dash">
+      <div class="dash-title">Dashboard Solvix</div>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:12px">Visão Geral</div>
+      <div class="dash-metrics">
+        <div class="dm"><div class="dm-label">Automações</div><div class="dm-val">142</div><div class="dm-pct">+34%</div></div>
+        <div class="dm"><div class="dm-label">Tempo Economizado</div><div class="dm-val">1,248h</div><div class="dm-pct">+30%</div></div>
+        <div class="dm"><div class="dm-label">Acurácia</div><div class="dm-val">96.8%</div><div class="dm-pct">+12%</div></div>
+      </div>
+      <div class="dash-insights">
+        <h5>Insights de IA</h5>
+        <p class="i18n" data-pt="Suas automações estão gerando impacto real. Novas oportunidades identificadas para melhoria." data-en="Your automations are generating real impact. New improvement opportunities identified.">Suas automações estão gerando impacto real. Novas oportunidades identificadas para melhoria.</p>
+        <button class="btn-sm">Ver Insights</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        <!-- Trusted By Logos -->
-        <section class="trusted-by">
-            <div class="container">
-                <p lang="pt">Confiado por empresas e consultores que inovam</p>
-                <p lang="en">Trusted by forward-thinking companies and consultants</p>
-                <div class="logo-row">
-                    <div class="partner-logo">LUMEN</div>
-                    <div class="partner-logo">VERTEX</div>
-                    <div class="partner-logo">QUANTIX</div>
-                    <div class="partner-logo">NEXORA</div>
-                    <div class="partner-logo">DATAKLY</div>
-                </div>
-            </div>
-        </section>
+<!-- SOBRE A SOLVIX -->
+<div class="sec" id="sobre">
+  <span class="sec-tag i18n" data-pt="SOBRE A SOLVIX" data-en="ABOUT SOLVIX">SOBRE A SOLVIX</span>
+  <div class="about-box">
+    <h2 class="i18n" data-pt="A Solvix é um AI Solution Studio." data-en="Solvix is an AI Solution Studio.">A Solvix é um AI Solution Studio.</h2>
+    <p class="i18n" data-pt="Desenhamos e construímos ferramentas inteligentes que resolvem desafios operacionais reais." data-en="We design and build intelligent tools that solve real operational challenges.">Desenhamos e construímos ferramentas inteligentes que resolvem desafios operacionais reais.</p>
+    <div class="about-feats">
+      <div class="i18n" data-pt="Todo projeto começa com um problema real." data-en="Every project starts with a real problem.">Todo projeto começa com um problema real.</div>
+      <div class="i18n" data-pt="Toda solução é criada para resolvê-lo." data-en="Every solution is built to solve it.">Toda solução é criada para resolvê-lo.</div>
+    </div>
+  </div>
+</div>
 
-        <!-- Section: O Problema -->
-        <section class="section">
-            <div class="container problem-layout">
-                <div class="problem-visualization">
-                    <div class="problem-connection"></div>
-                </div>
-                <div class="problem-text">
-                    <span class="section-tag" lang="pt">O Problema</span>
-                    <span class="section-tag" lang="en">The Problem</span>
-                    
-                    <h2 lang="pt">A maioria das empresas tem problemas. Poucas têm as ferramentas para resolvê-los.</h2>
-                    <h2 lang="en">Most companies have problems. Few have the tools to solve them.</h2>
-                    
-                    <p lang="pt">Empresas geralmente dependem de softwares genéricos que nunca foram criados para suas necessidades operacionais reais.</p>
-                    <p lang="en">Companies usually rely on generic software that was never built for their actual operational needs.</p>
-                    
-                    <p lang="pt">Isso gera ineficiências, retrabalho e limitações técnicas.</p>
-                    <p lang="en">This leads to inefficiencies, rework, and technical limitations.</p>
-                    
-                    <p lang="pt">A Solvix aborda o problema de forma diferente. Em vez de forçar sua empresa a se adaptar ao software, nós criamos sistemas inteligentes feitos especificamente para o seu problema.</p>
-                    <p lang="en">Solvix approaches the problem differently. Instead of forcing your company to adapt to software, we build intelligent systems made specifically for your problem.</p>
-                </div>
-            </div>
-        </section>
+<!-- CTA -->
+<div class="cta" id="contato">
+  <h2 class="i18n" data-pt="Tem um problema que nenhum software resolve?" data-en="Have a problem no software can solve?">Tem um problema que nenhum software resolve?</h2>
+  <p class="i18n" data-pt="Talvez a solução ainda não exista. Vamos criar juntos." data-en="Maybe the solution doesn't exist yet. Let's build it together.">Talvez a solução ainda não exista. Vamos criar juntos.</p>
+  <div class="cta-btns">
+    <button class="btn-primary i18n" data-pt="Criar minha solução com IA →" data-en="Build my AI solution →">Criar minha solução com IA →</button>
+    <button class="btn-outline i18n" data-pt="Falar com a Solvix →" data-en="Talk to Solvix →">Falar com a Solvix →</button>
+  </div>
+</div>
 
-        <!-- Section: Nosso Processo -->
-        <section class="section" id="processo">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-tag" lang="pt">Nosso Processo</span>
-                    <span class="section-tag" lang="en">Our Process</span>
-                    <h2 class="section-title" lang="pt">Do problema à solução inteligente</h2>
-                    <h2 class="section-title" lang="en">From problem to intelligent solution</h2>
-                </div>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-col footer-brand">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <img src="Logo.png" alt="Solvix" style="height:28px">
+        <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:16px;letter-spacing:2px">SOLVIX</span>
+      </div>
+      <p class="i18n" data-pt="AI solutions for real problems." data-en="AI solutions for real problems.">AI solutions for real problems.</p>
+    </div>
+    <div class="footer-col">
+      <h5 class="i18n" data-pt="Soluções" data-en="Solutions">Soluções</h5>
+      <a href="#" class="i18n" data-pt="Plataformas SaaS" data-en="SaaS Platforms">Plataformas SaaS</a>
+      <a href="#" class="i18n" data-pt="Automação" data-en="Automation">Automação</a>
+      <a href="#" class="i18n" data-pt="Ferramentas de IA" data-en="AI Tools">Ferramentas de IA</a>
+      <a href="#" class="i18n" data-pt="Integrações" data-en="Integrations">Integrações</a>
+    </div>
+    <div class="footer-col">
+      <h5 class="i18n" data-pt="Empresa" data-en="Company">Empresa</h5>
+      <a href="#" class="i18n" data-pt="Sobre nós" data-en="About Us">Sobre nós</a>
+      <a href="#" class="i18n" data-pt="Nosso processo" data-en="Our Process">Nosso processo</a>
+      <a href="#" class="i18n" data-pt="Carreiras" data-en="Careers">Carreiras</a>
+      <a href="#" class="i18n" data-pt="Contato" data-en="Contact">Contato</a>
+    </div>
+    <div class="footer-col">
+      <h5 class="i18n" data-pt="Recursos" data-en="Resources">Recursos</h5>
+      <a href="#" class="i18n" data-pt="Blog" data-en="Blog">Blog</a>
+      <a href="#" class="i18n" data-pt="Casos de Uso" data-en="Use Cases">Casos de Uso</a>
+      <a href="#" class="i18n" data-pt="Documentação" data-en="Documentation">Documentação</a>
+      <a href="#" class="i18n" data-pt="Central de Ajuda" data-en="Help Center">Central de Ajuda</a>
+    </div>
+    <div class="footer-col">
+      <h5 class="i18n" data-pt="Fique atualizado" data-en="Stay updated">Fique atualizado</h5>
+      <p style="font-size:11px;color:#94a3b8;margin-bottom:8px" class="i18n" data-pt="Receba insights sobre IA, automação e soluções para o seu negócio." data-en="Receive insights on AI, automation, and solutions for your business.">Receba insights sobre IA, automação e soluções para o seu negócio.</p>
+      <div class="footer-nl">
+        <input type="email" placeholder="E-mail">
+        <button>Ok</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Solvix. Todos os direitos reservados.</span>
+    <div>
+      <a href="#" class="i18n" data-pt="Política de Privacidade" data-en="Privacy Policy">Política de Privacidade</a>
+      <a href="#" class="i18n" data-pt="Termos de Uso" data-en="Terms of Use">Termos de Uso</a>
+    </div>
+  </div>
+</footer>
 
-                <div class="process-grid">
-                    <div class="process-card">
-                        <div class="process-num"><span>1</span>/04</div>
-                        <h3 lang="pt">Descoberta do problema</h3>
-                        <h3 lang="en">Problem discovery</h3>
-                        <p lang="pt">Analisamos o desafio, fluxo de trabalho ou limitação da sua plataforma.</p>
-                        <p lang="en">We analyze the challenge, workflow, or platform limitations.</p>
-                    </div>
-
-                    <div class="process-card">
-                        <div class="process-num"><span>2</span>/04</div>
-                        <h3 lang="pt">Arquitetura de IA</h3>
-                        <h3 lang="en">AI Architecture</h3>
-                        <p lang="pt">Projetamos uma solução personalizada e inteligente para o seu problema.</p>
-                        <p lang="en">We design a customized and intelligent solution for your challenge.</p>
-                    </div>
-
-                    <div class="process-card">
-                        <div class="process-num"><span>3</span>/04</div>
-                        <h3 lang="pt">Desenvolvimento</h3>
-                        <h3 lang="en">Development</h3>
-                        <p lang="pt">Construímos um sistema ou ferramenta SaaS escalável e de alta performance.</p>
-                        <p lang="en">We build a high-performance, scalable system or SaaS tool.</p>
-                    </div>
-
-                    <div class="process-card">
-                        <div class="process-num"><span>4</span>/04</div>
-                        <h3 lang="pt">Evolução contínua</h3>
-                        <h3 lang="en">Continuous evolution</h3>
-                        <p lang="pt">A solução evolui conforme sua empresa cresce e novas necessidades surgem.</p>
-                        <p lang="en">The solution evolves as your business grows and new needs arise.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: O Que Fazemos (AI Tools) -->
-        <section class="section" id="solucoes">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-tag" lang="pt">O Que Fazemos</span>
-                    <span class="section-tag" lang="en">What We Do</span>
-                    <h2 class="section-title" lang="pt">Ferramentas de IA desenhadas para o mundo real</h2>
-                    <h2 class="section-title" lang="en">AI tools designed for the real world</h2>
-                </div>
-
-                <div class="cards-grid">
-                    <div class="tool-card">
-                        <h3 lang="pt">Plataformas SaaS com IA</h3>
-                        <h3 lang="en">AI SaaS Platforms</h3>
-                        <p lang="pt">Soluções completas e personalizadas com inteligência artificial no core.</p>
-                        <p lang="en">Complete and customized solutions with artificial intelligence at the core.</p>
-                    </div>
-
-                    <!-- ACTIVE WORKSPACE / CONSULTORIA LINK (Name adjusted but keeps layout) -->
-                    <div class="tool-card active-workspace" onclick="window.location.href='/consultoria'">
-                        <span class="tool-card-badge" lang="pt">Ativo</span>
-                        <span class="tool-card-badge" lang="en">Active</span>
-                        <h3 lang="pt">Ferramentas para Consultores</h3>
-                        <h3 lang="en">Tools for Consultants</h3>
-                        <p lang="pt">Mais produtividade, gerenciamento de chamados e decisões inteligentes no dia a dia técnico.</p>
-                        <p lang="en">Higher productivity, issue tracking and smart decisions in technical operations.</p>
-                        <div class="tool-card-link">
-                            <span lang="pt">Entrar no Painel</span>
-                            <span lang="en">Enter Dashboard</span>
-                            <span>→</span>
-                        </div>
-                    </div>
-
-                    <div class="tool-card">
-                        <h3 lang="pt">Sistemas de Automação</h3>
-                        <h3 lang="en">Automation Systems</h3>
-                        <p lang="pt">Automatize tarefas repetitivas e reduza significativamente os custos operacionais.</p>
-                        <p lang="en">Automate repetitive tasks and significantly reduce operational costs.</p>
-                    </div>
-
-                    <div class="tool-card">
-                        <h3 lang="pt">Engines de Workflows</h3>
-                        <h3 lang="en">Workflow Engines</h3>
-                        <p lang="pt">Orquestre processos operacionais complexos com inteligência e controle integrados.</p>
-                        <p lang="en">Orchestrate complex operational processes with integrated control and intelligence.</p>
-                    </div>
-
-                    <div class="tool-card">
-                        <h3 lang="pt">Assistentes de Dados</h3>
-                        <h3 lang="en">Data Assistants</h3>
-                        <p lang="pt">Transforme dados em insights estratégicos através de modelos de IA avançados.</p>
-                        <p lang="en">Transform business data into strategic insights through advanced AI models.</p>
-                    </div>
-
-                    <div class="tool-card">
-                        <h3 lang="pt">Integrações de Plataformas</h3>
-                        <h3 lang="en">Platform Integrations</h3>
-                        <p lang="pt">Conecte sistemas dispersos e potencialize todo o seu ecossistema digital.</p>
-                        <p lang="en">Connect dispersed software systems and fully power your digital ecosystem.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: Nosso Diferencial -->
-        <section class="section">
-            <div class="container split-layout">
-                <div class="split-text">
-                    <span class="section-tag" lang="pt">Nosso Diferencial</span>
-                    <span class="section-tag" lang="en">Our Advantage</span>
-                    
-                    <h2 lang="pt">Não criamos apenas software. Criamos ferramentas inteligentes.</h2>
-                    <h2 lang="en">We don't just build software. We build intelligent tools.</h2>
-                    
-                    <p lang="pt">Softwares tradicionais executam instruções predefinidas de forma rígida. Soluções da Solvix usam inteligência artificial para aprender, adaptar e melhorar continuamente.</p>
-                    <p lang="en">Traditional software runs rigid, predefined instructions. Solvix solutions utilize artificial intelligence to learn, adapt, and continuously improve.</p>
-
-                    <div class="diferencial-icons">
-                        <div class="diferencial-item">
-                            <div class="diferencial-bullet"></div>
-                            <span lang="pt">Menos trabalho manual</span>
-                            <span lang="en">Less manual work</span>
-                        </div>
-                        <div class="diferencial-item">
-                            <div class="diferencial-bullet"></div>
-                            <span lang="pt">Mais automação</span>
-                            <span lang="en">More automation</span>
-                        </div>
-                        <div class="diferencial-item">
-                            <div class="diferencial-bullet"></div>
-                            <span lang="pt">Maior eficiência</span>
-                            <span lang="en">Higher efficiency</span>
-                        </div>
-                        <div class="diferencial-item">
-                            <div class="diferencial-bullet"></div>
-                            <span lang="pt">Sistemas escaláveis</span>
-                            <span lang="en">Scalable systems</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mock Dashboard Visual -->
-                <div class="split-visualization">
-                    <div class="mock-dashboard">
-                        <div class="dash-header">
-                            <span lang="pt">Dashboard Solvix — Painel de Controle</span>
-                            <span lang="en">Solvix Dashboard — Control Center</span>
-                            <div style="display:flex; gap:6px;">
-                                <span style="width:8px; height:8px; background:#ef4444; border-radius:50%;"></span>
-                                <span style="width:8px; height:8px; background:#eab308; border-radius:50%;"></span>
-                                <span style="width:8px; height:8px; background:#22c55e; border-radius:50%;"></span>
-                            </div>
-                        </div>
-                        <div class="dash-body">
-                            <div style="font-size:11px; color:var(--text-secondary); margin-bottom:14px;" lang="pt">Visão Geral</div>
-                            <div style="font-size:11px; color:var(--text-secondary); margin-bottom:14px;" lang="en">Overview</div>
-                            
-                            <div class="dash-grid">
-                                <div class="dash-metric">
-                                    <div class="metric-title" lang="pt">Automações</div>
-                                    <div class="metric-title" lang="en">Automations</div>
-                                    <div class="dash-metric-num">142 <span class="dash-metric-pct">+34%</span></div>
-                                </div>
-                                <div class="dash-metric">
-                                    <div class="metric-title" lang="pt">Tempo Salvo</div>
-                                    <div class="metric-title" lang="en">Time Saved</div>
-                                    <div class="dash-metric-num">1,248h <span class="dash-metric-pct">+30%</span></div>
-                                </div>
-                                <div class="dash-metric">
-                                    <div class="metric-title" lang="pt">Acurácia</div>
-                                    <div class="metric-title" lang="en">Accuracy</div>
-                                    <div class="dash-metric-num">96.8% <span class="dash-metric-pct">+12%</span></div>
-                                </div>
-                            </div>
-
-                            <div class="dash-chart"></div>
-
-                            <div class="dash-insights">
-                                <div class="dash-insights-title">Insights de IA</div>
-                                <p style="font-size: 11px; color: #a5b4fc;" lang="pt">Suas automações estão gerando impacto real. Foram identificadas novas oportunidades de automatizar fluxos de chamados técnicos.</p>
-                                <p style="font-size: 11px; color: #a5b4fc;" lang="en">Your automations are creating actual impact. New opportunities detected to automate technical issue workflows.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: Sobre a Solvix -->
-        <section class="section" id="sobre">
-            <div class="container sobre-layout">
-                <div class="sobre-text">
-                    <span class="section-tag" lang="pt">Sobre a Solvix</span>
-                    <span class="section-tag" lang="en">About Solvix</span>
-                    
-                    <h2 lang="pt">A Solvix é um AI Solution Studio.</h2>
-                    <h2 lang="en">Solvix is an AI Solution Studio.</h2>
-                    
-                    <p lang="pt">Desenhamos e construímos ferramentas inteligentes sob medida que resolvem desafios operacionais complexos no mundo real.</p>
-                    <p lang="en">We design and build customized intelligent tools that solve complex operational challenges in the real world.</p>
-
-                    <div class="sobre-bullets">
-                        <div class="sobre-bullet-item">
-                            <span class="sobre-bullet-icon">✓</span>
-                            <div>
-                                <strong style="color:white;" lang="pt">Todo projeto começa com um problema real.</strong>
-                                <strong style="color:white;" lang="en">Every project starts with a real problem.</strong>
-                                <p style="font-size:13px; margin-top:4px;" lang="pt">Não focamos em tecnologia vazia, mas no impacto direto no seu negócio.</p>
-                                <p style="font-size:13px; margin-top:4px;" lang="en">We focus on direct business impact, not empty tech hypes.</p>
-                            </div>
-                        </div>
-                        <div class="sobre-bullet-item">
-                            <span class="sobre-bullet-icon">✓</span>
-                            <div>
-                                <strong style="color:white;" lang="pt">Toda solução é criada para resolvê-lo.</strong>
-                                <strong style="color:white;" lang="en">Every solution is built to solve it.</strong>
-                                <p style="font-size:13px; margin-top:4px;" lang="pt">Seu workflow, suas integrações e suas regras de negócio em primeiro lugar.</p>
-                                <p style="font-size:13px; margin-top:4px;" lang="en">Your specific workflow, integrations and business logic come first.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sobre-globe">
-                    <!-- Particle Globe Simulation -->
-                    <div class="globe-animation">
-                        <div class="globe-grid-1"></div>
-                        <div class="globe-grid-2"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section: CTA -->
-        <section class="cta-section" id="cta-section">
-            <div class="container">
-                <h2 lang="pt">Tem um problema que nenhum software resolve?</h2>
-                <h2 lang="en">Have a problem that no software solves?</h2>
-                
-                <p lang="pt">Talvez a solução ainda não exista. Vamos criar juntos.</p>
-                <p lang="en">Maybe the solution doesn't exist yet. Let's build it together.</p>
-                
-                <div style="display:flex; gap:16px; justify-content:center;">
-                    <button onclick="alert('Suporte via WhatsApp/Contato em breve!')">
-                        <span lang="pt">Criar minha solução com IA</span>
-                        <span lang="en">Build my AI solution</span>
-                        <span>→</span>
-                    </button>
-                    <button class="btn-secondary" onclick="alert('Suporte via WhatsApp/Contato em breve!')">
-                        <span lang="pt">Falar com a Solvix</span>
-                        <span lang="en">Talk to Solvix</span>
-                        <span>→</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <a href="#" class="logo-container" style="margin-bottom:20px;">
-                        <div class="logo-icon" style="width:24px; height:24px; font-size:12px;">▲</div>
-                        <div class="logo" style="font-size:20px;">SOLVIX</div>
-                    </a>
-                    <p style="font-size:13px; margin-top:10px;" lang="pt">Soluções inteligentes sob medida para transformar os processos de negócios do mundo real.</p>
-                    <p style="font-size:13px; margin-top:10px;" lang="en">Custom intelligent solutions designed to transform real-world business processes.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4 lang="pt">Soluções</h4>
-                    <h4 lang="en">Solutions</h4>
-                    <ul>
-                        <li><a href="#solucoes" lang="pt">SaaS com IA</a><a href="#solucoes" lang="en">AI SaaS</a></li>
-                        <li><a href="/consultoria" lang="pt">Painel do Consultor</a><a href="/consultoria" lang="en">Consultor Workspace</a></li>
-                        <li><a href="#solucoes" lang="pt">Automações</a><a href="#solucoes" lang="en">Automations</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4 lang="pt">Empresa</h4>
-                    <h4 lang="en">Company</h4>
-                    <ul>
-                        <li><a href="#sobre" lang="pt">Sobre nós</a><a href="#sobre" lang="en">About us</a></li>
-                        <li><a href="#processo" lang="pt">Nosso processo</a><a href="#processo" lang="en">Our process</a></li>
-                        <li><a href="#" lang="pt">Carreiras</a><a href="#" lang="en">Careers</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4 lang="pt">Fique Atualizado</h4>
-                    <h4 lang="en">Newsletter</h4>
-                    <p style="font-size:12px;" lang="pt">Receba insights sobre inteligência artificial, automações e tecnologia aplicada.</p>
-                    <p style="font-size:12px;" lang="en">Receive insights on artificial intelligence, automation, and applied tech.</p>
-                    <div class="newsletter-input-group">
-                        <input type="email" placeholder="E-mail" required>
-                        <button style="padding:10px 16px; font-size:12px;">Ok</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2026 Solvix. Powered by Antigravity Design.</p>
-                <div class="footer-bottom-links">
-                    <a href="#" lang="pt">Política de Privacidade</a><a href="#" lang="en">Privacy Policy</a>
-                    <a href="#" lang="pt">Termos de Uso</a><a href="#" lang="en">Terms of Use</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Script triggers matching user specifications exactly -->
-    <script>
-        function setLang(lang) {
-            if (lang === "pt") {
-                document.documentElement.lang = "pt";
-                // Add active visual state to buttons
-                document.getElementById('lang-pt').classList.add('active');
-                document.getElementById('lang-en').classList.remove('active');
-            }
-            if (lang === "en") {
-                document.documentElement.lang = "en";
-                // Add active visual state to buttons
-                document.getElementById('lang-pt').classList.remove('active');
-                document.getElementById('lang-en').classList.add('active');
-            }
-        }
-
-        // Set default lang to PT
-        document.addEventListener('DOMContentLoaded', () => {
-            setLang('pt');
-        });
-    </script>
+<script>
+function setLang(lang){
+  document.documentElement.lang=lang;
+  document.getElementById('lpt').classList.toggle('active',lang==='pt');
+  document.getElementById('len').classList.toggle('active',lang==='en');
+  document.querySelectorAll('.i18n').forEach(el=>{
+    const val=el.getAttribute('data-'+lang);
+    if(val) el.textContent=val;
+  });
+}
+document.addEventListener('DOMContentLoaded',()=>setLang('pt'));
+</script>
 </body>
 </html>
