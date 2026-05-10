@@ -203,13 +203,21 @@
 }
 
 .kpi-card {
-    background: var(--surface-color);
+    background: rgba(17, 17, 22, 0.6);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.kpi-card:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
 }
 
 .kpi-label {
@@ -234,10 +242,17 @@
 }
 
 .panel {
-    background: var(--surface-color);
+    background: rgba(17, 17, 22, 0.6);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.panel:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 .panel-header {

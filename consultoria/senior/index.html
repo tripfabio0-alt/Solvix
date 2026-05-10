@@ -148,13 +148,13 @@ function App() {
   const ok=(input.trim()||image)&&!loading;
 
   return(
-    <div style={{minHeight:"100vh",background:"#0f1117",fontFamily:"'Courier New',monospace",color:"#e2e8f0"}}>
+    <div style={{minHeight:"100vh",background:"var(--bg-color)",fontFamily:"var(--font-body)",color:"var(--text-primary)"}}>
 
       {/* Header */}
-      <div style={{borderBottom:"1px solid #1e293b",background:"#0a0d14",padding:"18px 32px",display:"flex",alignItems:"center",gap:16}}>
-        <div style={{width:36,height:36,background:"linear-gradient(135deg,#f59e0b,#d97706)",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:"bold",color:"#000"}}>S</div>
+      <div style={{borderBottom:"1px solid var(--border-color)",background:"rgba(5, 5, 10, 0.8)",backdropFilter:"blur(12px)",padding:"18px 32px",display:"flex",alignItems:"center",gap:16,position:"sticky",top:0,zIndex:100}}>
+        <div style={{width:36,height:36,background:"var(--gradient-primary)",borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:"bold",color:"#fff"}}>S</div>
         <div>
-          <div style={{fontSize:14,fontWeight:600,color:"#f1f5f9",letterSpacing:"0.05em"}}>SENIOR · GERADOR DE REGRAS LSP</div>
+          <div style={{fontFamily:"var(--font-heading)",fontSize:16,fontWeight:700,color:"var(--text-primary)",letterSpacing:"0.05em"}}>SENIOR · GERADOR DE REGRAS LSP</div>
           <div style={{fontSize:10,color:"#64748b",letterSpacing:"0.08em"}}>POWERED BY GOOGLE GEMINI</div>
         </div>
         <div style={{marginLeft:"auto",display:"flex",gap:12,alignItems:"center"}}>
@@ -167,20 +167,20 @@ function App() {
       <div style={{maxWidth:900,margin:"0 auto",padding:"28px 24px"}}>
 
         {/* Mode Toggle */}
-        <div style={{display:"flex",gap:4,marginBottom:16,background:"#0a0d14",border:"1px solid #1e293b",borderRadius:6,padding:4,width:"fit-content"}}>
+        <div style={{display:"flex",gap:4,marginBottom:16,background:"rgba(255,255,255,0.03)",border:"1px solid var(--border-color)",borderRadius:12,padding:4,width:"fit-content",backdropFilter:"blur(12px)"}}>
           {[{k:"text",i:"✏",l:"TEXTO"},{k:"image",i:"🖼",l:"PRINT DE TELA"}].map(m=>(
-            <button key={m.k} onClick={()=>setMode(m.k)} style={{padding:"7px 16px",borderRadius:4,border:"none",background:mode===m.k?"#1e293b":"transparent",color:mode===m.k?"#f59e0b":"#475569",fontSize:11,fontFamily:"inherit",letterSpacing:"0.08em",cursor:"pointer",display:"flex",alignItems:"center",gap:6,fontWeight:mode===m.k?700:400}}>
+            <button key={m.k} onClick={()=>setMode(m.k)} style={{padding:"7px 16px",borderRadius:8,border:"none",background:mode===m.k?"rgba(255,255,255,0.1)":"transparent",color:mode===m.k?"var(--text-primary)":"var(--text-secondary)",fontSize:12,fontFamily:"inherit",letterSpacing:"0.05em",cursor:"pointer",display:"flex",alignItems:"center",gap:6,fontWeight:mode===m.k?600:400,transition:"0.2s"}}>
               {m.i} {m.l}
             </button>
           ))}
         </div>
 
         {/* Input Card */}
-        <div style={{background:"#13171f",border:"1px solid #1e293b",borderRadius:8,overflow:"hidden",marginBottom:20}}>
-          <div style={{padding:"10px 16px",background:"#0f1117",borderBottom:"1px solid #1e293b",fontSize:11,color:"#475569",letterSpacing:"0.1em",display:"flex",alignItems:"center",gap:8}}>
-            <span style={{color:"#f59e0b"}}>▶</span>
+        <div style={{background:"rgba(17, 17, 22, 0.6)",backdropFilter:"blur(12px)",border:"1px solid var(--border-color)",borderRadius:12,overflow:"hidden",marginBottom:20}}>
+          <div style={{padding:"12px 20px",background:"rgba(255,255,255,0.02)",borderBottom:"1px solid var(--border-color)",fontSize:12,color:"var(--text-secondary)",letterSpacing:"0.05em",display:"flex",alignItems:"center",gap:8}}>
+            <span style={{color:"var(--accent-color)"}}>▶</span>
             {mode==="image"?"UPLOAD DO PRINT + DESCRIÇÃO DO QUE DESEJA":"DESCREVA SUA NECESSIDADE"}
-            <span style={{marginLeft:"auto",color:"#334155"}}>Ctrl+Enter para gerar</span>
+            <span style={{marginLeft:"auto",color:"var(--text-secondary)",opacity:0.5}}>Ctrl+Enter para gerar</span>
           </div>
 
           {/* Drop Zone */}
@@ -190,13 +190,13 @@ function App() {
               onDragLeave={()=>setDragOver(false)}
               onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.files[0]);}}
               onClick={()=>!image&&fileRef.current?.click()}
-              style={{margin:16,borderRadius:6,border:`2px dashed ${dragOver?"#f59e0b":"#1e293b"}`,background:dragOver?"#1c1200":"#0f1117",transition:"all .2s",cursor:image?"default":"pointer",overflow:"hidden"}}
+              style={{margin:20,borderRadius:12,border:`2px dashed ${dragOver?"var(--accent-color)":"var(--border-color)"}`,background:dragOver?"rgba(59, 130, 246, 0.05)":"transparent",transition:"all .2s",cursor:image?"default":"pointer",overflow:"hidden"}}
             >
               {image?(
                 <div style={{position:"relative"}}>
                   <img src={image.preview} alt="" style={{width:"100%",maxHeight:240,objectFit:"contain",display:"block",background:"#000"}}/>
-                  <button onClick={e=>{e.stopPropagation();setImage(null);}} style={{position:"absolute",top:8,right:8,background:"#1a0a0a",border:"1px solid #7f1d1d",borderRadius:4,color:"#fca5a5",fontSize:11,padding:"4px 10px",cursor:"pointer",fontFamily:"inherit"}}>✕ REMOVER</button>
-                  <div style={{padding:"6px 12px",background:"#0a0d14",borderTop:"1px solid #1e293b",fontSize:11,color:"#475569"}}>📎 {image.file.name} · {(image.file.size/1024).toFixed(0)} KB</div>
+                  <button onClick={e=>{e.stopPropagation();setImage(null);}} style={{position:"absolute",top:8,right:8,background:"rgba(0,0,0,0.7)",backdropFilter:"blur(4px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,color:"#fff",fontSize:12,padding:"6px 12px",cursor:"pointer",fontFamily:"inherit"}}>✕ REMOVER</button>
+                  <div style={{padding:"10px 16px",background:"rgba(0,0,0,0.5)",position:"absolute",bottom:0,width:"100%",backdropFilter:"blur(4px)",fontSize:12,color:"#fff"}}>📎 {image.file.name} · {(image.file.size/1024).toFixed(0)} KB</div>
                 </div>
               ):(
                 <div style={{padding:28,textAlign:"center",color:"#334155"}}>
@@ -214,23 +214,23 @@ function App() {
             onChange={e=>setInput(e.target.value)}
             onKeyDown={e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))generate();}}
             placeholder={mode==="image"?"Ex: Quero validar o campo Qtde antes de salvar, bloqueando se for zero...":"Ex: Quero uma regra que ao apontar uma OP verifique se o operador tem permissão e registre um log..."}
-            style={{width:"100%",minHeight:90,background:"transparent",border:"none",borderTop:"1px solid #1e293b",outline:"none",padding:16,color:"#cbd5e1",fontSize:13,fontFamily:"inherit",resize:"vertical",lineHeight:1.6,boxSizing:"border-box"}}
+            style={{width:"100%",minHeight:100,background:"transparent",border:"none",outline:"none",padding:"20px",color:"var(--text-primary)",fontSize:14,fontFamily:"inherit",resize:"vertical",lineHeight:1.6,boxSizing:"border-box"}}
           />
 
-          <div style={{padding:"10px 16px",borderTop:"1px solid #1e293b",display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+          <div style={{padding:"16px 20px",borderTop:"1px solid var(--border-color)",background:"rgba(255,255,255,0.02)",display:"flex",justifyContent:"space-between",alignItems:"center",gap:12,flexWrap:"wrap"}}>
             {mode==="text"&&(
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
                 {["Validar operador ao apontar OP","Bloquear pedido sem estoque","Log de alteração de quantidade"].map(ex=>(
-                  <button key={ex} onClick={()=>setInput(ex)} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:4,padding:"4px 10px",color:"#475569",fontSize:10,fontFamily:"inherit",cursor:"pointer"}}>{ex}</button>
+                  <button key={ex} onClick={()=>setInput(ex)} style={{background:"rgba(255,255,255,0.05)",border:"1px solid var(--border-color)",borderRadius:8,padding:"6px 12px",color:"var(--text-secondary)",fontSize:11,fontFamily:"inherit",cursor:"pointer",transition:"0.2s"}}>{ex}</button>
                 ))}
               </div>
             )}
             {mode==="image"&&(
-              <button onClick={()=>fileRef.current?.click()} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:4,padding:"6px 12px",color:"#475569",fontSize:11,fontFamily:"inherit",cursor:"pointer"}}>
+              <button onClick={()=>fileRef.current?.click()} style={{background:"rgba(255,255,255,0.05)",border:"1px solid var(--border-color)",borderRadius:8,padding:"8px 16px",color:"var(--text-secondary)",fontSize:12,fontFamily:"inherit",cursor:"pointer",transition:"0.2s"}}>
                 📎 {image?"TROCAR IMAGEM":"SELECIONAR IMAGEM"}
               </button>
             )}
-            <button onClick={generate} disabled={!ok} style={{background:!ok?"#1e293b":"linear-gradient(135deg,#f59e0b,#d97706)",color:!ok?"#475569":"#000",border:"none",borderRadius:6,padding:"10px 24px",fontSize:12,fontFamily:"inherit",fontWeight:700,letterSpacing:"0.1em",cursor:!ok?"not-allowed":"pointer",display:"flex",alignItems:"center",gap:8,marginLeft:"auto"}}>
+            <button onClick={generate} disabled={!ok} className={!ok ? "disabled-btn" : "btn-primary"} style={{border:"none",borderRadius:50,padding:"10px 24px",fontSize:13,fontFamily:"inherit",fontWeight:600,cursor:!ok?"not-allowed":"pointer",display:"flex",alignItems:"center",gap:8,marginLeft:"auto",background:!ok?"var(--surface-color)":"var(--gradient-primary)",color:!ok?"var(--text-secondary)":"#fff",boxShadow:!ok?"none":"0 4px 15px var(--accent-glow)"}}>
               {loading?<><span style={{display:"inline-block",animation:"spin 1s linear infinite"}}>⟳</span>GERANDO...</>:mode==="image"?"🖼 ANALISAR E GERAR":"⚡ GERAR REGRA"}
             </button>
           </div>
@@ -242,21 +242,21 @@ function App() {
         {/* Result */}
         {result&&(
           <>
-            <div style={{background:"#13171f",border:"1px solid #1e293b",borderRadius:8,padding:"16px 20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-              {[{label:"TÍTULO",value:result.titulo,color:"#f1f5f9"},{label:"MÓDULO",value:result.modulo,color:"#f59e0b"},{label:"IDENTIFICADOR",value:result.identificador,color:"#94a3b8"},{label:"DESCRIÇÃO",value:result.descricao,color:"#94a3b8"}].map(({label,value,color})=>(
-                <div key={label}><div style={{fontSize:10,color:"#475569",letterSpacing:"0.1em",marginBottom:4}}>{label}</div><div style={{fontSize:13,color,lineHeight:1.4}}>{value}</div></div>
+            <div style={{background:"rgba(17, 17, 22, 0.6)",backdropFilter:"blur(12px)",border:"1px solid var(--border-color)",borderRadius:12,padding:"20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:20}}>
+              {[{label:"TÍTULO",value:result.titulo,color:"var(--text-primary)"},{label:"MÓDULO",value:result.modulo,color:"var(--accent-color)"},{label:"IDENTIFICADOR",value:result.identificador,color:"var(--text-secondary)"},{label:"DESCRIÇÃO",value:result.descricao,color:"var(--text-secondary)"}].map(({label,value,color})=>(
+                <div key={label}><div style={{fontSize:11,color:"var(--text-secondary)",letterSpacing:"0.05em",marginBottom:6,fontWeight:500}}>{label}</div><div style={{fontSize:14,color,lineHeight:1.5}}>{value}</div></div>
               ))}
             </div>
-            <div style={{background:"#13171f",border:"1px solid #1e293b",borderRadius:8,overflow:"hidden"}}>
-              <div style={{display:"flex",borderBottom:"1px solid #1e293b",background:"#0f1117"}}>
+            <div style={{background:"rgba(17, 17, 22, 0.6)",backdropFilter:"blur(12px)",border:"1px solid var(--border-color)",borderRadius:12,overflow:"hidden",boxShadow:"0 10px 30px rgba(0,0,0,0.3)"}}>
+              <div style={{display:"flex",borderBottom:"1px solid var(--border-color)",background:"rgba(255,255,255,0.02)"}}>
                 {[{k:"script",l:"📄 SCRIPT LSP"},{k:"variaveis",l:"🔤 VARIÁVEIS"},{k:"funcoes",l:"⚙ FUNÇÕES"},{k:"ajuda",l:"💡 AJUDA"}].map(t=>(
-                  <button key={t.k} onClick={()=>setTab(t.k)} style={{padding:"10px 14px",background:"transparent",border:"none",borderBottom:tab===t.k?"2px solid #f59e0b":"2px solid transparent",color:tab===t.k?"#f59e0b":"#475569",fontSize:11,fontFamily:"inherit",cursor:"pointer",fontWeight:tab===t.k?700:400}}>{t.l}</button>
+                  <button key={t.k} onClick={()=>setTab(t.k)} style={{padding:"14px 18px",background:"transparent",border:"none",borderBottom:tab===t.k?"2px solid var(--accent-color)":"2px solid transparent",color:tab===t.k?"var(--text-primary)":"var(--text-secondary)",fontSize:11,fontFamily:"inherit",cursor:"pointer",fontWeight:tab===t.k?600:400,transition:"0.2s"}}>{t.l}</button>
                 ))}
               </div>
               {tab==="script"&&(
                 <div style={{position:"relative"}}>
-                  <button onClick={copy} style={{position:"absolute",top:12,right:12,background:copied?"#166534":"#1e293b",color:copied?"#86efac":"#94a3b8",border:`1px solid ${copied?"#166534":"#334155"}`,borderRadius:4,padding:"6px 12px",fontSize:10,fontFamily:"inherit",cursor:"pointer",zIndex:10}}>{copied?"✓ COPIADO":"⎘ COPIAR"}</button>
-                  <pre style={{margin:0,padding:"20px 16px",fontSize:12,lineHeight:1.7,overflowX:"auto",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>
+                  <button onClick={copy} style={{position:"absolute",top:12,right:12,background:copied?"rgba(16, 185, 129, 0.1)":"rgba(255,255,255,0.05)",color:copied?"#10b981":"var(--text-secondary)",border:`1px solid ${copied?"rgba(16, 185, 129, 0.3)":"var(--border-color)"}`,borderRadius:8,padding:"6px 12px",fontSize:11,fontFamily:"inherit",cursor:"pointer",zIndex:10,backdropFilter:"blur(4px)",transition:"0.2s"}}>{copied?"✓ COPIADO":"⎘ COPIAR"}</button>
+                  <pre style={{margin:0,padding:"20px 16px",fontSize:13,lineHeight:1.7,overflowX:"auto",whiteSpace:"pre-wrap",wordBreak:"break-word",fontFamily:"'Courier New',monospace",background:"transparent"}}>
                     {(result.script||"").split("\n").map((line,i)=>(
                       <span key={i} style={{color:lc(line),fontStyle:line.trim().startsWith("@")?"italic":"normal",display:"block"}}>
                         <span style={{color:"#334155",userSelect:"none",marginRight:12,fontSize:10}}>{String(i+1).padStart(2,"0")}</span>{line}
@@ -268,37 +268,37 @@ function App() {
               {tab==="variaveis"&&(
                 <div style={{padding:16}}>
                   {result.variaveis?.length>0?(
-                    <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-                      <thead><tr style={{borderBottom:"1px solid #1e293b"}}>{["VARIÁVEL","TIPO","DESCRIÇÃO"].map(h=><th key={h} style={{padding:"8px 12px",textAlign:"left",color:"#475569",fontSize:10,letterSpacing:"0.1em"}}>{h}</th>)}</tr></thead>
+                    <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+                      <thead><tr style={{borderBottom:"1px solid var(--border-color)"}}>{["VARIÁVEL","TIPO","DESCRIÇÃO"].map(h=><th key={h} style={{padding:"12px",textAlign:"left",color:"var(--text-secondary)",fontSize:11,letterSpacing:"0.05em"}}>{h}</th>)}</tr></thead>
                       <tbody>{result.variaveis.map((v,i)=>(
-                        <tr key={i} style={{borderBottom:"1px solid #0f1117"}}>
-                          <td style={{padding:"10px 12px",color:"#86efac",fontFamily:"monospace"}}>{v.nome}</td>
-                          <td style={{padding:"10px 12px"}}><span style={{background:v.tipo==="Alfa"?"#1e3a5f":v.tipo==="Numero"?"#1a3a1a":"#3a1a1a",color:v.tipo==="Alfa"?"#93c5fd":v.tipo==="Numero"?"#86efac":"#fca5a5",padding:"2px 8px",borderRadius:3,fontSize:10}}>{v.tipo}</span></td>
-                          <td style={{padding:"10px 12px",color:"#94a3b8"}}>{v.descricao}</td>
+                        <tr key={i} style={{borderBottom:"1px solid rgba(255,255,255,0.02)"}}>
+                          <td style={{padding:"12px",color:"var(--accent-color)",fontFamily:"monospace"}}>{v.nome}</td>
+                          <td style={{padding:"12px"}}><span style={{background:v.tipo==="Alfa"?"rgba(59, 130, 246, 0.1)":v.tipo==="Numero"?"rgba(16, 185, 129, 0.1)":"rgba(239, 68, 68, 0.1)",color:v.tipo==="Alfa"?"#3b82f6":v.tipo==="Numero"?"#10b981":"#ef4444",padding:"4px 10px",borderRadius:6,fontSize:11}}>{v.tipo}</span></td>
+                          <td style={{padding:"12px",color:"var(--text-secondary)"}}>{v.descricao}</td>
                         </tr>
                       ))}</tbody>
                     </table>
-                  ):<div style={{color:"#475569",fontSize:12,textAlign:"center",padding:24}}>Nenhuma variável documentada.</div>}
+                  ):<div style={{color:"var(--text-secondary)",fontSize:13,textAlign:"center",padding:40}}>Nenhuma variável documentada.</div>}
                 </div>
               )}
               {tab==="funcoes"&&(
-                <div style={{padding:16,display:"flex",flexDirection:"column",gap:8}}>
+                <div style={{padding:20,display:"flex",flexDirection:"column",gap:12}}>
                   {(result.funcoes||[]).map((f,i)=>(
-                    <div key={i} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:6,padding:"12px 16px",display:"flex",gap:16}}>
-                      <span style={{color:"#f59e0b",fontSize:12,fontFamily:"monospace",minWidth:180,fontWeight:600}}>{f.nome}()</span>
-                      <span style={{color:"#94a3b8",fontSize:12,lineHeight:1.5}}>{f.descricao}</span>
+                    <div key={i} style={{background:"rgba(255,255,255,0.02)",border:"1px solid var(--border-color)",borderRadius:10,padding:"16px",display:"flex",gap:16}}>
+                      <span style={{color:"var(--accent-color)",fontSize:13,fontFamily:"monospace",minWidth:180,fontWeight:600}}>{f.nome}()</span>
+                      <span style={{color:"var(--text-secondary)",fontSize:13,lineHeight:1.6}}>{f.descricao}</span>
                     </div>
                   ))}
                 </div>
               )}
               {tab==="ajuda"&&(
-                <div style={{padding:20}}>
-                  {result.atencao&&<div style={{background:"#1c1200",border:"1px solid #78350f",borderRadius:6,padding:"12px 16px",marginBottom:20,display:"flex",gap:10}}><span>⚠</span><div><div style={{fontSize:10,color:"#f59e0b",letterSpacing:"0.1em",marginBottom:4}}>ATENÇÃO</div><div style={{fontSize:12,color:"#fcd34d",lineHeight:1.5}}>{result.atencao}</div></div></div>}
-                  <div style={{fontSize:10,color:"#475569",letterSpacing:"0.1em",marginBottom:12}}>DICAS DE USO</div>
-                  <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                <div style={{padding:24}}>
+                  {result.atencao&&<div style={{background:"rgba(239, 68, 68, 0.1)",border:"1px solid rgba(239, 68, 68, 0.3)",borderRadius:12,padding:"16px",marginBottom:24,display:"flex",gap:12}}><span>⚠</span><div><div style={{fontSize:11,color:"#ef4444",letterSpacing:"0.05em",marginBottom:4}}>ATENÇÃO</div><div style={{fontSize:13,color:"#fca5a5",lineHeight:1.6}}>{result.atencao}</div></div></div>}
+                  <div style={{fontSize:11,color:"var(--text-secondary)",letterSpacing:"0.05em",marginBottom:16,fontWeight:500}}>DICAS DE USO</div>
+                  <div style={{display:"flex",flexDirection:"column",gap:12}}>
                     {(result.dicas||[]).map((d,i)=>(
-                      <div key={i} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:6,padding:"12px 16px",fontSize:12,color:"#94a3b8",lineHeight:1.5,display:"flex",gap:10}}>
-                        <span style={{color:"#f59e0b",minWidth:16}}>{i+1}.</span>{d}
+                      <div key={i} style={{background:"rgba(255,255,255,0.02)",border:"1px solid var(--border-color)",borderRadius:12,padding:"16px",fontSize:13,color:"var(--text-secondary)",lineHeight:1.6,display:"flex",gap:12}}>
+                        <span style={{color:"var(--accent-color)",minWidth:16,fontWeight:600}}>{i+1}.</span>{d}
                       </div>
                     ))}
                   </div>
@@ -309,18 +309,18 @@ function App() {
         )}
 
         {!result&&!loading&&!error&&(
-          <div style={{textAlign:"center",padding:"40px 24px"}}>
-            <div style={{fontSize:32,marginBottom:12,opacity:.2}}>{mode==="image"?"🖼":"⌨"}</div>
-            <div style={{fontSize:12,lineHeight:1.6,maxWidth:420,margin:"0 auto",color:"#475569"}}>
+          <div style={{textAlign:"center",padding:"60px 24px"}}>
+            <div style={{fontSize:40,marginBottom:16,opacity:.3,color:"var(--text-secondary)"}}>{mode==="image"?"🖼":"⌨"}</div>
+            <div style={{fontSize:14,lineHeight:1.6,maxWidth:420,margin:"0 auto",color:"var(--text-secondary)"}}>
               {mode==="image"
                 ?"Faça upload de um print da tela do Senior e descreva o que deseja customizar. O sistema irá analisar os campos visíveis e gerar a regra LSP automaticamente usando o Gemini."
-                :<>Digite uma descrição ou mude para <strong style={{color:"#f59e0b"}}>PRINT DE TELA</strong> para gerar regras a partir de capturas de tela do Senior.</>}
+                :<>Digite uma descrição ou mude para <strong style={{color:"var(--accent-color)"}}>PRINT DE TELA</strong> para gerar regras a partir de capturas de tela do Senior.</>}
             </div>
           </div>
         )}
       </div>
 
-      <style>{`@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}textarea::placeholder{color:#334155;}*{box-sizing:border-box;}::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:#0f1117;}::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px;}`}</style>
+      <style>{`@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}textarea::placeholder{color:rgba(255,255,255,0.3);}*{box-sizing:border-box;}::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:var(--bg-color);}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:3px;}`}</style>
     </div>
   );
 }

@@ -42,7 +42,10 @@
     <main class="app-main">
         <header class="topbar">
             <h1>Visão Geral</h1>
-            <div class="topbar-actions">
+            <div class="topbar-actions" style="display: flex; gap: 1rem; align-items: center;">
+                <button id="toggleValuesBtn" class="btn-secondary" style="padding: 0.5rem; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;" onclick="toggleFinancials()" title="Ocultar/Mostrar Valores">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
                 <button class="btn-primary" onclick="alert('Funcionalidade a ser integrada com Supabase!')">+ Novo Chamado</button>
             </div>
         </header>
@@ -56,7 +59,7 @@
                 </div>
                 <div class="kpi-card">
                     <span class="kpi-label">Faturamento Projetado</span>
-                    <span class="kpi-value text-green">R$ 12.500</span>
+                    <span class="kpi-value text-green financial-value" data-value="R$ 12.500">R$ 12.500</span>
                 </div>
                 <div class="kpi-card">
                     <span class="kpi-label">Chamados Abertos</span>
@@ -64,7 +67,7 @@
                 </div>
                 <div class="kpi-card">
                     <span class="kpi-label">Despesas Infra/API</span>
-                    <span class="kpi-value text-red">R$ 150</span>
+                    <span class="kpi-value text-red financial-value" data-value="R$ 150">R$ 150</span>
                 </div>
             </div>
 
@@ -149,6 +152,34 @@
             
             profileDiv.style.display = 'flex';
         };
+
+        // Financial Privacy Toggle Logic
+        let isFinancialHidden = localStorage.getItem('hideFinancials') === 'true';
+
+        function applyFinancialVisibility() {
+            const values = document.querySelectorAll('.financial-value');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (!eyeIcon) return;
+
+            if (isFinancialHidden) {
+                values.forEach(el => el.textContent = 'R$ •••••');
+                eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+                eyeIcon.style.color = 'var(--text-secondary)';
+            } else {
+                values.forEach(el => el.textContent = el.getAttribute('data-value'));
+                eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+                eyeIcon.style.color = 'var(--accent-color)';
+            }
+        }
+
+        function toggleFinancials() {
+            isFinancialHidden = !isFinancialHidden;
+            localStorage.setItem('hideFinancials', isFinancialHidden);
+            applyFinancialVisibility();
+        }
+
+        document.addEventListener('DOMContentLoaded', applyFinancialVisibility);
 
         async function handleLogout() {
             await window.supabaseClient.auth.signOut();
