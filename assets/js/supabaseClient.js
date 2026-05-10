@@ -5,8 +5,8 @@
 // Você encontra essas chaves no painel do Supabase em: Settings > API
 // ============================================================================
 
-const SUPABASE_URL = 'https://SUA_URL_AQUI.supabase.co';
-const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_AQUI';
+const SUPABASE_URL = 'https://dvvjcewohzbtgtotlbbv.supabase.co';
+const SUPABASE_ANON_KEY = 'SUA_ANON_KEY_AQUI'; // FALTANDO: Pegue em Settings > API
 
 // Inicializa o cliente do Supabase
 // (A biblioteca global 'supabase' deve ser carregada antes deste arquivo via CDN)
