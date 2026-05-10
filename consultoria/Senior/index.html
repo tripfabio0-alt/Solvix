@@ -16,7 +16,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useRef } = React;
+        const { useState, useRef, useEffect } = React;
 
 const SYSTEM_PROMPT = `Você é um especialista em regras LSP do Senior Gestão Empresarial ERP.
 Quando receber uma imagem de tela do sistema Senior, analise os campos, botões e contexto visível para entender o que precisa ser customizado.
@@ -86,7 +86,18 @@ function App() {
   const [copied,setCopied]=useState(false);
   const [dragOver,setDragOver]=useState(false);
   const [mode,setMode]=useState("text");
+  
+  // Gemini Auth State
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("gemini_api_key") || "");
+  const [showSettings, setShowSettings] = useState(false);
+
   const fileRef=useRef();
+
+  const handleSaveApiKey = (key) => {
+    setApiKey(key);
+    localStorage.setItem("gemini_api_key", key);
+    setShowSettings(false);
+  };
 
   const handleFile=async(file)=>{
     if(!file||!file.type.startsWith("image/"))return;
@@ -97,25 +108,44 @@ function App() {
 
   const generate=async()=>{
     if(!input.trim()&&!image)return;
+    if(!apiKey) {
+      setError("Configure sua API Key do Google Gemini nas configurações ⚙️.");
+      return;
+    }
     setLoading(true);setError("");setResult(null);
     try{
-      let messages;
-      if(mode==="image"&&image){
-        const content=[{type:"image",source:{type:"base64",media_type:image.mediaType,data:image.base64}},{type:"text",text:input.trim()||"Analise esta tela do Senior e gere a regra LSP adequada conforme o contexto visível."}];
-        messages=[{role:"user",content}];
-      }else{
-        messages=[{role:"user",content:input.trim()}];
+      let parts = [];
+      if(input.trim()){
+        parts.push({ text: input.trim() });
+      } else {
+        parts.push({ text: "Analise esta tela do Senior e gere a regra LSP adequada conforme o contexto visível." });
       }
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
+
+      if(mode==="image"&&image){
+        parts.push({
+          inlineData: {
+            mimeType: image.mediaType,
+            data: image.base64
+          }
+        });
+      }
+
+      const payload = {
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [{ role: "user", parts: parts }]
+      };
+
+      const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYSTEM_PROMPT,messages}),
+        body:JSON.stringify(payload),
       });
+      
       if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(`API ${res.status}: ${e?.error?.message||res.statusText}`);}
       const data=await res.json();
-      const raw=(data.content||[]).map(c=>c.text||"").join("");
-      if(!raw)throw new Error("Resposta vazia.");
-      if(!raw.includes("##TITULO##"))throw new Error("Formato inesperado. Tente novamente.");
+      const raw=data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      if(!raw)throw new Error("Resposta vazia da API do Gemini.");
+      if(!raw.includes("##TITULO##"))throw new Error("O Gemini retornou em um formato inesperado. Tente novamente.");
       setResult(parseResponse(raw));setTab("script");
     }catch(err){setError(err.message||"Erro desconhecido.");}
     finally{setLoading(false);}
@@ -133,14 +163,35 @@ function App() {
         <div style={{width:36,height:36,background:"linear-gradient(135deg,#f59e0b,#d97706)",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:"bold",color:"#000"}}>S</div>
         <div>
           <div style={{fontSize:14,fontWeight:600,color:"#f1f5f9",letterSpacing:"0.05em"}}>SENIOR · GERADOR DE REGRAS LSP</div>
-          <div style={{fontSize:10,color:"#64748b",letterSpacing:"0.08em"}}>GESTÃO EMPRESARIAL | ERP · COMMUNITY EDITION</div>
+          <div style={{fontSize:10,color:"#64748b",letterSpacing:"0.08em"}}>POWERED BY GOOGLE GEMINI</div>
         </div>
-        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
-          {["#ef4444","#f59e0b","#22c55e"].map((c,i)=><div key={i} style={{width:10,height:10,borderRadius:"50%",background:c,opacity:.7}}/>)}
+        <div style={{marginLeft:"auto",display:"flex",gap:12,alignItems:"center"}}>
+          <button onClick={() => setShowSettings(!showSettings)} style={{background:"transparent",border:"none",color:"#94a3b8",cursor:"pointer",fontSize:20}}>⚙️</button>
+          <div style={{display:"flex",gap:6}}>
+            {["#ef4444","#f59e0b","#22c55e"].map((c,i)=><div key={i} style={{width:10,height:10,borderRadius:"50%",background:c,opacity:.7}}/>)}
+          </div>
         </div>
       </div>
 
       <div style={{maxWidth:900,margin:"0 auto",padding:"28px 24px"}}>
+
+        {/* Settings Modal */}
+        {showSettings && (
+          <div style={{background:"#13171f",border:"1px solid #f59e0b",borderRadius:8,padding:20,marginBottom:20}}>
+            <h3 style={{margin:"0 0 10px 0",color:"#f1f5f9",fontSize:14}}>Configuração da API (Gemini)</h3>
+            <p style={{fontSize:12,color:"#94a3b8",marginBottom:12}}>Para gerar as regras, cole sua chave de API gratuita do Google AI Studio.</p>
+            <div style={{display:"flex",gap:10}}>
+              <input 
+                type="password" 
+                value={apiKey} 
+                onChange={(e) => setApiKey(e.target.value)} 
+                placeholder="AIzaSy..." 
+                style={{flex:1,padding:10,background:"#0a0d14",border:"1px solid #1e293b",borderRadius:4,color:"#f1f5f9",fontFamily:"inherit"}}
+              />
+              <button onClick={() => handleSaveApiKey(apiKey)} style={{background:"#f59e0b",color:"#000",border:"none",borderRadius:4,padding:"0 20px",fontWeight:"bold",cursor:"pointer"}}>Salvar</button>
+            </div>
+          </div>
+        )}
 
         {/* Mode Toggle */}
         <div style={{display:"flex",gap:4,marginBottom:16,background:"#0a0d14",border:"1px solid #1e293b",borderRadius:6,padding:4,width:"fit-content"}}>
@@ -289,7 +340,7 @@ function App() {
             <div style={{fontSize:32,marginBottom:12,opacity:.2}}>{mode==="image"?"🖼":"⌨"}</div>
             <div style={{fontSize:12,lineHeight:1.6,maxWidth:420,margin:"0 auto",color:"#475569"}}>
               {mode==="image"
-                ?"Faça upload de um print da tela do Senior e descreva o que deseja customizar. O sistema irá analisar os campos visíveis e gerar a regra LSP automaticamente."
+                ?"Faça upload de um print da tela do Senior e descreva o que deseja customizar. O sistema irá analisar os campos visíveis e gerar a regra LSP automaticamente usando o Gemini."
                 :<>Digite uma descrição ou mude para <strong style={{color:"#f59e0b"}}>PRINT DE TELA</strong> para gerar regras a partir de capturas de tela do Senior.</>}
             </div>
           </div>
