@@ -1,4 +1,4 @@
-// main.js - crIArc Landing Page Interactions
+// main.js - Solvix Landing Page Interactions
 
 document.addEventListener('DOMContentLoaded', () => {
     // Smooth scrolling for anchor links
