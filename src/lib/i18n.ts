@@ -1,0 +1,178 @@
+export type Lang = "pt" | "en";
+
+// Slogan stays in English in both languages (per spec)
+export const SLOGAN = "AI solutions for real problems";
+export const SLOGAN_HIGHLIGHT = "real problems";
+export const SLOGAN_PREFIX = "AI solutions for ";
+
+export const dict = {
+  pt: {
+    nav: ["Soluções", "Como Funciona", "Casos de Uso", "Sobre", "Recursos", "Contato"],
+    heroDesc:
+      "A Solvix cria ferramentas inteligentes que transformam desafios complexos do seu negócio em soluções escaláveis com Inteligência Artificial.",
+    ctaPrimary: "Criar minha solução com IA",
+    ctaSecondary: "Ver soluções",
+    trusted: "Confiado por empresas e consultores que inovam",
+    statAuto: "Automação",
+    statAutoLabel: "Trabalho Manual",
+    statAi: "IA Ativa",
+    statAiLabel: "Processos Otimizados",
+    statPerf: "Performance do Sistema",
+    statPerfLabel: "Uptime",
+    problemTag: "O PROBLEMA",
+    problemTitle:
+      "A maioria das empresas tem problemas. Poucas têm as ferramentas para resolvê-los.",
+    problemBody: [
+      "Empresas geralmente dependem de softwares genéricos que nunca foram criados para suas necessidades operacionais reais.",
+      "Isso gera ineficiências, retrabalho e limitações técnicas.",
+      "A Solvix aborda o problema de forma diferente.",
+      "Em vez de forçar sua empresa a se adaptar ao software, nós criamos sistemas inteligentes feitos especificamente para o seu problema.",
+    ],
+    processTag: "NOSSO PROCESSO",
+    processTitle: "Do problema à solução inteligente",
+    process: [
+      {
+        t: "Descoberta do problema",
+        d: "Analisamos o desafio, fluxo de trabalho ou limitação da sua plataforma.",
+      },
+      {
+        t: "Arquitetura de IA",
+        d: "Projetamos uma solução personalizada e inteligente para o seu problema.",
+      },
+      {
+        t: "Desenvolvimento da solução",
+        d: "Construímos um sistema ou ferramenta SaaS escalável e de alta performance.",
+      },
+      {
+        t: "Evolução contínua",
+        d: "A solução evolui conforme sua empresa cresce e novas necessidades surgem.",
+      },
+    ],
+    whatTag: "O QUE FAZEMOS",
+    whatTitle: "Ferramentas de IA desenhadas para o mundo real",
+    what: [
+      { t: "Plataformas SaaS com IA", d: "Soluções completas e personalizadas com IA no core." },
+      { t: "Ferramentas para Consultores", d: "Mais produtividade e decisões inteligentes no dia a dia." },
+      { t: "Sistemas de Automação", d: "Automatize tarefas repetitivas e reduza custos operacionais." },
+      { t: "Engines de Workflows", d: "Orquestre processos complexos com inteligência." },
+      { t: "Assistentes de Análise de Dados", d: "Transforme dados em insights com IA avançada." },
+      { t: "Integrações de Plataformas", d: "Conecte sistemas e potencialize seu ecossistema digital." },
+    ],
+    differentialTag: "NOSSO DIFERENCIAL",
+    differentialTitle: "Não criamos apenas software. Criamos ferramentas inteligentes.",
+    differentialBody:
+      "Softwares tradicionais executam instruções predefinidas. Soluções da Solvix usam IA para aprender, adaptar e melhorar continuamente.",
+    differentialPoints: [
+      "Menos trabalho manual",
+      "Mais automação",
+      "Maior eficiência",
+      "Sistemas escaláveis",
+    ],
+    dashTitle: "Dashboard Solvix",
+    dashOverview: "Visão Geral",
+    dashAutos: "Automações",
+    dashTime: "Tempo Economizado",
+    dashAcc: "Acurácia",
+    dashPerf: "Performance",
+    dashWeek: "Esta semana",
+    insightsTitle: "Insights de IA",
+    insightsBody:
+      "Suas automações estão gerando impacto real. Novas oportunidades identificadas para melhoria.",
+    insightsCta: "Ver Insights",
+    aboutTag: "SOBRE A SOLVIX",
+    aboutTitle: "A Solvix é um AI Solution Studio.",
+    aboutBody:
+      "Desenhamos e construímos ferramentas inteligentes que resolvem desafios operacionais reais.",
+    aboutPoints: ["Todo projeto começa com um problema real.", "Toda solução é criada para resolvê-lo."],
+    finalTitle: "Tem um problema que nenhum software resolve?",
+    finalSub: "Talvez a solução ainda não exista. Vamos criar juntos.",
+    talkCta: "Falar com a Solvix",
+    footerSlogan: "AI solutions for real problems.",
+    footerCols: [
+      { h: "Soluções", items: ["Plataformas SaaS", "Automação", "Integrações"] },
+      { h: "Empresa", items: ["Sobre nós", "Nosso processo", "Carreiras", "Contato"] },
+      { h: "Recursos", items: ["Blog", "Casos de Uso", "Documentação", "Central de Ajuda"] },
+    ],
+    newsletter: "Fique atualizado",
+    newsletterDesc: "Receba insights sobre IA, automação e soluções para o seu negócio.",
+    emailPh: "Seu e-mail",
+    rights: "© 2026 Solvix. Todos os direitos reservados.",
+    legal: ["Política de Privacidade", "Termos de Uso", "Cookies"],
+  },
+  en: {
+    nav: ["Solutions", "How It Works", "Use Cases", "About", "Resources", "Contact"],
+    heroDesc:
+      "Solvix creates intelligent tools that transform complex business challenges into scalable solutions powered by Artificial Intelligence.",
+    ctaPrimary: "Build my AI solution",
+    ctaSecondary: "See solutions",
+    trusted: "Trusted by innovative companies and consultants",
+    statAuto: "Automation",
+    statAutoLabel: "Manual Work",
+    statAi: "Active AI",
+    statAiLabel: "Optimized Processes",
+    statPerf: "System Performance",
+    statPerfLabel: "Uptime",
+    problemTag: "THE PROBLEM",
+    problemTitle:
+      "Most companies have problems. Few have the tools to solve them.",
+    problemBody: [
+      "Companies usually rely on generic software that was never built for their real operational needs.",
+      "This creates inefficiency, rework and technical limitations.",
+      "Solvix approaches the problem differently.",
+      "Instead of forcing your company to adapt to software, we build intelligent systems made specifically for your problem.",
+    ],
+    processTag: "OUR PROCESS",
+    processTitle: "From problem to intelligent solution",
+    process: [
+      { t: "Problem discovery", d: "We analyze the challenge, workflow or limitation of your platform." },
+      { t: "AI architecture", d: "We design a custom and intelligent solution for your problem." },
+      { t: "Solution development", d: "We build a scalable, high-performance SaaS system or tool." },
+      { t: "Continuous evolution", d: "The solution evolves as your company grows and new needs arise." },
+    ],
+    whatTag: "WHAT WE DO",
+    whatTitle: "AI tools designed for the real world",
+    what: [
+      { t: "AI SaaS Platforms", d: "Complete and custom solutions with AI at the core." },
+      { t: "Tools for Consultants", d: "More productivity and smarter decisions every day." },
+      { t: "Automation Systems", d: "Automate repetitive tasks and reduce operational costs." },
+      { t: "Workflow Engines", d: "Orchestrate complex processes with intelligence." },
+      { t: "Data Analysis Assistants", d: "Turn data into insights with advanced AI." },
+      { t: "Platform Integrations", d: "Connect systems and supercharge your digital ecosystem." },
+    ],
+    differentialTag: "OUR DIFFERENTIAL",
+    differentialTitle: "We don't just build software. We build intelligent tools.",
+    differentialBody:
+      "Traditional software follows predefined instructions. Solvix solutions use AI to learn, adapt and continuously improve.",
+    differentialPoints: ["Less manual work", "More automation", "Greater efficiency", "Scalable systems"],
+    dashTitle: "Solvix Dashboard",
+    dashOverview: "Overview",
+    dashAutos: "Automations",
+    dashTime: "Time Saved",
+    dashAcc: "Accuracy",
+    dashPerf: "Performance",
+    dashWeek: "This week",
+    insightsTitle: "AI Insights",
+    insightsBody:
+      "Your automations are generating real impact. New opportunities identified for improvement.",
+    insightsCta: "View Insights",
+    aboutTag: "ABOUT SOLVIX",
+    aboutTitle: "Solvix is an AI Solution Studio.",
+    aboutBody:
+      "We design and build intelligent tools that solve real operational challenges.",
+    aboutPoints: ["Every project starts with a real problem.", "Every solution is built to solve it."],
+    finalTitle: "Have a problem no software can solve?",
+    finalSub: "Maybe the solution doesn't exist yet. Let's build it together.",
+    talkCta: "Talk to Solvix",
+    footerSlogan: "AI solutions for real problems.",
+    footerCols: [
+      { h: "Solutions", items: ["SaaS Platforms", "Automation", "Integrations"] },
+      { h: "Company", items: ["About us", "Our process", "Careers", "Contact"] },
+      { h: "Resources", items: ["Blog", "Use Cases", "Documentation", "Help Center"] },
+    ],
+    newsletter: "Stay updated",
+    newsletterDesc: "Get insights on AI, automation and solutions for your business.",
+    emailPh: "Your email",
+    rights: "© 2026 Solvix. All rights reserved.",
+    legal: ["Privacy Policy", "Terms of Use", "Cookies"],
+  },
+} as const;
