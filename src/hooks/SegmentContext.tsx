@@ -28,6 +28,7 @@ interface SegmentContextType {
   
   addCliente: (cliente: Omit<Cliente, 'id'>) => Cliente;
   addProjeto: (projeto: Omit<Projeto, 'id'>) => Projeto;
+  setRouteState: (segmentSlug: string, toolSlug: string, clientSlug?: string) => void;
 }
 
 const SegmentContext = createContext<SegmentContextType | undefined>(undefined);
@@ -41,11 +42,35 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [activeClient, setActiveClient] = useState<Cliente | null>(null);
   const [activeProject, setActiveProject] = useState<Projeto | null>(null);
 
+  const setRouteState = (segmentSlug: string, toolSlug: string, clientSlug?: string) => {
+    const seg = mockSegmentos.find(s => s.slug === segmentSlug) || null;
+    const tool = mockFerramentas.find(f => f.slug === toolSlug) || null;
+    const client = clientSlug ? (clientes.find(c => c.slug === clientSlug) || null) : null;
+
+    let updated = false;
+
+    if (activeSegment?.id !== seg?.id) {
+      setActiveSegment(seg);
+      updated = true;
+    }
+    if (activeTool?.id !== tool?.id) {
+      setActiveTool(tool);
+      updated = true;
+    }
+    if (activeClient?.id !== client?.id) {
+      setActiveClient(client);
+      updated = true;
+    }
+
+    if (updated) {
+      setActiveProject(null);
+    }
+  };
+
   const setActiveSegmentBySlug = (slug: string) => {
     const found = mockSegmentos.find(s => s.slug === slug);
     if (found) {
       setActiveSegment(found);
-      // Reset dependent selections
       setActiveTool(null);
       setActiveClient(null);
       setActiveProject(null);
@@ -53,8 +78,7 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const setActiveToolBySlug = (slug: string) => {
-    if (!activeSegment) return;
-    const found = mockFerramentas.find(f => f.slug === slug && f.segmentoId === activeSegment.id);
+    const found = mockFerramentas.find(f => f.slug === slug);
     if (found) {
       setActiveTool(found);
       setActiveClient(null);
@@ -63,8 +87,7 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const setActiveClientBySlug = (slug: string) => {
-    if (!activeTool) return;
-    const found = clientes.find(c => c.slug === slug && c.ferramentaId === activeTool.id);
+    const found = clientes.find(c => c.slug === slug);
     if (found) {
       setActiveClient(found);
       setActiveProject(null);
@@ -112,7 +135,8 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setActiveClientBySlug,
       setActiveProjectById,
       addCliente,
-      addProjeto
+      addProjeto,
+      setRouteState
     }}>
       {children}
     </SegmentContext.Provider>

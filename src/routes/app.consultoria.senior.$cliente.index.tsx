@@ -23,19 +23,15 @@ function ClienteWorkspaceRoute() {
     clientes, 
     projetos, 
     activeClient, 
-    setActiveSegmentBySlug, 
-    setActiveToolBySlug, 
-    setActiveClientBySlug 
+    setRouteState
   } = useSegment();
 
   const [activeTab, setActiveTab] = useState<'projetos' | 'chamados' | 'ferramentas'>('ferramentas'); // Default to ferramentas as user requested
 
   // Load client from slug
   useEffect(() => {
-    setActiveSegmentBySlug('consultoria');
-    setActiveToolBySlug('senior');
     if (cliente) {
-      setActiveClientBySlug(cliente);
+      setRouteState('consultoria', 'senior', cliente);
     }
   }, [cliente]);
 

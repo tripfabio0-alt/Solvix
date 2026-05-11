@@ -110,7 +110,7 @@ function parseResponse(text: string) {
 
 function LspGeneratorRoute() {
   const { cliente } = useParams({ from: '/app/consultoria/senior/$cliente/ferramentas/lsp' });
-  const { activeClient, setActiveSegmentBySlug, setActiveToolBySlug, setActiveClientBySlug } = useSegment();
+  const { activeClient, setRouteState } = useSegment();
 
   const [input, setInput] = useState('');
   const [image, setImage] = useState<{ preview: string; name: string; size: string } | null>(null);
@@ -125,10 +125,8 @@ function LspGeneratorRoute() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setActiveSegmentBySlug('consultoria');
-    setActiveToolBySlug('senior');
     if (cliente) {
-      setActiveClientBySlug(cliente);
+      setRouteState('consultoria', 'senior', cliente);
     }
   }, [cliente]);
 

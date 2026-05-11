@@ -52,31 +52,7 @@ export const Sidebar: React.FC = () => {
         </Link>
       </div>
 
-      {/* Segment Switcher */}
-      <div className={`grid gap-1 p-4 bg-secondary/20 border-b border-border/40 ${segmentos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-        {segmentos.map((seg) => {
-          const isActive = activeSegment?.slug === seg.slug;
-          return (
-            <button
-              key={seg.id}
-              onClick={() => {
-                setActiveSegmentBySlug(seg.slug);
-                if (seg.slug === 'consultoria') {
-                  navigate({ to: '/app/dashboard' });
-                }
-              }}
-              className={`flex flex-col items-center justify-center py-2.5 rounded-lg border text-[11px] font-bold tracking-wider uppercase transition-all duration-300 ${
-                isActive 
-                  ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.15)]' 
-                  : 'bg-transparent border-transparent text-muted-foreground hover:bg-secondary/40 hover:text-foreground'
-              }`}
-            >
-              <span className="text-lg mb-1">{seg.icone}</span>
-              <span>{seg.nome}</span>
-            </button>
-          );
-        })}
-      </div>
+
 
       {/* Nav Scroll Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
