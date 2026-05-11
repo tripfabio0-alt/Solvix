@@ -45,9 +45,8 @@ export function Index() {
 
       {/* NAV */}
       <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
-        <a href="#" className="flex items-center gap-5">
+        <a href="#" className="flex items-center">
           <img src={logo} alt="Solvix" className="h-[88px] w-[88px] object-contain" />
-          <span className="text-5xl font-extrabold tracking-[0.1em] font-outfit leading-none">SOLVIX</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
           {t.nav.map((n) => (
