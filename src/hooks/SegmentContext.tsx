@@ -45,51 +45,13 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const setRouteState = useCallback((segmentSlug: string, toolSlug: string, clientSlug?: string) => {
     const seg = mockSegmentos.find(s => s.slug === segmentSlug) || null;
     const tool = mockFerramentas.find(f => f.slug === toolSlug) || null;
+    const client = clientSlug ? (clientes.find(c => c.slug === clientSlug) || null) : null;
 
-    let updated = false;
-
-    setActiveSegment(prev => {
-      if (prev?.id !== seg?.id) {
-        updated = true;
-        return seg;
-      }
-      return prev;
-    });
-
-    setActiveTool(prev => {
-      if (prev?.id !== tool?.id) {
-        updated = true;
-        return tool;
-      }
-      return prev;
-    });
-
-    if (clientSlug) {
-      setClientes(prevClientes => {
-        const client = prevClientes.find(c => c.slug === clientSlug) || null;
-        setActiveClient(prev => {
-          if (prev?.id !== client?.id) {
-            updated = true;
-            return client;
-          }
-          return prev;
-        });
-        return prevClientes;
-      });
-    } else {
-      setActiveClient(prev => {
-        if (prev !== null) {
-          updated = true;
-          return null;
-        }
-        return prev;
-      });
-    }
-
-    if (updated) {
-      setActiveProject(null);
-    }
-  }, []);
+    setActiveSegment(seg);
+    setActiveTool(tool);
+    setActiveClient(client);
+    setActiveProject(null);
+  }, [clientes]);
 
   const setActiveSegmentBySlug = useCallback((slug: string) => {
     const found = mockSegmentos.find(s => s.slug === slug) || null;
@@ -107,25 +69,16 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const setActiveClientBySlug = useCallback((slug: string) => {
-    setClientes(prevClientes => {
-      const found = prevClientes.find(c => c.slug === slug) || null;
-      setActiveClient(prev => prev?.id === found?.id ? prev : found);
-      return prevClientes;
-    });
+    const found = clientes.find(c => c.slug === slug) || null;
+    setActiveClient(found);
     setActiveProject(null);
-  }, []);
+  }, [clientes]);
 
   const setActiveProjectById = useCallback((id: string) => {
-    setProjetos(prevProjetos => {
-      setActiveClient(activeCli => {
-        if (!activeCli) return activeCli;
-        const found = prevProjetos.find(p => p.id === id && p.clienteId === activeCli.id) || null;
-        setActiveProject(prev => prev?.id === found?.id ? prev : found);
-        return activeCli;
-      });
-      return prevProjetos;
-    });
-  }, []);
+    if (!activeClient) return;
+    const found = projetos.find(p => p.id === id && p.clienteId === activeClient.id) || null;
+    setActiveProject(found);
+  }, [projetos, activeClient]);
 
   const addCliente = (newCli: Omit<Cliente, 'id'>) => {
     const created: Cliente = {
