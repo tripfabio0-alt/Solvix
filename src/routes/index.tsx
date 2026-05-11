@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function Index() {
+export function Index() {
   const [lang, setLang] = useState<Lang>("pt");
   const [animate, setAnimate] = useState(false);
   const t = dict[lang];
