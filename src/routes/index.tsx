@@ -85,40 +85,12 @@ export function Index() {
           </div>
 
           {/* HERO VISUAL */}
-          <div className="relative mx-auto h-[440px] w-full max-w-lg">
-            {/* Glowing Holographic Cube */}
-            <div className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2">
-              <img
-                src={glowingCube}
-                alt="Solvix Holographic Cube"
-                width={320}
-                height={320}
-                className="hero-glowing-cube h-full w-full object-contain"
-              />
-            </div>
-            {/* Floating cards */}
-            <div className="glass-card absolute left-0 top-4 rounded-xl p-3 shadow-card">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t.statAuto}</div>
-              <div className="mt-1 flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full border-2 border-accent" />
-                <div>
-                  <div className="text-lg font-bold text-gradient">-72%</div>
-                  <div className="text-[10px] text-muted-foreground">{t.statAutoLabel}</div>
-                </div>
-              </div>
-            </div>
-            <div className="glass-card absolute bottom-12 left-4 rounded-xl p-3 shadow-card">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t.statAi}</div>
-              <div className="mt-1 text-lg font-bold">1,248</div>
-              <div className="text-[10px] text-muted-foreground">{t.statAiLabel}</div>
-              <svg viewBox="0 0 80 24" className="mt-1 h-5 w-20 text-primary"><polyline fill="none" stroke="currentColor" strokeWidth="1.5" points="0,18 12,14 24,16 36,8 48,12 60,4 72,8 80,2" /></svg>
-            </div>
-            <div className="glass-card absolute right-0 top-12 rounded-xl p-3 shadow-card">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{t.statPerf}</div>
-              <div className="mt-1 text-lg font-bold">98.6%</div>
-              <div className="text-[10px] text-muted-foreground">{t.statPerfLabel}</div>
-              <svg viewBox="0 0 80 24" className="mt-1 h-5 w-20 text-accent"><polyline fill="none" stroke="currentColor" strokeWidth="1.5" points="0,20 12,16 24,18 36,10 48,14 60,6 72,10 80,2" /></svg>
-            </div>
+          <div className="relative mx-auto h-[440px] w-full max-w-lg flex items-center justify-center">
+            <img
+              src={glowingCube}
+              alt="Solvix Holographic Cube"
+              className="hero-glowing-cube h-full w-full object-contain"
+            />
           </div>
         </div>
       </section>
