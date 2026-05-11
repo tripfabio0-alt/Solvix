@@ -223,7 +223,7 @@ function LspGeneratorRoute() {
         
         {/* Left Input Configuration Column */}
         <div className="md:col-span-5 space-y-6">
-          <div className="rounded-xl border border-border/40 bg-card/10 p-6 backdrop-blur-md space-y-4">
+          <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-4">
             <h3 className="text-sm font-bold text-foreground">Definição do Requisito</h3>
             
             {/* File drag zone */}
@@ -332,7 +332,7 @@ function LspGeneratorRoute() {
             <div className="space-y-6">
               
               {/* Header Info Banner */}
-              <div className="grid grid-cols-2 gap-4 rounded-xl border border-border/40 bg-card/10 p-5 backdrop-blur-md">
+              <div className="grid grid-cols-2 gap-4 rounded-xl border border-border/40 bg-card/50 p-5">
                 <div>
                   <span className="text-[10px] font-bold text-muted-foreground block uppercase">Título da Regra</span>
                   <span className="text-xs font-bold text-foreground">{result.titulo}</span>
@@ -350,9 +350,9 @@ function LspGeneratorRoute() {
                   <span className="text-xs text-slate-400 line-clamp-1">{result.descricao}</span>
                 </div>
               </div>
-
+ 
               {/* Tabs Output Selector */}
-              <div className="rounded-xl border border-border/40 bg-[#0f111a]/80 backdrop-blur-md overflow-hidden">
+              <div className="rounded-xl border border-border/40 bg-[#0f111a]/95 overflow-hidden">
                 <div className="flex border-b border-border/30 bg-card/10 px-4 gap-1">
                   {[
                     { id: 'script', label: '📄 SCRIPT LSP' },

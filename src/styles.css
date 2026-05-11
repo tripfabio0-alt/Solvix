@@ -153,8 +153,8 @@
     box-shadow: var(--shadow-glow);
   }
   .glass-card {
-    background: oklch(0.17 0.045 270 / 70%);
-    backdrop-filter: blur(12px);
+    background: oklch(0.17 0.045 270 / 80%);
+    backdrop-filter: blur(8px);
     border: 1px solid oklch(0.4 0.08 270 / 30%);
   }
   .hero-glowing-cube {

@@ -118,7 +118,7 @@ function ClienteWorkspaceRoute() {
             <div className="grid gap-6 md:grid-cols-2">
               {clientProjects.length > 0 ? (
                 clientProjects.map((p) => (
-                  <div key={p.id} className="relative rounded-xl border border-border/40 bg-card/10 p-6 backdrop-blur-md hover:border-indigo-500/30 transition-all">
+                  <div key={p.id} className="relative rounded-xl border border-border/40 bg-card/50 p-6 hover:border-indigo-500/30 transition-all">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-bold text-foreground">{p.nome}</h4>
                       <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
@@ -166,7 +166,7 @@ function ClienteWorkspaceRoute() {
             </div>
 
             <div className="space-y-4">
-              <div className="rounded-xl border border-border/40 bg-card/10 p-6 backdrop-blur-md">
+              <div className="rounded-xl border border-border/40 bg-card/50 p-6">
                 <div className="flex items-center justify-between border-b border-border/30 pb-3 mb-4 text-xs font-semibold text-muted-foreground">
                   <span className="w-1/2">Título / Descrição</span>
                   <span className="w-1/6 text-center">Tipo</span>
@@ -208,7 +208,7 @@ function ClienteWorkspaceRoute() {
               <Link
                 to="/app/consultoria/senior/$cliente/ferramentas/lsp"
                 params={{ cliente: cliente || 'eraser' }}
-                className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/10 p-6 text-left backdrop-blur-md hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
+                className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/50 p-6 text-left hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10 text-xl text-amber-500 group-hover:scale-110 transition-transform">
                   🤖
@@ -226,7 +226,7 @@ function ClienteWorkspaceRoute() {
               {/* SQL Builder Tile */}
               <button
                 onClick={() => alert('SQL Builder em desenvolvimento')}
-                className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/10 p-6 text-left backdrop-blur-md hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
+                className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/50 p-6 text-left hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-xl text-blue-500 group-hover:scale-110 transition-transform">
                   ⚡
@@ -244,7 +244,7 @@ function ClienteWorkspaceRoute() {
               {/* Report Creator Tile */}
               <button
                 onClick={() => alert('Report Creator em desenvolvimento')}
-                className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/10 p-6 text-left backdrop-blur-md hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
+                className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/50 p-6 text-left hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-rose-500/10 text-xl text-rose-500 group-hover:scale-110 transition-transform">
                   📊

@@ -72,14 +72,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Solvix - Inteligência Artificial para ERP" },
+      { name: "description", content: "Solvix AI Solutions Studio - Soluções corporativas integradas com inteligência artificial para o ERP Senior" },
+      { name: "author", content: "Solvix" },
+      { property: "og:title", content: "Solvix AI Solutions Studio" },
+      { property: "og:description", content: "Soluções corporativas de IA integradas para o ERP Senior" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@Solvix" },
     ],
     links: [
       {
