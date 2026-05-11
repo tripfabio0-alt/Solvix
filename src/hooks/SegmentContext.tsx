@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useRef, useCallback } from 'react';
 import { 
   Segmento, 
   Ferramenta, 
@@ -42,16 +42,26 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [activeClient, setActiveClient] = useState<Cliente | null>(null);
   const [activeProject, setActiveProject] = useState<Projeto | null>(null);
 
+  // Use refs to keep latest state accessible inside stable callbacks
+  const clientesRef = useRef(clientes);
+  clientesRef.current = clientes;
+  const projetosRef = useRef(projetos);
+  projetosRef.current = projetos;
+  const activeClientRef = useRef(activeClient);
+  activeClientRef.current = activeClient;
+
+  // All callbacks use refs so their references NEVER change between renders
   const setRouteState = useCallback((segmentSlug: string, toolSlug: string, clientSlug?: string) => {
     const seg = mockSegmentos.find(s => s.slug === segmentSlug) || null;
     const tool = mockFerramentas.find(f => f.slug === toolSlug) || null;
-    const client = clientSlug ? (clientes.find(c => c.slug === clientSlug) || null) : null;
+    const client = clientSlug ? (clientesRef.current.find(c => c.slug === clientSlug) || null) : null;
 
-    setActiveSegment(seg);
-    setActiveTool(tool);
-    setActiveClient(client);
+    setActiveSegment(prev => prev?.id === seg?.id ? prev : seg);
+    setActiveTool(prev => prev?.id === tool?.id ? prev : tool);
+    setActiveClient(prev => prev?.id === client?.id ? prev : client);
     setActiveProject(null);
-  }, [clientes]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setActiveSegmentBySlug = useCallback((slug: string) => {
     const found = mockSegmentos.find(s => s.slug === slug) || null;
@@ -69,34 +79,37 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const setActiveClientBySlug = useCallback((slug: string) => {
-    const found = clientes.find(c => c.slug === slug) || null;
-    setActiveClient(found);
+    const found = clientesRef.current.find(c => c.slug === slug) || null;
+    setActiveClient(prev => prev?.id === found?.id ? prev : found);
     setActiveProject(null);
-  }, [clientes]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const setActiveProjectById = useCallback((id: string) => {
-    if (!activeClient) return;
-    const found = projetos.find(p => p.id === id && p.clienteId === activeClient.id) || null;
-    setActiveProject(found);
-  }, [projetos, activeClient]);
+    const activeCli = activeClientRef.current;
+    if (!activeCli) return;
+    const found = projetosRef.current.find(p => p.id === id && p.clienteId === activeCli.id) || null;
+    setActiveProject(prev => prev?.id === found?.id ? prev : found);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const addCliente = (newCli: Omit<Cliente, 'id'>) => {
+  const addCliente = useCallback((newCli: Omit<Cliente, 'id'>) => {
     const created: Cliente = {
       ...newCli,
       id: `cli-${Date.now()}`
     };
     setClientes(prev => [...prev, created]);
     return created;
-  };
+  }, []);
 
-  const addProjeto = (newProj: Omit<Projeto, 'id'>) => {
+  const addProjeto = useCallback((newProj: Omit<Projeto, 'id'>) => {
     const created: Projeto = {
       ...newProj,
       id: `proj-${Date.now()}`
     };
     setProjetos(prev => [...prev, created]);
     return created;
-  };
+  }, []);
 
   return (
     <SegmentContext.Provider value={{
