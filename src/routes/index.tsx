@@ -45,9 +45,9 @@ export function Index() {
 
       {/* NAV */}
       <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
-        <a href="#" className="flex items-center gap-3">
-          <img src={logo} alt="Solvix" className="h-11 w-11 object-contain" />
-          <span className="text-3xl font-extrabold tracking-[0.1em] font-outfit leading-none">SOLVIX</span>
+        <a href="#" className="flex items-center gap-5">
+          <img src={logo} alt="Solvix" className="h-[88px] w-[88px] object-contain" />
+          <span className="text-5xl font-extrabold tracking-[0.1em] font-outfit leading-none">SOLVIX</span>
         </a>
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground lg:flex">
           {t.nav.map((n) => (
@@ -280,9 +280,9 @@ export function Index() {
         <div className="mx-auto max-w-7xl px-6 py-12">
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
             <div className="lg:col-span-2">
-              <div className="flex items-center gap-3">
-                <img src={logo} alt="" className="h-8 w-8 object-contain" />
-                <span className="text-2xl font-extrabold tracking-[0.1em] font-outfit leading-none">SOLVIX</span>
+              <div className="flex items-center gap-4">
+                <img src={logo} alt="" className="h-16 w-16 object-contain" />
+                <span className="text-4xl font-extrabold tracking-[0.1em] font-outfit leading-none">SOLVIX</span>
               </div>
               <p className="mt-3 text-sm text-muted-foreground">{t.footerSlogan}</p>
               <div className="mt-4 flex gap-3 text-muted-foreground">
