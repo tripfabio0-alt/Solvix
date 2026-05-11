@@ -9,38 +9,100 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppConsultoriaSeniorClienteRouteImport } from './routes/app.consultoria.senior.$cliente'
+import { Route as AppConsultoriaSeniorClienteFerramentasLspRouteImport } from './routes/app.consultoria.senior.$cliente.ferramentas.lsp'
 
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConsultoriaSeniorClienteRoute =
+  AppConsultoriaSeniorClienteRouteImport.update({
+    id: '/consultoria/senior/$cliente',
+    path: '/consultoria/senior/$cliente',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppConsultoriaSeniorClienteFerramentasLspRoute =
+  AppConsultoriaSeniorClienteFerramentasLspRouteImport.update({
+    id: '/ferramentas/lsp',
+    path: '/ferramentas/lsp',
+    getParentRoute: () => AppConsultoriaSeniorClienteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/consultoria/senior/$cliente': typeof AppConsultoriaSeniorClienteRouteWithChildren
+  '/app/consultoria/senior/$cliente/ferramentas/lsp': typeof AppConsultoriaSeniorClienteFerramentasLspRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/consultoria/senior/$cliente': typeof AppConsultoriaSeniorClienteRouteWithChildren
+  '/app/consultoria/senior/$cliente/ferramentas/lsp': typeof AppConsultoriaSeniorClienteFerramentasLspRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/consultoria/senior/$cliente': typeof AppConsultoriaSeniorClienteRouteWithChildren
+  '/app/consultoria/senior/$cliente/ferramentas/lsp': typeof AppConsultoriaSeniorClienteFerramentasLspRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/app/dashboard'
+    | '/app/consultoria/senior/$cliente'
+    | '/app/consultoria/senior/$cliente/ferramentas/lsp'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/app'
+    | '/app/dashboard'
+    | '/app/consultoria/senior/$cliente'
+    | '/app/consultoria/senior/$cliente/ferramentas/lsp'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/app/dashboard'
+    | '/app/consultoria/senior/$cliente'
+    | '/app/consultoria/senior/$cliente/ferramentas/lsp'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +110,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/consultoria/senior/$cliente': {
+      id: '/app/consultoria/senior/$cliente'
+      path: '/consultoria/senior/$cliente'
+      fullPath: '/app/consultoria/senior/$cliente'
+      preLoaderRoute: typeof AppConsultoriaSeniorClienteRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/consultoria/senior/$cliente/ferramentas/lsp': {
+      id: '/app/consultoria/senior/$cliente/ferramentas/lsp'
+      path: '/ferramentas/lsp'
+      fullPath: '/app/consultoria/senior/$cliente/ferramentas/lsp'
+      preLoaderRoute: typeof AppConsultoriaSeniorClienteFerramentasLspRouteImport
+      parentRoute: typeof AppConsultoriaSeniorClienteRoute
+    }
   }
 }
 
+interface AppConsultoriaSeniorClienteRouteChildren {
+  AppConsultoriaSeniorClienteFerramentasLspRoute: typeof AppConsultoriaSeniorClienteFerramentasLspRoute
+}
+
+const AppConsultoriaSeniorClienteRouteChildren: AppConsultoriaSeniorClienteRouteChildren =
+  {
+    AppConsultoriaSeniorClienteFerramentasLspRoute:
+      AppConsultoriaSeniorClienteFerramentasLspRoute,
+  }
+
+const AppConsultoriaSeniorClienteRouteWithChildren =
+  AppConsultoriaSeniorClienteRoute._addFileChildren(
+    AppConsultoriaSeniorClienteRouteChildren,
+  )
+
+interface AppRouteChildren {
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppConsultoriaSeniorClienteRoute: typeof AppConsultoriaSeniorClienteRouteWithChildren
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppDashboardRoute: AppDashboardRoute,
+  AppConsultoriaSeniorClienteRoute:
+    AppConsultoriaSeniorClienteRouteWithChildren,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
