@@ -156,6 +156,19 @@
     backdrop-filter: blur(12px);
     border: 1px solid oklch(0.4 0.08 270 / 30%);
   }
+  .hero-glowing-cube {
+    filter: drop-shadow(0 0 35px oklch(0.7 0.2 255 / 0.25));
+    animation: subtleFloat 6s ease-in-out infinite;
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+  .hero-glowing-cube:hover {
+    filter: drop-shadow(0 0 50px oklch(0.62 0.24 295 / 0.4));
+    transform: scale(1.03);
+  }
+  @keyframes subtleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
   .animate-spin-slow {
     animation: spin 18s linear infinite;
   }

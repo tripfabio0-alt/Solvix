@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import logo from "@/assets/logo.png";
-import cube from "@/assets/cube.png";
+import glowingCube from "@/assets/glowing-cube.png";
 import funnel from "@/assets/funnel.png";
 import globe from "@/assets/globe.png";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -86,20 +86,14 @@ export function Index() {
 
           {/* HERO VISUAL */}
           <div className="relative mx-auto h-[440px] w-full max-w-lg">
-            {/* Cube — rotates on its own axis (logo on top stays static) */}
-            <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2">
+            {/* Glowing Holographic Cube */}
+            <div className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2">
               <img
-                src={cube}
-                alt=""
-                width={288}
-                height={288}
-                className={`h-full w-full object-contain ${animate ? "animate-spin-slow" : ""}`}
-                style={{ filter: "drop-shadow(0 0 40px oklch(0.6 0.25 280 / 0.6))" }}
-              />
-              <img
-                src={logo}
-                alt="Solvix logo"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_0_20px_oklch(0.65_0.21_265/0.6)]"
+                src={glowingCube}
+                alt="Solvix Holographic Cube"
+                width={320}
+                height={320}
+                className="hero-glowing-cube h-full w-full object-contain"
               />
             </div>
             {/* Floating cards */}
