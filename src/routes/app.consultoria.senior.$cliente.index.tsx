@@ -33,7 +33,7 @@ function ClienteWorkspaceRoute() {
     if (cliente) {
       setRouteState('consultoria', 'senior', cliente);
     }
-  }, [cliente]);
+  }, [cliente, setRouteState]);
 
   if (!activeClient) {
     return (

@@ -128,7 +128,7 @@ function LspGeneratorRoute() {
     if (cliente) {
       setRouteState('consultoria', 'senior', cliente);
     }
-  }, [cliente]);
+  }, [cliente, setRouteState]);
 
   const handleFile = (file: File) => {
     if (!file || !file.type.startsWith('image/')) return;

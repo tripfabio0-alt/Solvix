@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { 
   Segmento, 
   Ferramenta, 
@@ -42,65 +42,90 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [activeClient, setActiveClient] = useState<Cliente | null>(null);
   const [activeProject, setActiveProject] = useState<Projeto | null>(null);
 
-  const setRouteState = (segmentSlug: string, toolSlug: string, clientSlug?: string) => {
+  const setRouteState = useCallback((segmentSlug: string, toolSlug: string, clientSlug?: string) => {
     const seg = mockSegmentos.find(s => s.slug === segmentSlug) || null;
     const tool = mockFerramentas.find(f => f.slug === toolSlug) || null;
-    const client = clientSlug ? (clientes.find(c => c.slug === clientSlug) || null) : null;
 
     let updated = false;
 
-    if (activeSegment?.id !== seg?.id) {
-      setActiveSegment(seg);
-      updated = true;
-    }
-    if (activeTool?.id !== tool?.id) {
-      setActiveTool(tool);
-      updated = true;
-    }
-    if (activeClient?.id !== client?.id) {
-      setActiveClient(client);
-      updated = true;
+    setActiveSegment(prev => {
+      if (prev?.id !== seg?.id) {
+        updated = true;
+        return seg;
+      }
+      return prev;
+    });
+
+    setActiveTool(prev => {
+      if (prev?.id !== tool?.id) {
+        updated = true;
+        return tool;
+      }
+      return prev;
+    });
+
+    if (clientSlug) {
+      setClientes(prevClientes => {
+        const client = prevClientes.find(c => c.slug === clientSlug) || null;
+        setActiveClient(prev => {
+          if (prev?.id !== client?.id) {
+            updated = true;
+            return client;
+          }
+          return prev;
+        });
+        return prevClientes;
+      });
+    } else {
+      setActiveClient(prev => {
+        if (prev !== null) {
+          updated = true;
+          return null;
+        }
+        return prev;
+      });
     }
 
     if (updated) {
       setActiveProject(null);
     }
-  };
+  }, []);
 
-  const setActiveSegmentBySlug = (slug: string) => {
-    const found = mockSegmentos.find(s => s.slug === slug);
-    if (found) {
-      setActiveSegment(found);
-      setActiveTool(null);
-      setActiveClient(null);
-      setActiveProject(null);
-    }
-  };
+  const setActiveSegmentBySlug = useCallback((slug: string) => {
+    const found = mockSegmentos.find(s => s.slug === slug) || null;
+    setActiveSegment(prev => prev?.id === found?.id ? prev : found);
+    setActiveTool(null);
+    setActiveClient(null);
+    setActiveProject(null);
+  }, []);
 
-  const setActiveToolBySlug = (slug: string) => {
-    const found = mockFerramentas.find(f => f.slug === slug);
-    if (found) {
-      setActiveTool(found);
-      setActiveClient(null);
-      setActiveProject(null);
-    }
-  };
+  const setActiveToolBySlug = useCallback((slug: string) => {
+    const found = mockFerramentas.find(f => f.slug === slug) || null;
+    setActiveTool(prev => prev?.id === found?.id ? prev : found);
+    setActiveClient(null);
+    setActiveProject(null);
+  }, []);
 
-  const setActiveClientBySlug = (slug: string) => {
-    const found = clientes.find(c => c.slug === slug);
-    if (found) {
-      setActiveClient(found);
-      setActiveProject(null);
-    }
-  };
+  const setActiveClientBySlug = useCallback((slug: string) => {
+    setClientes(prevClientes => {
+      const found = prevClientes.find(c => c.slug === slug) || null;
+      setActiveClient(prev => prev?.id === found?.id ? prev : found);
+      return prevClientes;
+    });
+    setActiveProject(null);
+  }, []);
 
-  const setActiveProjectById = (id: string) => {
-    if (!activeClient) return;
-    const found = projetos.find(p => p.id === id && p.clienteId === activeClient.id);
-    if (found) {
-      setActiveProject(found);
-    }
-  };
+  const setActiveProjectById = useCallback((id: string) => {
+    setProjetos(prevProjetos => {
+      setActiveClient(activeCli => {
+        if (!activeCli) return activeCli;
+        const found = prevProjetos.find(p => p.id === id && p.clienteId === activeCli.id) || null;
+        setActiveProject(prev => prev?.id === found?.id ? prev : found);
+        return activeCli;
+      });
+      return prevProjetos;
+    });
+  }, []);
 
   const addCliente = (newCli: Omit<Cliente, 'id'>) => {
     const created: Cliente = {
