@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useSegment } from '../../hooks/SegmentContext';
+import logo from '../../assets/logo.png';
 import { 
   Building2, 
   TrendingUp, 
@@ -42,20 +43,20 @@ export const Sidebar: React.FC = () => {
       
       {/* Brand Header */}
       <div className="flex flex-col items-center justify-center border-b border-border/40 p-6">
-        <Link to="/" className="group flex flex-col items-center gap-3">
+        <Link to="/" className="group flex flex-col items-center gap-2.5">
           <img 
-            src="/Logo.png" 
-            alt="Solvix" 
+            src={logo} 
+            alt="crIAr logo" 
             className="h-[88px] w-[88px] object-contain transition-transform duration-500 group-hover:scale-110" 
           />
-          <span className="font-outfit text-2xl font-black tracking-[0.15em] text-foreground bg-gradient-to-r from-foreground via-muted-foreground to-foreground bg-clip-text">
-            SOLVIX PRO
+          <span className="font-outfit text-3xl font-black tracking-[0.25em] bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent hover:brightness-110 transition-all">
+            crIAr
           </span>
         </Link>
       </div>
 
       {/* Segment Switcher */}
-      <div className="grid grid-cols-2 gap-1 p-4 bg-secondary/20 border-b border-border/40">
+      <div className={`grid gap-1 p-4 bg-secondary/20 border-b border-border/40 ${segmentos.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
         {segmentos.map((seg) => {
           const isActive = activeSegment?.slug === seg.slug;
           return (
@@ -122,7 +123,10 @@ export const Sidebar: React.FC = () => {
                             <button
                               onClick={() => {
                                 setActiveClientBySlug(client.slug);
-                                navigate({ to: `/app/consultoria/senior/${client.slug}` });
+                                navigate({ 
+                                  to: '/app/consultoria/senior/$cliente', 
+                                  params: { cliente: client.slug } 
+                                });
                               }}
                               className={`flex w-full items-center justify-between py-1.5 px-3 rounded-md text-xs font-medium transition-all ${
                                 isClientActive 
@@ -155,8 +159,11 @@ export const Sidebar: React.FC = () => {
           <span>Voltar ao Site Principal</span>
         </a>
         <button 
-          onClick={() => navigate({ to: '/' })}
-          className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-500/10 transition-all"
+          onClick={() => {
+            localStorage.removeItem('google_authenticated');
+            window.location.href = '/';
+          }}
+          className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
         >
           <LogOut className="h-4 w-4" />
           <span>Sair da Sessão</span>

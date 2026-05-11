@@ -210,7 +210,8 @@ function ClienteWorkspaceRoute() {
               
               {/* LSP Generator Tile */}
               <Link
-                to={`/app/consultoria/senior/${cliente}/ferramentas/lsp`}
+                to="/app/consultoria/senior/$cliente/ferramentas/lsp"
+                params={{ cliente: cliente || 'eraser' }}
                 className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/10 p-6 text-left backdrop-blur-md hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-amber-500/10 text-xl text-amber-500 group-hover:scale-110 transition-transform">

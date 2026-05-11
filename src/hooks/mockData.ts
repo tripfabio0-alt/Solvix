@@ -69,22 +69,16 @@ export interface ScriptTecnico {
 
 // Data Sets
 export const mockSegmentos: Segmento[] = [
-  { id: 'seg-1', nome: 'Consultoria', slug: 'consultoria', icone: '🏢' },
-  { id: 'seg-2', nome: 'Trading', slug: 'trading', icone: '📈' }
+  { id: 'seg-1', nome: 'Consultoria', slug: 'consultoria', icone: '🏢' }
 ];
 
 export const mockFerramentas: Ferramenta[] = [
-  { id: 'fer-1', segmentoId: 'seg-1', nome: 'Senior ERP', slug: 'senior', descricao: 'Customizações LSP e integrações Senior Sapiens', icone: '🤖', cor: '#f59e0b' },
-  { id: 'fer-2', segmentoId: 'seg-1', nome: 'SAP', slug: 'sap', descricao: 'Abap, SAP UI5 e integrações Cloud', icone: '💎', cor: '#0072c6' },
-  { id: 'fer-3', segmentoId: 'seg-1', nome: 'TOTVS', slug: 'totvs', descricao: 'AdvPL, Protheus e customizações', icone: '⚡', cor: '#e11d48' },
-  { id: 'fer-4', segmentoId: 'seg-2', nome: 'Nelogica', slug: 'nelogica', descricao: 'Estratégias Profit, bots e automações de trading', icone: '📈', cor: '#22c55e' }
+  { id: 'fer-1', segmentoId: 'seg-1', nome: 'Senior ERP', slug: 'senior', descricao: 'Customizações LSP e integrações Senior Sapiens', icone: '🤖', cor: '#f59e0b' }
 ];
 
 export const mockClientes: Cliente[] = [
   { id: 'cli-1', ferramentaId: 'fer-1', nome: 'Eraser Ltda', slug: 'eraser', empresa: 'Eraser S/A', cnpj: '12.345.678/0001-90', email: 'suporte@eraser.com', telefone: '(11) 98888-7777', status: 'ativo', observacoes: 'Cliente principal de customização de PCP e Manufatura' },
-  { id: 'cli-2', ferramentaId: 'fer-1', nome: 'Empresa Alfa', slug: 'empresa-alfa', empresa: 'Alfa Industrial', cnpj: '98.765.432/0001-10', email: 'erp@alfa.ind.br', telefone: '(47) 3444-2222', status: 'ativo', observacoes: 'Usa módulo de mercado e finanças da Senior' },
-  { id: 'cli-3', ferramentaId: 'fer-2', nome: 'Beta Corp', slug: 'beta-corp', empresa: 'Beta Logística', status: 'ativo' },
-  { id: 'cli-4', ferramentaId: 'fer-4', nome: 'Trader Carlos', slug: 'trader-carlos', empresa: 'Autônomo', status: 'ativo' }
+  { id: 'cli-2', ferramentaId: 'fer-1', nome: 'Empresa Alfa', slug: 'empresa-alfa', empresa: 'Alfa Industrial', cnpj: '98.765.432/0001-10', email: 'erp@alfa.ind.br', telefone: '(47) 3444-2222', status: 'ativo', observacoes: 'Usa módulo de mercado e finanças da Senior' }
 ];
 
 export const mockProjetos: Projeto[] = [
