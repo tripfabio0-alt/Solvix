@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DebugLspRouteImport } from './routes/debug.lsp'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppConsultoriaSeniorClienteRouteImport } from './routes/app.consultoria.senior.$cliente'
 import { Route as AppConsultoriaSeniorClienteIndexRouteImport } from './routes/app.consultoria.senior.$cliente.index'
@@ -24,6 +25,11 @@ const AppRoute = AppRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DebugLspRoute = DebugLspRouteImport.update({
+  id: '/debug/lsp',
+  path: '/debug/lsp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/dashboard': typeof AppDashboardRoute
+  '/debug/lsp': typeof DebugLspRoute
   '/app/consultoria/senior/$cliente': typeof AppConsultoriaSeniorClienteRouteWithChildren
   '/app/consultoria/senior/$cliente/': typeof AppConsultoriaSeniorClienteIndexRoute
   '/app/consultoria/senior/$cliente/ferramentas/lsp': typeof AppConsultoriaSeniorClienteFerramentasLspRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/dashboard': typeof AppDashboardRoute
+  '/debug/lsp': typeof DebugLspRoute
   '/app/consultoria/senior/$cliente': typeof AppConsultoriaSeniorClienteIndexRoute
   '/app/consultoria/senior/$cliente/ferramentas/lsp': typeof AppConsultoriaSeniorClienteFerramentasLspRoute
 }
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/app/dashboard': typeof AppDashboardRoute
+  '/debug/lsp': typeof DebugLspRoute
   '/app/consultoria/senior/$cliente': typeof AppConsultoriaSeniorClienteRouteWithChildren
   '/app/consultoria/senior/$cliente/': typeof AppConsultoriaSeniorClienteIndexRoute
   '/app/consultoria/senior/$cliente/ferramentas/lsp': typeof AppConsultoriaSeniorClienteFerramentasLspRoute
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/dashboard'
+    | '/debug/lsp'
     | '/app/consultoria/senior/$cliente'
     | '/app/consultoria/senior/$cliente/'
     | '/app/consultoria/senior/$cliente/ferramentas/lsp'
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/dashboard'
+    | '/debug/lsp'
     | '/app/consultoria/senior/$cliente'
     | '/app/consultoria/senior/$cliente/ferramentas/lsp'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/app/dashboard'
+    | '/debug/lsp'
     | '/app/consultoria/senior/$cliente'
     | '/app/consultoria/senior/$cliente/'
     | '/app/consultoria/senior/$cliente/ferramentas/lsp'
@@ -103,6 +115,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  DebugLspRoute: typeof DebugLspRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -119,6 +132,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/debug/lsp': {
+      id: '/debug/lsp'
+      path: '/debug/lsp'
+      fullPath: '/debug/lsp'
+      preLoaderRoute: typeof DebugLspRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/dashboard': {
@@ -186,6 +206,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  DebugLspRoute: DebugLspRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
