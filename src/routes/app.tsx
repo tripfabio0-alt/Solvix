@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { SegmentProvider } from '../hooks/SegmentContext';
 import { AppShell } from '../components/layout/AppShell';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import logo from '@/assets/logo.png';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 
@@ -104,18 +104,12 @@ function AppLayout() {
     );
   }
 
-  // Memoize o children para que re-renders do SegmentProvider
-  // (causados por mudancas de estado de navegacao) nao recriem
-  // o elemento <Outlet /> e nao propaguem para a pagina LSP
-  const appContent = useMemo(
-    () => (
+  return (
+    <SegmentProvider>
       <AppShell>
         <Outlet />
       </AppShell>
-    ),
-    [] // eslint-disable-line react-hooks/exhaustive-deps
+    </SegmentProvider>
   );
-
-  return <SegmentProvider>{appContent}</SegmentProvider>;
 }
 export default AppLayout;
