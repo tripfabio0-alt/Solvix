@@ -57,25 +57,22 @@ Regras de bloqueio podem impactar o tempo de resposta se o banco estiver lento.
 function LspGeneratorRoute() {
   const { cliente } = useParams({ from: '/app/consultoria/senior/$cliente/ferramentas/lsp' });
 
-  const [input, setInput] = useState('');
-  const [image, setImage] = useState<{ preview: string; name: string; size: string } | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [tab, setTab] = useState<'script' | 'variaveis' | 'funcoes' | 'ajuda'>('script');
-  const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<'text' | 'image'>('text');
-  
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const generate = () => {
-    if (!input.trim() && !image) return;
+    const val = inputRef.current?.value || '';
+    if (!val.trim() && !image) return;
     setLoading(true);
     
     // Simulação local para evitar travamento de API
     setTimeout(() => {
       setResult(parseResponse(MOCK_RESPONSE));
       setLoading(false);
-    }, 1000);
+    }, 800);
   };
 
   const parseResponse = (raw: string) => {
@@ -127,15 +124,14 @@ function LspGeneratorRoute() {
           <h2 className="text-sm font-bold uppercase tracking-widest text-slate-500">Configuração</h2>
           
           <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            ref={inputRef}
             placeholder="Descreva a regra que você precisa..."
             className="w-full h-48 bg-black/40 border border-white/10 rounded-lg p-4 text-sm focus:border-amber-500/50 outline-none resize-none"
           />
 
           <button
             onClick={generate}
-            disabled={loading || !input}
+            disabled={loading}
             className="w-full py-4 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 rounded-lg font-bold flex items-center justify-center gap-2 transition-all"
           >
             {loading ? 'PROCESSANDO...' : <><Sparkles className="h-4 w-4" /> GERAR REGRA</>}
