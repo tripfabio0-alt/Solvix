@@ -30,10 +30,10 @@ function ClienteWorkspaceRoute() {
 
   // Load client from slug
   useEffect(() => {
-    if (cliente) {
+    if (cliente && activeClient?.slug !== cliente) {
       setRouteState('consultoria', 'senior', cliente);
     }
-  }, [cliente, setRouteState]);
+  }, [cliente, setRouteState, activeClient?.slug]);
 
   if (!activeClient) {
     return (
