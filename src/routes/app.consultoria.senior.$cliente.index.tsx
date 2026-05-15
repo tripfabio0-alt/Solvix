@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 import { useSegment } from '../hooks/SegmentContext';
 import { 
@@ -19,21 +19,23 @@ export const Route = createFileRoute('/app/consultoria/senior/$cliente/')({
 
 function ClienteWorkspaceRoute() {
   const { cliente } = useParams({ from: '/app/consultoria/senior/$cliente/' });
-  const { 
-    clientes, 
-    projetos, 
-    activeClient, 
-    setRouteState
-  } = useSegment();
+  const { clientes, projetos } = useSegment();
 
-  const [activeTab, setActiveTab] = useState<'projetos' | 'chamados' | 'ferramentas'>('ferramentas'); // Default to ferramentas as user requested
+  const [activeTab, setActiveTab] = useState<'projetos' | 'chamados' | 'ferramentas'>('ferramentas');
 
-  // useEffect removed to stop sync loop and freeze
+  // Resolve activeClient directly from URL param — avoids context sync issues
+  const activeClient = useMemo(
+    () => clientes.find(c => c.slug === cliente) ?? null,
+    [clientes, cliente]
+  );
 
   if (!activeClient) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+        <div className="text-center space-y-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent mx-auto"></div>
+          <p className="text-xs text-muted-foreground">Carregando workspace do cliente...</p>
+        </div>
       </div>
     );
   }
