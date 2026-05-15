@@ -59,7 +59,7 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setActiveSegment(prev => prev?.id === seg?.id ? prev : seg);
     setActiveTool(prev => prev?.id === tool?.id ? prev : tool);
     setActiveClient(prev => prev?.id === client?.id ? prev : client);
-    setActiveProject(null);
+    setActiveProject(prev => prev === null ? prev : null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -111,24 +111,40 @@ export const SegmentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return created;
   }, []);
 
+  const contextValue = React.useMemo(() => ({
+    segmentos: mockSegmentos,
+    ferramentas: mockFerramentas,
+    clientes,
+    projetos,
+    activeSegment,
+    activeTool,
+    activeClient,
+    activeProject,
+    setActiveSegmentBySlug,
+    setActiveToolBySlug,
+    setActiveClientBySlug,
+    setActiveProjectById,
+    addCliente,
+    addProjeto,
+    setRouteState
+  }), [
+    clientes, 
+    projetos, 
+    activeSegment, 
+    activeTool, 
+    activeClient, 
+    activeProject,
+    setActiveSegmentBySlug,
+    setActiveToolBySlug,
+    setActiveClientBySlug,
+    setActiveProjectById,
+    addCliente,
+    addProjeto,
+    setRouteState
+  ]);
+
   return (
-    <SegmentContext.Provider value={{
-      segmentos: mockSegmentos,
-      ferramentas: mockFerramentas,
-      clientes,
-      projetos,
-      activeSegment,
-      activeTool,
-      activeClient,
-      activeProject,
-      setActiveSegmentBySlug,
-      setActiveToolBySlug,
-      setActiveClientBySlug,
-      setActiveProjectById,
-      addCliente,
-      addProjeto,
-      setRouteState
-    }}>
+    <SegmentContext.Provider value={contextValue}>
       {children}
     </SegmentContext.Provider>
   );
