@@ -57,7 +57,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         </header>
 
         {/* Dynamic Route Viewport Body */}
-        <main className="flex-1 p-8 animate-fade-in">
+        <main className="flex-1 p-8">
           {children}
         </main>
       </div>
