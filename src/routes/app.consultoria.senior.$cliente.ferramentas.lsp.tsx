@@ -110,7 +110,7 @@ function parseResponse(text: string) {
 
 function LspGeneratorRoute() {
   const { cliente } = useParams({ from: '/app/consultoria/senior/$cliente/ferramentas/lsp' });
-  const { activeClient, setRouteState } = useSegment();
+  const { activeClient } = useSegment();
 
   const [input, setInput] = useState('');
   const [image, setImage] = useState<{ preview: string; name: string; size: string } | null>(null);
@@ -123,8 +123,6 @@ function LspGeneratorRoute() {
   const [mode, setMode] = useState<'text' | 'image'>('text');
   
   const fileRef = useRef<HTMLInputElement>(null);
-
-  // useEffect removed to stop sync loop and freeze
 
   const handleFile = (file: File) => {
     if (!file || !file.type.startsWith('image/')) return;
@@ -142,7 +140,7 @@ function LspGeneratorRoute() {
     setError('');
     setResult(null);
 
-    // Dynamic mock response timeout to simulate real high-performance AI generation
+    // AI Generation simulation
     setTimeout(() => {
       try {
         setResult(parseResponse(MOCK_RESPONSE));
@@ -152,7 +150,7 @@ function LspGeneratorRoute() {
       } finally {
         setLoading(false);
       }
-    }, 2000);
+    }, 1500);
   };
 
   const copyCode = () => {
@@ -223,7 +221,7 @@ function LspGeneratorRoute() {
             {/* File drag zone */}
             {mode === 'image' && (
               <div
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragOver={(e) => { e.preventDefault(); if (!dragOver) setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -231,7 +229,7 @@ function LspGeneratorRoute() {
                   if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
                 }}
                 onClick={() => !image && fileRef.current?.click()}
-                className={`group flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+                className={`group flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
                   dragOver ? 'border-amber-500 bg-amber-500/[0.02]' : 'border-border/60 hover:border-amber-500/50 bg-secondary/5'
                 }`}
               >
@@ -265,6 +263,7 @@ function LspGeneratorRoute() {
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate(); }}
                 placeholder={
                   mode === 'image' 
                     ? 'Ex: Quero validar se a quantidade de faturamento na tela é maior que zero...' 
