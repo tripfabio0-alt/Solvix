@@ -141,6 +141,15 @@ export const Sidebar: React.FC = () => {
           <LogOut className="h-4 w-4" />
           <span>Sair da Sessão</span>
         </button>
+        
+        <div className="px-3 pt-4 pb-2">
+          <div className="flex items-center justify-between border-t border-border/20 pt-4">
+            <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">Solvix OS</span>
+            <span className="inline-flex items-center rounded-full bg-indigo-500/10 px-2 py-0.5 text-[10px] font-bold text-indigo-400 border border-indigo-500/20">
+              v2.0.0
+            </span>
+          </div>
+        </div>
       </div>
     </aside>
   );
