@@ -11,11 +11,11 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-[#05050a] text-foreground font-sans">
       
-      {/* Sidebar Layout Temporarily Removed for Debugging */}
-      {/* <Sidebar /> */}
+      {/* Sidebar Layout */}
+      <Sidebar />
 
-      {/* Main Panel Content Area (adjusted padding) */}
-      <div className="min-h-screen flex flex-col">
+      {/* Main Panel Content Area */}
+      <div className="pl-[280px] min-h-screen flex flex-col">
         
         {/* Top Floating App Bar */}
         <header className="sticky top-0 z-20 flex h-[70px] items-center justify-between border-b border-border/40 bg-[#05050a]/80 px-8 backdrop-blur-md">
