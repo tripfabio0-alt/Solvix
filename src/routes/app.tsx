@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import logo from '@/assets/logo.png';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 
+// Estabilidade Total Solvix - Trigger Build
 export const Route = createFileRoute('/app')({
   component: AppLayout,
 });
