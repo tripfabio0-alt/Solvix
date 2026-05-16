@@ -1,337 +1,273 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useState, useRef } from "react";
+import { createFileRoute, useParams } from '@tanstack/react-router';
+import { useState, useRef, memo } from 'react';
+import { 
+  Terminal, 
+  Code2, 
+  Copy, 
+  Check, 
+  AlertCircle, 
+  ArrowLeft,
+  ChevronRight,
+  Info,
+  Database,
+  Lightbulb,
+  Sparkles,
+  Zap,
+  Image as ImageIcon
+} from 'lucide-react';
 
 export const Route = createFileRoute('/app/consultoria/senior/$cliente/ferramentas/lsp')({
-  component: App,
+  component: LspGeminiGenerator,
 });
 
-const SYSTEM_PROMPT = `Você é um especialista em regras LSP do Senior Gestão Empresarial ERP.
-Quando receber uma imagem de tela do sistema Senior, analise os campos, botões e contexto visível para entender o que precisa ser customizado.
-Responda EXATAMENTE neste formato com os delimitadores abaixo. Não adicione nada fora dos blocos.
+const SYSTEM_PROMPT = `Você é um Engenheiro de Software Sênior especialista em Senior Sistemas e linguagem LSP (Lógica de Sistemas de Pessoal/Processos).
+Sua tarefa é gerar regras e processos LSP no padrão Senior 2, otimizados e comentados.
+
+Responda EXATAMENTE neste formato com delimitadores:
 
 ##TITULO##
-Título curto da regra
+Nome curto da regra
 ##MODULO##
-Módulo (ex: Manufatura, PCP, Mercado)
-##IDENTIFICADOR##
-Ex: PCP-000XXXXX01
+Módulo Senior (ex: PCP, Compras, Mercado, Financeiro)
+##TABELAS##
+Tabelas envolvidas (ex: E070EMP, E120PED)
 ##DESCRICAO##
-Descrição funcional de uma linha
-##SCRIPT##
-@ Script LSP completo com comentários @
-Definir Alfa aVariavel;
+O que a regra faz em uma linha
+##CONTEUDO##
+O código LSP completo (Definir Numero, Definir Alfa, etc)
 ##VARIAVEIS##
-nome|Tipo|Descrição
-##FUNCOES##
-NomeFuncao|O que faz
+lista de variáveis usadas e tipos
 ##DICAS##
-Dica 1
-Dica 2
+3 dicas de performance para esta regra
 ##ATENCAO##
-Ponto crítico
+Pré-requisito ou cuidado importante
 ##FIM##
 
-Sintaxe LSP Senior: Definir Alfa/Numero/Data; @ comentário @; Se()...FimSe; Enquanto()...FimEnquanto; GeraLog(); Mensagem(); BuscaReg(); GravaReg(); ApontarOPs(); GerarOP(); BaixarComponentes(); Se(aRetorno<>"OK") GeraLog(aRetorno); FimSe;`;
+Regras de Ouro LSP:
+- Comentários usam @ @
+- Definir as variáveis no topo.
+- Use nomes claros.
+- Sempre valide nulos e erros de banco.`;
 
 function parseResponse(text: string) {
   const get = (tag: string, next: string) => {
-    const start = text.indexOf("##" + tag + "##");
-    if (start === -1) return "";
-    const after = start + tag.length + 4;
-    const end = text.indexOf("##" + next + "##", after);
-    return (end === -1 ? text.slice(after) : text.slice(after, end)).trim();
+    const s = text.indexOf(`##${tag}##`);
+    if (s === -1) return "";
+    const after = s + tag.length + 4;
+    const e = text.indexOf(`##${next}##`, after);
+    return (e === -1 ? text.slice(after) : text.slice(after, e)).trim();
   };
   return {
     titulo: get("TITULO","MODULO"),
-    modulo: get("MODULO","IDENTIFICADOR"),
-    identificador: get("IDENTIFICADOR","DESCRICAO"),
-    descricao: get("DESCRICAO","SCRIPT"),
-    script: get("SCRIPT","VARIAVEIS"),
-    variaveis: get("VARIAVEIS","FUNCOES").split("\n").filter(Boolean).map(l=>{const [n,t,...r]=l.split("|");return{nome:n?.trim(),tipo:t?.trim(),descricao:r.join("|").trim()};}).filter(v=>v.nome),
-    funcoes: get("FUNCOES","DICAS").split("\n").filter(Boolean).map(l=>{const [n,...r]=l.split("|");return{nome:n?.trim(),descricao:r.join("|").trim()};}).filter(f=>f.nome),
-    dicas: get("DICAS","ATENCAO").split("\n").filter(Boolean).map(d=>d.trim()).filter(Boolean),
+    modulo: get("MODULO","TABELAS"),
+    tabelas: get("TABELAS","DESCRICAO").split("\n").filter(Boolean).map(t=>t.trim()),
+    descricao: get("DESCRICAO","CONTEUDO"),
+    conteudo: get("CONTEUDO","VARIAVEIS"),
+    variaveis: get("VARIAVEIS","DICAS"),
+    dicas: get("DICAS","ATENCAO").split("\n").filter(Boolean).map(d=>d.trim()),
     atencao: get("ATENCAO","FIM"),
   };
 }
 
-function fileToBase64(file: File): Promise<string> {
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res((r.result as string).split(",")[1]);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
-}
-
-function App() {
+function LspGeminiGenerator() {
+  const { cliente } = useParams({ from: '/app/consultoria/senior/$cliente/ferramentas/lsp' });
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [image,setImage]=useState<any>(null);
-  const [loading,setLoading]=useState(false);
-  const [result,setResult]=useState<any>(null);
-  const [error,setError]=useState("");
-  const [tab,setTab]=useState("script");
-  const [copied,setCopied]=useState(false);
-  const [dragOver,setDragOver]=useState(false);
-  const [mode,setMode]=useState("text");
-  const fileRef=useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  // Sync ref with local state only on demand to prevent lag
-  const handleFile=async(file: File)=>{
-    if(!file||!file.type.startsWith("image/"))return;
-    const base64=await fileToBase64(file);
-    setImage({file,base64,preview:URL.createObjectURL(file),mediaType:file.type});
-    setMode("image");
-  };
-
-  const generate=async()=>{
-    const currentInput = inputRef.current?.value || "";
-    if(!currentInput.trim()&&!image) {
-      setError("Por favor, descreva o que deseja ou adicione uma imagem.");
+  const generate = async () => {
+    const prompt = inputRef.current?.value || "";
+    if (!prompt.trim()) {
+      setError("Por favor, descreva a regra que deseja gerar.");
       return;
     }
-    
+
     setLoading(true);
     setError("");
     setResult(null);
-    
-    try {
-      let messages;
-      if(mode==="image"&&image){
-        const content=[
-          {type:"image",source:{type:"base64",media_type:image.mediaType,data:image.base64}},
-          {type:"text",text:currentInput.trim()||"Analise esta tela do Senior e gere a regra LSP adequada conforme o contexto visível."}
-        ];
-        messages=[{role:"user",content}];
-      }else{
-        messages=[{role:"user",content:currentInput.trim()}];
-      }
-      
-      // CRITICAL: Supabase URL and Key setup
-      // User must ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in .env
-      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://dvvjcewohzbtgtotlbbv.supabase.co';
-      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || ''; // Removed the Clerk key fallback
-      
-      if (!SUPABASE_ANON_KEY && !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-        throw new Error("Configuração ausente: VITE_SUPABASE_ANON_KEY não encontrada.");
-      }
 
-      const res=await fetch(`${SUPABASE_URL}/functions/v1/anthropic-proxy`, {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
+    try {
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://dvvjcewohzbtgtotlbbv.supabase.co';
+      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+      // Chamando a nova Edge Function do Gemini que criamos
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/gerar-sql`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
           "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-          "apikey": SUPABASE_ANON_KEY,
         },
-        body:JSON.stringify({
-          model:"claude-3-5-sonnet-20240620", 
-          max_tokens:4000, 
-          system:SYSTEM_PROMPT, 
-          messages
-        }),
+        body: JSON.stringify({ prompt: `[MODO LSP] ${prompt}` }),
       });
 
-      if(!res.ok){
-        const e=await res.json().catch(()=>({}));
-        throw new Error(`Erro ${res.status}: ${e?.error?.message || e?.message || res.statusText}`);
-      }
-      
-      const data=await res.json();
-      const raw=(data.content||[]).map((c: any)=>c.text||"").join("");
-      
-      if(!raw) throw new Error("A IA retornou uma resposta vazia.");
-      if(!raw.includes("##TITULO##")) throw new Error("Resposta fora do formato esperado. Tente novamente.");
-      
-      setResult(parseResponse(raw));
-      setTab("script");
-    } catch(err: any) {
-      console.error("Erro na geração:", err);
-      setError(err.message || "Ocorreu um erro ao processar sua solicitação.");
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      setResult(parseResponse(data.resultado));
+    } catch (err: any) {
+      setError(err.message || "Erro ao conectar com Gemini.");
     } finally {
       setLoading(false);
     }
   };
 
-  const copy=()=>{if(!result?.script)return;navigator.clipboard.writeText(result.script);setCopied(true);setTimeout(()=>setCopied(false),2000);};
-  const lc=(line: string)=>{const t=line.trim();if(t.startsWith("@"))return"#64748b";if(/^(Definir|Se|FimSe|Enquanto|FimEnquanto|ParaCada|FimParaCada)\b/i.test(t))return"#93c5fd";if(/^[A-Z][a-zA-Z]+\(/.test(t))return"#86efac";return"#cbd5e1";};
-  const ok=true; // Simplificamos para evitar re-render constante com base no input (já que é uncontrolled agora)
+  const copy = () => {
+    navigator.clipboard.writeText(result.conteudo);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
-  return(
-    <div style={{minHeight:"100vh",background:"#0f1117",fontFamily:"'Courier New',monospace",color:"#e2e8f0"}}>
-
-      {/* Header */}
-      <div style={{borderBottom:"1px solid #1e293b",background:"#0a0d14",padding:"18px 32px",display:"flex",alignItems:"center",gap:16}}>
-        <div style={{width:36,height:36,background:"linear-gradient(135deg,#f59e0b,#d97706)",borderRadius:6,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:"bold",color:"#000"}}>S</div>
-        <div>
-          <div style={{fontSize:14,fontWeight:600,color:"#f1f5f9",letterSpacing:"0.05em"}}>SENIOR · GERADOR DE REGRAS LSP</div>
-          <div style={{fontSize:10,color:"#64748b",letterSpacing:"0.08em"}}>GESTÃO EMPRESARIAL | ERP · COMMUNITY EDITION</div>
+  return (
+    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto">
+      
+      {/* Gemini Header */}
+      <div className="flex items-center gap-4 py-4 border-b border-indigo-500/10">
+        <div className="h-10 w-10 bg-gradient-to-br from-blue-500 to-indigo-700 rounded-lg flex items-center justify-center font-bold text-white shadow-lg">
+          G
         </div>
-        <div style={{marginLeft:"auto",display:"flex",gap:6}}>
-          {["#ef4444","#f59e0b","#22c55e"].map((c,i)=><div key={i} style={{width:10,height:10,borderRadius:"50%",background:c,opacity:.7}}/>)}
+        <div>
+          <h1 className="text-sm font-bold tracking-widest text-foreground uppercase">Senior · Gerador de Regra LSP (Gemini Direct)</h1>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Gestão Empresarial | ERP · Cursores LSP via Google AI Studio</p>
+        </div>
+        <div className="ml-auto flex gap-1.5 opacity-40">
+          <div className="h-2 w-2 rounded-full bg-rose-500" />
+          <div className="h-2 w-2 rounded-full bg-amber-500" />
+          <div className="h-2 w-2 rounded-full bg-emerald-500" />
         </div>
       </div>
 
-      <div style={{maxWidth:900,margin:"0 auto",padding:"28px 24px"}}>
-
-        {/* Mode Toggle */}
-        <div style={{display:"flex",gap:4,marginBottom:16,background:"#0a0d14",border:"1px solid #1e293b",borderRadius:6,padding:4,width:"fit-content"}}>
-          {[{k:"text",i:"✏",l:"TEXTO"},{k:"image",i:"🖼",l:"PRINT DE TELA"}].map(m=>(
-            <button key={m.k} onClick={()=>setMode(m.k)} style={{padding:"7px 16px",borderRadius:4,border:"none",background:mode===m.k?"#1e293b":"transparent",color:mode===m.k?"#f59e0b":"#475569",fontSize:11,fontFamily:"inherit",letterSpacing:"0.08em",cursor:"pointer",display:"flex",alignItems:"center",gap:6,fontWeight:mode===m.k?700:400}}>
-              {m.i} {m.l}
-            </button>
-          ))}
+      {/* Input Section */}
+      <div className="glass-card rounded-xl border border-dashed border-indigo-500/30 bg-indigo-500/5 p-1 overflow-hidden shadow-2xl">
+        <div className="bg-[#040610] p-4 flex items-center gap-2 text-[10px] font-bold text-indigo-400 border-b border-indigo-500/20">
+          <ChevronRight className="h-3 w-3" />
+          <span>DESCREVA A LÓGICA OU REGRA DE PROCESSO DESEJADA</span>
         </div>
-
-        {/* Input Card */}
-        <div style={{background:"#13171f",border:"1px solid #1e293b",borderRadius:8,overflow:"hidden",marginBottom:20}}>
-          <div style={{padding:"10px 16px",background:"#0f1117",borderBottom:"1px solid #1e293b",fontSize:11,color:"#475569",letterSpacing:"0.1em",display:"flex",alignItems:"center",gap:8}}>
-            <span style={{color:"#f59e0b"}}>▶</span>
-            {mode==="image"?"UPLOAD DO PRINT + DESCRIÇÃO DO QUE DESEJA":"DESCREVA SUA NECESSIDADE"}
-            <span style={{marginLeft:"auto",color:"#334155"}}>Ctrl+Enter para gerar</span>
+        <textarea
+          ref={inputRef}
+          className="w-full min-h-[120px] bg-transparent border-none outline-none p-5 text-sm text-foreground placeholder:text-slate-700 leading-relaxed resize-none font-mono"
+          placeholder="Ex: Criar uma regra para validar se o cliente tem limite de crédito antes de fechar o pedido..."
+        />
+        <div className="p-4 flex items-center justify-between bg-secondary/10 border-t border-indigo-500/10">
+          <div className="flex gap-2">
+            <button onClick={() => inputRef.current!.value = "Validar estoque de componentes no PCP"} className="text-[9px] px-2 py-1 rounded bg-secondary/20 text-muted-foreground hover:text-indigo-400 transition-colors">Ex: Validar PCP</button>
+            <button onClick={() => inputRef.current!.value = "Bloquear pedido se cliente inadimplente"} className="text-[9px] px-2 py-1 rounded bg-secondary/20 text-muted-foreground hover:text-indigo-400 transition-colors">Ex: Bloqueio Crédito</button>
           </div>
+          <button
+            onClick={generate}
+            disabled={loading}
+            className="generate-btn bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-lg text-xs font-bold hover:scale-105 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] disabled:opacity-50"
+          >
+            {loading ? <Zap className="h-3.5 w-3.5 animate-pulse" /> : <Sparkles className="h-3.5 w-3.5" />}
+            {loading ? 'GERANDO...' : 'GERAR REGRA LSP'}
+          </button>
+        </div>
+      </div>
 
-          {/* Drop Zone */}
-          {mode==="image"&&(
-            <div
-              onDragOver={e=>{e.preventDefault();setDragOver(true);}}
-              onDragLeave={()=>setDragOver(false)}
-              onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.files[0]);}}
-              onClick={()=>!image&&fileRef.current?.click()}
-              style={{margin:16,borderRadius:6,border: "2px dashed " + (dragOver?"#f59e0b":"#1e293b"),background:dragOver?"#1c1200":"#0f1117",transition:"all .2s",cursor:image?"default":"pointer",overflow:"hidden"}}
-            >
-              {image?(
-                <div style={{position:"relative"}}>
-                  <img src={image.preview} alt="" style={{width:"100%",maxHeight:240,objectFit:"contain",display:"block",background:"#000"}}/>
-                  <button onClick={e=>{e.stopPropagation();setImage(null);}} style={{position:"absolute",top:8,right:8,background:"#1a0a0a",border:"1px solid #7f1d1d",borderRadius:4,color:"#fca5a5",fontSize:11,padding:"4px 10px",cursor:"pointer",fontFamily:"inherit"}}>✕ REMOVER</button>
-                  <div style={{padding:"6px 12px",background:"#0a0d14",borderTop:"1px solid #1e293b",fontSize:11,color:"#475569"}}>📎 {image.file.name} · {(image.file.size/1024).toFixed(0)} KB</div>
-                </div>
-              ):(
-                <div style={{padding:28,textAlign:"center",color:"#334155"}}>
-                  <div style={{fontSize:28,marginBottom:8}}>🖼</div>
-                  <div style={{fontSize:12,marginBottom:4,color:"#475569"}}>Arraste um print da tela Senior aqui</div>
-                  <div style={{fontSize:11}}>ou clique para selecionar · PNG, JPG, JPEG</div>
-                </div>
-              )}
+      {error && (
+        <div className="bg-rose-500/5 border border-rose-500/20 p-4 rounded-lg text-xs text-rose-400 flex items-center gap-3">
+          <AlertCircle className="h-4 w-4" />
+          {error}
+        </div>
+      )}
+
+      {/* Results Section */}
+      {result ? (
+        <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+          
+          {/* Result Header Info */}
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="bg-[#0d1117] border border-indigo-500/20 p-4 rounded-xl">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Consulta</span>
+              <p className="text-xs font-bold text-foreground mt-1">{result.titulo}</p>
             </div>
-          )}
-          <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={e=>handleFile((e.target.files as FileList)[0])}/>
-
-          <textarea
-            ref={inputRef}
-            defaultValue=""
-            onChange={() => {}} // Dummy onChange to satisfy React reconciliation
-            spellCheck={false}
-            data-gramm="false"
-            data-gramm_editor="false"
-            data-enable-grammarly="false"
-            onKeyDown={e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))generate();}}
-            placeholder={mode==="image"?"Ex: Quero validar o campo Qtde antes de salvar, bloqueando se for zero...":"Ex: Quero uma regra que ao apontar uma OP verifique se o operador tem permissão e registre um log..."}
-            style={{width:"100%",minHeight:140,background:"transparent",border:"none",borderTop:"1px solid #1e293b",outline:"none",padding:16,color:"#cbd5e1",fontSize:13,fontFamily:"inherit",resize:"none",lineHeight:1.6,boxSizing:"border-box"}}
-          />
-
-          <div style={{padding:"10px 16px",borderTop:"1px solid #1e293b",display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-            {mode==="text"&&(
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {["Validar operador ao apontar OP","Bloquear pedido sem estoque","Log de alteração de quantidade"].map(ex=>(
-                  <button key={ex} onClick={()=>{if(inputRef.current) inputRef.current.value=ex;}} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:4,padding:"4px 10px",color:"#475569",fontSize:10,fontFamily:"inherit",cursor:"pointer"}}>{ex}</button>
-                ))}
-              </div>
-            )}
-            {mode==="image"&&(
-              <button onClick={()=>fileRef.current?.click()} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:4,padding:"6px 12px",color:"#475569",fontSize:11,fontFamily:"inherit",cursor:"pointer"}}>
-                📎 {image?"TROCAR IMAGEM":"SELECIONAR IMAGEM"}
-              </button>
-            )}
-            <button onClick={generate} disabled={!ok} style={{background:!ok?"#1e293b":"linear-gradient(135deg,#f59e0b,#d97706)",color:!ok?"#475569":"#000",border:"none",borderRadius:6,padding:"10px 24px",fontSize:12,fontFamily:"inherit",fontWeight:700,letterSpacing:"0.1em",cursor:!ok?"not-allowed":"pointer",display:"flex",alignItems:"center",gap:8,marginLeft:"auto"}}>
-              {loading?<><span style={{display:"inline-block",animation:"spin 1s linear infinite"}}>⟳</span>GERANDO...</>:mode==="image"?"🖼 ANALISAR E GERAR":"⚡ GERAR REGRA"}
-            </button>
+            <div className="bg-[#0d1117] border border-indigo-500/20 p-4 rounded-xl">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Módulo</span>
+              <p className="text-xs font-bold text-blue-400 mt-1">{result.modulo}</p>
+            </div>
+            <div className="bg-[#0d1117] border border-indigo-500/20 p-4 rounded-xl">
+              <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter">Descrição</span>
+              <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{result.descricao}</p>
+            </div>
           </div>
-        </div>
 
-        {/* Error */}
-        {error&&<div style={{background:"#1a0a0a",border:"1px solid #7f1d1d",borderRadius:6,padding:"12px 16px",color:"#fca5a5",fontSize:12,marginBottom:16,wordBreak:"break-word"}}>⚠ {error}</div>}
-
-        {/* Result */}
-        {result&&(
-          <>
-            <div style={{background:"#13171f",border:"1px solid #1e293b",borderRadius:8,padding:"16px 20px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-              {[{label:"TÍTULO",value:result.titulo,color:"#f1f5f9"},{label:"MÓDULO",value:result.modulo,color:"#f59e0b"},{label:"IDENTIFICADOR",value:result.identificador,color:"#94a3b8"},{label:"DESCRIÇÃO",value:result.descricao,color:"#94a3b8"}].map(({label,value,color})=>(
-                <div key={label}><div style={{fontSize:10,color:"#475569",letterSpacing:"0.1em",marginBottom:4}}>{label}</div><div style={{fontSize:13,color,lineHeight:1.4}}>{value}</div></div>
+          {/* Tables Badges */}
+          <div className="flex items-center gap-3">
+            <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Tabelas:</span>
+            <div className="flex gap-2">
+              {result.tabelas.map((t: string, i: number) => (
+                <span key={i} className="text-[10px] px-2 py-0.5 rounded border border-indigo-500/10 bg-indigo-500/5 text-slate-400 font-mono">
+                  {t}
+                </span>
               ))}
             </div>
-            <div style={{background:"#13171f",border:"1px solid #1e293b",borderRadius:8,overflow:"hidden"}}>
-              <div style={{display:"flex",borderBottom:"1px solid #1e293b",background:"#0f1117"}}>
-                {[{k:"script",l:"📄 SCRIPT LSP"},{k:"variaveis",l:"🔤 VARIÁVEIS"},{k:"funcoes",l:"⚙ FUNÇÕES"},{k:"ajuda",l:"💡 AJUDA"}].map(t=>(
-                  <button key={t.k} onClick={()=>setTab(t.k)} style={{padding:"10px 14px",background:"transparent",border:"none",borderBottom:tab===t.k?"2px solid #f59e0b":"2px solid transparent",color:tab===t.k?"#f59e0b":"#475569",fontSize:11,fontFamily:"inherit",cursor:"pointer",fontWeight:tab===t.k?700:400}}>{t.l}</button>
-                ))}
-              </div>
-              {tab==="script"&&(
-                <div style={{position:"relative"}}>
-                  <button onClick={copy} style={{position:"absolute",top:12,right:12,background:copied?"#166534":"#1e293b",color:copied?"#86efac":"#94a3b8",border: "1px solid " + (copied?"#166534":"#334155"),borderRadius:4,padding:"6px 12px",fontSize:10,fontFamily:"inherit",cursor:"pointer",zIndex:10}}>{copied?"✓ COPIADO":"⎘ COPIAR"}</button>
-                  <pre style={{margin:0,padding:"20px 16px",fontSize:12,lineHeight:1.7,overflowX:"auto",whiteSpace:"pre-wrap",wordBreak:"break-word"}}>
-                    {(result.script||"").split("\n").map((line: string,i: number)=>(
-                      <span key={i} style={{color:lc(line),fontStyle:line.trim().startsWith("@")?"italic":"normal",display:"block"}}>
-                        <span style={{color:"#334155",userSelect:"none",marginRight:12,fontSize:10}}>{String(i+1).padStart(2,"0")}</span>{line}
-                      </span>
-                    ))}
-                  </pre>
-                </div>
-              )}
-              {tab==="variaveis"&&(
-                <div style={{padding:16}}>
-                  {result.variaveis?.length>0?(
-                    <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-                      <thead><tr style={{borderBottom:"1px solid #1e293b"}}>{["VARIÁVEL","TIPO","DESCRIÇÃO"].map(h=><th key={h} style={{padding:"8px 12px",textAlign:"left",color:"#475569",fontSize:10,letterSpacing:"0.1em"}}>{h}</th>)}</tr></thead>
-                      <tbody>{result.variaveis.map((v: any,i: number)=>(
-                        <tr key={i} style={{borderBottom:"1px solid #0f1117"}}>
-                          <td style={{padding:"10px 12px",color:"#86efac",fontFamily:"monospace"}}>{v.nome}</td>
-                          <td style={{padding:"10px 12px"}}><span style={{background:v.tipo==="Alfa"?"#1e3a5f":v.tipo==="Numero"?"#1a3a1a":"#3a1a1a",color:v.tipo==="Alfa"?"#93c5fd":v.tipo==="Numero"?"#86efac":"#fca5a5",padding:"2px 8px",borderRadius:3,fontSize:10}}>{v.tipo}</span></td>
-                          <td style={{padding:"10px 12px",color:"#94a3b8"}}>{v.descricao}</td>
-                        </tr>
-                      ))}</tbody>
-                    </table>
-                  ):<div style={{color:"#475569",fontSize:12,textAlign:"center",padding:24}}>Nenhuma variável documentada.</div>}
-                </div>
-              )}
-              {tab==="funcoes"&&(
-                <div style={{padding:16,display:"flex",flexDirection:"column",gap:8}}>
-                  {(result.funcoes||[]).map((f: any,i: number)=>(
-                    <div key={i} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:6,padding:"12px 16px",display:"flex",gap:16}}>
-                      <span style={{color:"#f59e0b",fontSize:12,fontFamily:"monospace",minWidth:180,fontWeight:600}}>{f.nome}()</span>
-                      <span style={{color:"#94a3b8",fontSize:12,lineHeight:1.5}}>{f.descricao}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {tab==="ajuda"&&(
-                <div style={{padding:20}}>
-                  {result.atencao&&<div style={{background:"#1c1200",border:"1px solid #78350f",borderRadius:6,padding:"12px 16px",marginBottom:20,display:"flex",gap:10}}><span>⚠</span><div><div style={{fontSize:10,color:"#f59e0b",letterSpacing:"0.1em",marginBottom:4}}>ATENÇÃO</div><div style={{fontSize:12,color:"#fcd34d",lineHeight:1.5}}>{result.atencao}</div></div></div>}
-                  <div style={{fontSize:10,color:"#475569",letterSpacing:"0.1em",marginBottom:12}}>DICAS DE USO</div>
-                  <div style={{display:"flex",flexDirection:"column",gap:8}}>
-                    {(result.dicas||[]).map((d: string,i: number)=>(
-                      <div key={i} style={{background:"#0f1117",border:"1px solid #1e293b",borderRadius:6,padding:"12px 16px",fontSize:12,color:"#94a3b8",lineHeight:1.5,display:"flex",gap:10}}>
-                        <span style={{color:"#f59e0b",minWidth:16}}>{i+1}.</span>{d}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
-        )}
+          </div>
 
-        {!result&&!loading&&!error&&(
-          <div style={{textAlign:"center",padding:"40px 24px"}}>
-            <div style={{fontSize:32,marginBottom:12,opacity:.2}}>{mode==="image"?"🖼":"⌨"}</div>
-            <div style={{fontSize:12,lineHeight:1.6,maxWidth:420,margin:"0 auto",color:"#475569"}}>
-              {mode==="image"
-                ?"Faça upload de um print da tela do Senior e descreva o que deseja customizar. O sistema irá analisar os campos visíveis e gerar a regra LSP automaticamente."
-                :<>Digite uma descrição ou mude para <strong style={{color:"#f59e0b"}}>PRINT DE TELA</strong> para gerar regras a partir de capturas de tela do Senior.</>}
+          {/* Code Tabs Area */}
+          <div className="bg-[#0d1117] border border-indigo-500/20 rounded-xl overflow-hidden shadow-2xl">
+            <div className="bg-[#040610] border-b border-indigo-500/20 px-6 py-3 flex items-center justify-between">
+              <div className="flex gap-6">
+                <button className="text-[10px] font-bold text-blue-400 border-b-2 border-blue-400 pb-1 flex items-center gap-2">
+                  <Code2 className="h-3.5 w-3.5" />
+                  CÓDIGO LSP
+                </button>
+                <button className="text-[10px] font-bold text-muted-foreground hover:text-foreground pb-1 flex items-center gap-2">
+                  <Database className="h-3.5 w-3.5" />
+                  MATE-DADOS
+                </button>
+              </div>
+              <button 
+                onClick={copy}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded text-[10px] font-bold transition-all ${copied ? 'bg-emerald-500 text-white' : 'bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20'}`}
+              >
+                {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                {copied ? 'COPIADO' : 'COPIAR'}
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-x-auto bg-[#070a0f]">
+              <pre className="text-xs font-mono leading-relaxed text-slate-300 whitespace-pre-wrap">
+                {result.conteudo}
+              </pre>
             </div>
           </div>
-        )}
-      </div>
 
-      <style dangerouslySetInnerHTML={{ __html: "@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}textarea::placeholder{color:#334155;}::-webkit-scrollbar{width:6px;height:6px;}::-webkit-scrollbar-track{background:#0f1117;}::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px;}" }} />
+          {/* Help & Warning Area */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-amber-500/5 border border-amber-500/20 p-6 rounded-xl space-y-3">
+              <div className="flex items-center gap-2 text-amber-500">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Atenção Técnica</span>
+              </div>
+              <p className="text-[11px] text-amber-200/60 leading-relaxed">{result.atencao}</p>
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-blue-400">
+                <Lightbulb className="h-4 w-4" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Dicas de Performance</span>
+              </div>
+              <div className="space-y-2">
+                {result.dicas.map((tip: string, i: number) => (
+                  <div key={i} className="bg-secondary/10 border border-border/40 p-3 rounded-lg flex gap-3 group hover:border-indigo-500/30 transition-all">
+                    <span className="text-indigo-400 font-bold text-[10px]">{i + 1}</span>
+                    <p className="text-[11px] text-muted-foreground group-hover:text-foreground transition-colors">{tip}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      ) : (
+        <div className="py-20 text-center space-y-4 opacity-30">
+          <Database className="h-12 w-12 mx-auto text-indigo-500" />
+          <p className="text-xs max-w-[300px] mx-auto leading-relaxed">
+            Descreva a regra em português para o Gemini processar a lógica e gerar o código LSP compatível com Senior 2.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
