@@ -147,6 +147,16 @@ export const Sidebar: React.FC = memo(() => {
                 </li>
               );
             })}
+            {/* Admin Access (Conditional) */}
+            <li className="pt-2 mt-2 border-t border-border/20">
+              <Link
+                to="/app/admin"
+                className="flex w-full items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-bold text-indigo-400 hover:bg-indigo-600/10 transition-all border border-transparent hover:border-indigo-500/20"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                <span>Console Admin</span>
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
