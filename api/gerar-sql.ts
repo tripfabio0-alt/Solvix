@@ -12,36 +12,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 Sua missão é entregar uma solução SEMPRE dividida em 3 FASES: ##MAPA##, ##SQL##, ##LSP##.
 NUNCA use blocos de código Markdown.`;
 
-    // Lista de modelos para tentar (Fallback)
-    const modelsToTry = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-pro'];
-    let lastError = '';
+    try {
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nRequisição: ${prompt}` }] }]
+        })
+      });
 
-    for (const modelName of modelsToTry) {
-      try {
-        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nRequisição: ${prompt}` }] }]
-          })
-        });
+      const data = await geminiRes.json();
+      if (data.error) throw new Error(data.error.message);
 
-        const data = await geminiRes.json();
-
-        if (data.error) {
-          lastError = data.error.message;
-          console.log(`Falha no modelo ${modelName}: ${lastError}`);
-          continue; // Tenta o próximo modelo
-        }
-
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (responseText) {
-          return res.status(200).json({ resultado: responseText, modelo_usado: modelName });
-        }
-      } catch (e: any) {
-        lastError = e.message;
-        continue;
-      }
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta da IA';
+      return res.status(200).json({ resultado: responseText });
+    } catch (e: any) {
+      return res.status(500).json({ error: 'Erro Técnico: ' + e.message });
     }
 
     // Se chegar aqui, todos falharam
