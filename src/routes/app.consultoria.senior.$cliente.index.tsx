@@ -217,8 +217,9 @@ function ClienteWorkspaceRoute() {
               </Link>
 
               {/* SQL Builder Tile */}
-              <button
-                onClick={() => alert('SQL Builder em desenvolvimento')}
+              <Link
+                to="/app/consultoria/senior/$cliente/ferramentas/sql"
+                params={{ cliente: cliente || 'eraser' }}
                 className="group flex flex-col items-start rounded-xl border border-border/40 bg-card/50 p-6 text-left hover:border-indigo-500/40 hover:bg-indigo-500/[0.01] transition-all cursor-pointer"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-xl text-blue-500 group-hover:scale-110 transition-transform">
@@ -232,7 +233,7 @@ function ClienteWorkspaceRoute() {
                   <span>Executar Gerador</span>
                   <ChevronRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
-              </button>
+              </Link>
 
               {/* Report Creator Tile */}
               <button
