@@ -3,78 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solvix SQL - Consultoria Senior</title>
+    <title>Solvix SQL — Consultoria Senior</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg: #05050a;
-            --card: #0d0d1a;
-            --border: #1e1e2d;
+            --background: #05050a;
+            --foreground: #ffffff;
+            --border: rgba(255, 255, 255, 0.08);
+            --card: rgba(13, 13, 26, 0.7);
             --primary: #6366f1;
             --accent: #3b82f6;
-            --text: #ffffff;
             --muted: #8b949e;
+            --glow: radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.1), transparent 80%);
         }
 
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
-        h1, h2, .logo-text { font-family: 'Outfit', sans-serif; }
-        .navbar { height: 72px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(5,5,10,0.8); backdrop-blur: 12px; position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: 800; font-size: 24px; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+        * { box-sizing: border-box; }
+        body { background: var(--background); color: var(--foreground); font-family: 'Inter', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+        body::before { content: ''; position: fixed; inset: 0; background: var(--glow); pointer-events: none; z-index: -1; }
+        h1, h2, .font-outfit { font-family: 'Outfit', sans-serif; }
+        .navbar { height: 80px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; background: rgba(5, 5, 10, 0.5); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: 0.05em; display: flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; text-transform: uppercase; }
         .logo span { color: var(--accent); }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; flex: 1; }
-        .input-section { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
-        .input-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.5; }
-        .label { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
-        textarea { width: 100%; height: 100px; background: transparent; border: none; color: var(--text); font-size: 18px; resize: none; outline: none; font-weight: 300; }
-        .actions { display: flex; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 24px; }
-        .btn-generate { background: var(--accent); color: #ffffff; border: none; padding: 14px 36px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; font-family: 'Outfit', sans-serif; text-transform: uppercase; font-size: 13px; }
-        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); background: #60a5fa; }
-        .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; display: none; }
+        .nav-actions { display: flex; gap: 24px; align-items: center; }
+        .nav-link { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-link:hover { color: #fff; }
+        .btn-logout { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .container { max-width: 1000px; margin: 60px auto; padding: 0 20px; flex: 1; width: 100%; }
+        .glass-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 40px; backdrop-filter: blur(20px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; letter-spacing: 0.1em; }
+        textarea { width: 100%; height: 140px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; color: #fff; font-size: 17px; resize: none; outline: none; padding: 20px; transition: all 0.3s; }
+        textarea:focus { border-color: var(--accent); background: rgba(255,255,255,0.05); }
+        .actions { display: flex; justify-content: flex-end; margin-top: 24px; }
+        .btn-generate { background: linear-gradient(135deg, var(--accent), #1d4ed8); color: #ffffff; border: none; padding: 16px 40px; border-radius: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; font-family: 'Outfit', sans-serif; font-size: 14px; }
+        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); }
+        .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; display: none; margin-top: 20px; }
         @media (max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
-        .result-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
-        .result-header { padding: 20px 24px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .result-body { padding: 24px; flex: 1; font-size: 15px; }
-        pre { margin: 0; white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #79c0ff; line-height: 1.6; }
-        .explanation-text { color: var(--muted); white-space: pre-wrap; }
-        .btn-copy { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; margin-top: 60px; }
-        .footer-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--muted); }
-        .loading-shimmer { height: 200px; background: linear-gradient(90deg, var(--card) 25%, #1e1e2d 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; display: none; }
+        .result-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+        .result-header { padding: 18px 24px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .result-body { padding: 24px; font-size: 15px; }
+        pre { margin: 0; white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #79c0ff; line-height: 1.6; font-size: 13px; }
+        .explanation-text { color: var(--muted); white-space: pre-wrap; font-size: 14px; }
+        .btn-copy { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .footer { padding: 60px 0; border-top: 1px solid var(--border); text-align: center; margin-top: 100px; background: rgba(0,0,0,0.2); }
+        .footer-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: #fff; }
+        .footer-logo span { color: var(--accent); }
+        .loading-shimmer { height: 250px; background: linear-gradient(90deg, var(--card) 25%, rgba(255,255,255,0.05) 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 2s infinite linear; border-radius: 24px; display: none; border: 1px solid var(--border); }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .error-toast { background: #450a0a; border: 1px solid #991b1b; color: #fecaca; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: none; }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <a href="/" class="logo">SOLVIX<span>SQL</span></a>
-        <div style="display: flex; gap: 20px; align-items: center;">
-            <a href="/app/dashboard" style="color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500;">Painel</a>
-            <button onclick="logout()" style="background: none; border: none; color: #f87171; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        <div class="nav-actions">
+            <a href="/app/dashboard" class="nav-link">Dashboard</a>
+            <button onclick="logout()" class="btn-logout">
                 <i data-lucide="log-out" style="width: 14px;"></i> Sair
             </button>
         </div>
     </nav>
     <div class="container">
-        <div class="error-toast" id="error-toast"></div>
-        <div class="input-section">
-            <div class="label"><i data-lucide="database"></i> Requisitar Consulta SQL Senior</div>
-            <textarea id="prompt" placeholder="Descreva a consulta, cursor ou relatório SQL desejado..."></textarea>
+        <div class="glass-card">
+            <div class="label"><i data-lucide="database" style="width: 16px;"></i> Consulta SQL Sênior</div>
+            <textarea id="prompt" placeholder="Descreva a consulta ou cursor SQL Senior que deseja gerar..."></textarea>
             <div class="actions">
-                <button id="generate-btn" class="btn-generate"><i data-lucide="search"></i> Gerar SQL Sênior</button>
+                <button id="generate-btn" class="btn-generate"><i data-lucide="search" style="width: 16px;"></i> Gerar SQL Sênior</button>
             </div>
         </div>
         <div id="loading" class="loading-shimmer"></div>
         <div id="results-grid" class="results-grid">
-            <div class="result-card">
-                <div class="result-header"><div class="label" style="margin:0; color: var(--primary);"><i data-lucide="book-open"></i> Análise Técnica</div></div>
+            <div class="result-item">
+                <div class="result-header"><div class="label" style="margin:0; color: var(--primary);"><i data-lucide="info" style="width: 14px;"></i> Análise Técnica</div></div>
                 <div class="result-body"><div id="explanation" class="explanation-text"></div></div>
             </div>
-            <div class="result-card" style="border-color: rgba(59, 130, 246, 0.3);">
+            <div class="result-item" style="border-color: rgba(59, 130, 246, 0.3);">
                 <div class="result-header">
-                    <div class="label" style="margin:0;"><i data-lucide="terminal"></i> Script SQL / Cursor</div>
-                    <button class="btn-copy" onclick="copyCode()"><i data-lucide="copy"></i> Copiar Código</button>
+                    <div class="label" style="margin:0;"><i data-lucide="terminal" style="width: 14px;"></i> Script SQL</div>
+                    <button class="btn-copy" onclick="copyCode()"><i data-lucide="copy" style="width: 13px;"></i> Copiar</button>
                 </div>
                 <div class="result-body" style="background: #010409;"><pre id="code-content"></pre></div>
             </div>
@@ -82,7 +88,7 @@
     </div>
     <footer class="footer">
         <div class="footer-logo">SOLVIX<span>SQL</span></div>
-        <div style="color: #4b5563; font-size: 12px; margin-top: 10px;">© 2026 Solvix AI Solutions. Inteligência de Dados para ERP Senior.</div>
+        <div style="color: #4b5563; font-size: 13px; margin-top: 10px;">© 2026 Solvix AI. Inteligência de Dados para Ecossistema Senior.</div>
     </footer>
     <script>
         lucide.createIcons();
@@ -91,7 +97,6 @@
             localStorage.removeItem('user_role');
             window.location.href = '/';
         }
-        
         const btn = document.getElementById('generate-btn');
         const promptInput = document.getElementById('prompt');
         const resultsGrid = document.getElementById('results-grid');
@@ -106,14 +111,12 @@
             btn.disabled = true;
             loading.style.display = "block";
             resultsGrid.style.display = "none";
-            errorToast.style.display = "none";
             try {
                 const response = await fetch('/api/gerar-sql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: "[MODO SQL] " + text })
                 });
-                if (!response.ok) { const err = await response.json(); throw new Error(err.error || 'Erro'); }
                 const data = await response.json();
                 const raw = data.resultado;
                 const getTag = (tag) => {
@@ -123,21 +126,18 @@
                     const e = raw.indexOf("##", after);
                     return (e === -1 ? raw.slice(after) : raw.slice(after, e)).trim();
                 };
-                const explanation = getTag("EXPLICACOES");
-                const code = getTag("CONTEUDO");
-                if (!code && !explanation) { explanationDiv.innerText = "Resposta direta."; codePre.innerText = raw; }
-                else { explanationDiv.innerText = explanation; codePre.innerText = code; }
+                explanationDiv.innerText = getTag("EXPLICACOES") || "Direct Response";
+                codePre.innerText = getTag("CONTEUDO") || raw;
                 loading.style.display = "none";
                 resultsGrid.style.display = "grid";
             } catch (err) {
                 loading.style.display = "none";
-                errorToast.innerText = "Erro: " + err.message;
-                errorToast.style.display = "block";
+                alert("Erro: " + err.message);
             } finally { btn.disabled = false; }
         });
         function copyCode() {
             navigator.clipboard.writeText(codePre.innerText);
-            alert("Código SQL copiado!");
+            alert("SQL Copiado!");
         }
     </script>
 </body>
