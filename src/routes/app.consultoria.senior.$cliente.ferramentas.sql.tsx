@@ -117,7 +117,7 @@ function SqlGeminiGenerator() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       
       {/* Gemini Header */}
       <div className="flex items-center gap-4 py-4 border-b border-blue-500/10">
@@ -143,7 +143,9 @@ function SqlGeminiGenerator() {
         </div>
         <textarea
           ref={inputRef}
-          className="w-full min-h-[120px] bg-transparent border-none outline-none p-5 text-sm text-foreground placeholder:text-slate-700 leading-relaxed resize-none font-mono"
+          defaultValue=""
+          spellCheck={false}
+          className="w-full min-h-[140px] bg-transparent border-none outline-none p-5 text-sm text-foreground placeholder:text-slate-700 leading-relaxed resize-none font-mono"
           placeholder="Ex: Quero buscar todos os pedidos de venda em aberto de um cliente específico com valor total..."
         />
         <div className="p-4 flex items-center justify-between bg-secondary/10 border-t border-blue-500/10">
