@@ -166,7 +166,10 @@
                 <textarea id="context" style="height: 60px; font-size: 14px;" placeholder="Cole aqui campos da tela, variáveis disponíveis ou metadados para maior precisão..."></textarea>
             </div>
 
-            <div class="actions">
+            <div class="actions" style="justify-content: space-between; align-items: center;">
+                <button onclick="loadExample()" style="background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); padding: 8px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="lightbulb" style="width: 14px;"></i> Ver Exemplo de Engenharia
+                </button>
                 <button id="generate-btn" class="btn-generate">
                     Gerar Solução Completa <i data-lucide="arrow-right" style="width: 16px;"></i>
                 </button>
@@ -219,6 +222,51 @@
 
     <script>
         lucide.createIcons();
+
+        function loadExample() {
+            promptInput.value = "Bloqueio de pedido por limite de crédito excedido";
+            document.getElementById('context').value = "Tela: F120GPD (Pedido de Venda)\nCampos: VlrPed (Valor do Pedido), CodCli (Código do Cliente)";
+            
+            // Simula o resultado estruturado
+            resultsArea.style.display = "block";
+            document.getElementById('mapa-content').innerText = `📍 FASE 1: ROADMAP DE IMPLEMENTAÇÃO
+
+1. IDENTIFICADOR DE REGRA:
+   - Ative o identificador GER-120ALC01 (Aprovações e Bloqueios de Pedidos).
+   - Vincule a regra ao evento "Antes de Fechar Pedido".
+
+2. CAMINHO NO SAPIENS:
+   - Mercado > Gestão de Vendas > Pedidos > Agrupado (F120GPD).
+
+3. PASSOS TÉCNICOS:
+   - Etapa A: Criar consulta SQL para somar títulos em aberto do cliente na tabela E301MCR.
+   - Etapa B: Comparar (Saldo + VlrPed) contra o campo LCR (Limite de Crédito) na E085CLI.
+   - Etapa C: Se exceder, gerar mensagem de erro (Cancel(1)) e gravar log na tabela customizada.`;
+
+            document.getElementById('sql-content').innerText = `-- FASE 2: SCRIPTS DE BANCO (SQL)
+SELECT 
+    (CLI.LIMCRE - (SELECT SUM(VLRABT) FROM E301MCR WHERE CODCLI = :CodCli)) AS SALDO_DISPONIVEL
+FROM 
+    E085CLI CLI
+WHERE 
+    CLI.CODCLI = :CodCli;`;
+
+            document.getElementById('lsp-content').innerText = `@ FASE 3: REGRAS DE NEGÓCIO (LSP) @
+Definir Numero vVlrPed;
+Definir Numero vCodCli;
+Definir Numero vSaldo;
+
+@ Busca saldo via SQL @
+vSaldo = ... (Resultado do SQL acima);
+
+Se (vVlrPed > vSaldo)
+Inicio
+    Mensagem(Erro, "Limite de Crédito Excedido! Saldo: " + vSaldo);
+    Cancel(1); @ Bloqueia a gravação @
+Fim;`;
+            showTab('mapa');
+            lucide.createIcons();
+        }
 
         function logout() {
             localStorage.removeItem('google_authenticated');
