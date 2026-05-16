@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronRight,
   ArrowLeft,
+  ShieldCheck,
 } from 'lucide-react';
 
 // ── Sidebar é memo'd para não re-renderizar quando o conteúdo principal atualiza
