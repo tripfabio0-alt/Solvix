@@ -3,47 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solvix Pro - SQL Senior</title>
+    <title>Solvix SQL - Consultoria Senior</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg: #030408;
-            --card: #0a0c14;
-            --border: #1e293b;
-            --primary: #3b82f6;
-            --secondary: #6366f1;
-            --text: #f8fafc;
-            --muted: #94a3b8;
+            --bg: #05050a;
+            --card: #0d0d1a;
+            --border: #1e1e2d;
+            --primary: #6366f1;
+            --accent: #3b82f6;
+            --text: #ffffff;
+            --muted: #8b949e;
         }
 
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
-        .navbar { height: 64px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(3,4,8,0.8); backdrop-blur: 12px; position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: 800; font-size: 20px; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
-        .logo span { color: var(--primary); }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .input-section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .label { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        textarea { width: 100%; height: 120px; background: transparent; border: none; color: var(--text); font-size: 18px; resize: none; outline: none; padding: 0; margin-top: 10px; }
-        .actions { display: flex; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
-        .btn-generate { background: linear-gradient(135deg, var(--primary), #2563eb); color: white; border: none; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
-        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        h1, h2, .logo-text { font-family: 'Outfit', sans-serif; }
+        .navbar { height: 72px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(5,5,10,0.8); backdrop-blur: 12px; position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: 800; font-size: 24px; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+        .logo span { color: var(--accent); }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; flex: 1; }
+        .input-section { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; margin-bottom: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        .input-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.5; }
+        .label { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+        textarea { width: 100%; height: 100px; background: transparent; border: none; color: var(--text); font-size: 18px; resize: none; outline: none; font-weight: 300; }
+        .actions { display: flex; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 24px; }
+        .btn-generate { background: var(--accent); color: #ffffff; border: none; padding: 14px 36px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.3s; font-family: 'Outfit', sans-serif; text-transform: uppercase; font-size: 13px; }
+        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); background: #60a5fa; }
         .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; display: none; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; display: none; }
         @media (max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
-        .result-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
-        .result-header { padding: 16px 24px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .result-body { padding: 24px; flex: 1; font-size: 14px; }
-        pre { margin: 0; white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #79c0ff; line-height: 1.5; }
+        .result-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
+        .result-header { padding: 20px 24px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .result-body { padding: 24px; flex: 1; font-size: 15px; }
+        pre { margin: 0; white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #79c0ff; line-height: 1.6; }
         .explanation-text { color: var(--muted); white-space: pre-wrap; }
-        .btn-copy { background: var(--border); color: var(--text); border: none; padding: 6px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .loading-shimmer { height: 200px; background: linear-gradient(90deg, var(--card) 25%, #1e293b 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 16px; display: none; }
+        .btn-copy { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; margin-top: 60px; }
+        .footer-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--muted); }
+        .loading-shimmer { height: 200px; background: linear-gradient(90deg, var(--card) 25%, #1e1e2d 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; display: none; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-        .error-toast { background: #450a0a; border: 1px solid #991b1b; color: #fecaca; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .error-toast { background: #450a0a; border: 1px solid #991b1b; color: #fecaca; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: none; }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">SOLVIX<span>SQL</span></div>
+        <a href="/" class="logo">SOLVIX<span>SQL</span></a>
         <a href="/app/dashboard" style="color: var(--muted); text-decoration: none; font-size: 13px;">Voltar ao Dashboard</a>
     </nav>
     <div class="container">
@@ -52,26 +57,28 @@
             <div class="label"><i data-lucide="database"></i> Requisitar Consulta SQL Senior</div>
             <textarea id="prompt" placeholder="Descreva a consulta, cursor ou relatório SQL desejado..."></textarea>
             <div class="actions">
-                <button id="generate-btn" class="btn-generate">
-                    <i data-lucide="search"></i> GERAR SQL E CURSOR
-                </button>
+                <button id="generate-btn" class="btn-generate"><i data-lucide="search"></i> Gerar SQL Sênior</button>
             </div>
         </div>
         <div id="loading" class="loading-shimmer"></div>
         <div id="results-grid" class="results-grid">
             <div class="result-card">
-                <div class="result-header"><div class="label" style="margin:0;"><i data-lucide="book-open"></i> Análise Técnica</div></div>
+                <div class="result-header"><div class="label" style="margin:0; color: var(--primary);"><i data-lucide="book-open"></i> Análise Técnica</div></div>
                 <div class="result-body"><div id="explanation" class="explanation-text"></div></div>
             </div>
-            <div class="result-card" style="border-color: var(--primary);">
+            <div class="result-card" style="border-color: rgba(59, 130, 246, 0.3);">
                 <div class="result-header">
-                    <div class="label" style="margin:0;"><i data-lucide="code-2"></i> Script SQL / Cursor</div>
+                    <div class="label" style="margin:0;"><i data-lucide="terminal"></i> Script SQL / Cursor</div>
                     <button class="btn-copy" onclick="copyCode()"><i data-lucide="copy"></i> Copiar Código</button>
                 </div>
                 <div class="result-body" style="background: #010409;"><pre id="code-content"></pre></div>
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <div class="footer-logo">SOLVIX<span>SQL</span></div>
+        <div style="color: #4b5563; font-size: 12px; margin-top: 10px;">© 2026 Solvix AI Solutions. Inteligência de Dados para ERP Senior.</div>
+    </footer>
     <script>
         lucide.createIcons();
         const btn = document.getElementById('generate-btn');
@@ -107,19 +114,19 @@
                 };
                 const explanation = getTag("EXPLICACOES");
                 const code = getTag("CONTEUDO");
-                if (!code && !explanation) { explanationDiv.innerText = "Resposta não estruturada."; codePre.innerText = raw; }
-                else { explanationDiv.innerText = explanation || "Sem análise."; codePre.innerText = code || "Nenhum SQL."; }
+                if (!code && !explanation) { explanationDiv.innerText = "Resposta direta."; codePre.innerText = raw; }
+                else { explanationDiv.innerText = explanation; codePre.innerText = code; }
                 loading.style.display = "none";
                 resultsGrid.style.display = "grid";
             } catch (err) {
                 loading.style.display = "none";
-                errorToast.innerText = "Falha: " + err.message;
+                errorToast.innerText = "Erro: " + err.message;
                 errorToast.style.display = "block";
             } finally { btn.disabled = false; }
         });
         function copyCode() {
-            navigator.clipboard.writeText(document.getElementById('code-content').innerText);
-            alert("Código copiado!");
+            navigator.clipboard.writeText(codePre.innerText);
+            alert("Código SQL copiado!");
         }
     </script>
 </body>
