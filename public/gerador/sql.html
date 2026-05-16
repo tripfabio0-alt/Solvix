@@ -144,6 +144,44 @@
 
     <script>
         lucide.createIcons();
+        function loadExample() {
+            promptInput.value = "Análise de Margem de Lucro por Pedido para Comissões";
+            document.getElementById('context').value = "Tabelas: E120IPD (Itens do Pedido)\nCampos: PERMAR (Margem), NUMPED (Pedido)";
+            
+            resultsArea.style.display = "block";
+            document.getElementById('mapa-content').innerText = `📍 FASE 1: ROADMAP (ESTRUTURA DE DADOS)
+
+1. OBJETIVO:
+   - Identificar a margem de lucro média de um pedido para alimentar a regra de comissão.
+
+2. LOCALIZAÇÃO:
+   - Banco de Dados: Oracle/SQL Server.
+   - Tabela: E120IPD (Itens de Pedido de Venda).
+
+3. INTEGRAÇÃO:
+   - Este SQL será chamado via cursor dentro da Regra LSP VEN-120CALC01.`;
+
+            document.getElementById('sql-content').innerText = `-- FASE 2: SQL PROFISSIONAL
+SELECT 
+    AVG(PERMAR) AS MARGEM_MEDIA 
+FROM 
+    E120IPD 
+WHERE 
+    CODEMP = :CodEmp AND 
+    CODFIL = :CodFil AND 
+    NUMPED = :NumPed;`;
+
+            document.getElementById('lsp-content').innerText = `@ FASE 3: CONSUMO EM LSP @
+Definir Numero vMargem;
+vMargem = ExecutarSQL("Fase 2");
+
+Se (vMargem < 15)
+  @ Aplica Redutor @
+...`;
+            showTab('mapa');
+            lucide.createIcons();
+        }
+
         function logout() {
             localStorage.removeItem('google_authenticated');
             localStorage.removeItem('user_role');

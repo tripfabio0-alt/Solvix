@@ -224,46 +224,49 @@
         lucide.createIcons();
 
         function loadExample() {
-            promptInput.value = "Bloqueio de pedido por limite de crédito excedido";
-            document.getElementById('context').value = "Tela: F120GPD (Pedido de Venda)\nCampos: VlrPed (Valor do Pedido), CodCli (Código do Cliente)";
+            promptInput.value = "Cálculo de comissão variável com validação de margem de lucro";
+            document.getElementById('context').value = "Tabelas: E120PED (Pedidos), E045VEN (Vendedores)\nCampos: VlrLiq (Valor Líquido), PerCom (Percentual)";
             
-            // Simula o resultado estruturado
             resultsArea.style.display = "block";
-            document.getElementById('mapa-content').innerText = `📍 FASE 1: ROADMAP DE IMPLEMENTAÇÃO
+            document.getElementById('mapa-content').innerText = `📍 FASE 1: ROADMAP DE IMPLANTAÇÃO (ARQUITETURA)
 
-1. IDENTIFICADOR DE REGRA:
-   - Ative o identificador GER-120ALC01 (Aprovações e Bloqueios de Pedidos).
-   - Vincule a regra ao evento "Antes de Fechar Pedido".
+1. PONTO DE ENTRADA:
+   - Tela: Mercado > Gestão de Vendas > Comissões > Cálculo (F120COM).
+   - Identificador de Regra: VEN-120CALC01 (Personalização do Cálculo de Comissões).
 
-2. CAMINHO NO SAPIENS:
-   - Mercado > Gestão de Vendas > Pedidos > Agrupado (F120GPD).
+2. CONFIGURAÇÃO DE SISTEMA:
+   - Habilitar o parâmetro "Cálculo por Regra LSP" no Cadastro de Filiais.
 
-3. PASSOS TÉCNICOS:
-   - Etapa A: Criar consulta SQL para somar títulos em aberto do cliente na tabela E301MCR.
-   - Etapa B: Comparar (Saldo + VlrPed) contra o campo LCR (Limite de Crédito) na E085CLI.
-   - Etapa C: Se exceder, gerar mensagem de erro (Cancel(1)) e gravar log na tabela customizada.`;
+3. FLUXO DA SOLUÇÃO:
+   - Passo A: O sistema aciona a Regra LSP no momento do processamento.
+   - Passo B: O SQL busca a margem de lucro real dos itens do pedido.
+   - Passo C: A regra LSP aplica o redutor se a margem for inferior a 15%.`;
 
-            document.getElementById('sql-content').innerText = `-- FASE 2: SCRIPTS DE BANCO (SQL)
+            document.getElementById('sql-content').innerText = `-- FASE 2: INTELIGÊNCIA DE DADOS (SQL)
 SELECT 
-    (CLI.LIMCRE - (SELECT SUM(VLRABT) FROM E301MCR WHERE CODCLI = :CodCli)) AS SALDO_DISPONIVEL
+    AVG(PERMAR) AS MARGEM_MEDIA 
 FROM 
-    E085CLI CLI
+    E120IPD 
 WHERE 
-    CLI.CODCLI = :CodCli;`;
+    CODEMP = :CodEmp AND 
+    CODFIL = :CodFil AND 
+    NUMPED = :NumPed;`;
 
-            document.getElementById('lsp-content').innerText = `@ FASE 3: REGRAS DE NEGÓCIO (LSP) @
-Definir Numero vVlrPed;
-Definir Numero vCodCli;
-Definir Numero vSaldo;
+            document.getElementById('lsp-content').innerText = `@ FASE 3: ENGENHARIA DE REGRAS (LSP) @
+Definir Numero vMargem;
+Definir Numero vComissaoOriginal;
 
-@ Busca saldo via SQL @
-vSaldo = ... (Resultado do SQL acima);
+@ Executa Consulta SQL da Fase 2 @
+vMargem = SQL_BuscaMargemMedia(vNumPed);
 
-Se (vVlrPed > vSaldo)
+@ Lógica de Negócio @
+Se (vMargem < 15)
 Inicio
-    Mensagem(Erro, "Limite de Crédito Excedido! Saldo: " + vSaldo);
-    Cancel(1); @ Bloqueia a gravação @
-Fim;`;
+    vComissaoOriginal = vComissaoOriginal * 0.50; @ Reduz 50% da comissão @
+    GeraLog("Comissão reduzida por baixa margem de lucro.");
+Fim;
+
+FinalizarRegra();`;
             showTab('mapa');
             lucide.createIcons();
         }
