@@ -162,7 +162,12 @@
             <textarea id="prompt" placeholder="Descreva a regra de negócio ou lógica desejada..."></textarea>
             
             <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
-                <div class="label" style="color: var(--muted);"><i data-lucide="layout"></i> Contexto da Tela (Opcional)</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="label" style="color: var(--muted); margin-bottom: 0;"><i data-lucide="layout"></i> Contexto da Tela (Opcional)</div>
+                    <button id="suggest-ctx-btn" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                        <i data-lucide="sparkles" style="width: 12px;"></i> SUGERIR CONTEXTO
+                    </button>
+                </div>
                 <textarea id="context" style="height: 60px; font-size: 14px;" placeholder="Cole aqui campos da tela, variáveis disponíveis ou metadados para maior precisão..."></textarea>
             </div>
 
@@ -296,6 +301,34 @@ FinalizarRegra();`;
         const resultsArea = document.getElementById('results-area');
         const loading = document.getElementById('loading');
         const errorToast = document.getElementById('error-toast');
+
+        const suggestCtxBtn = document.getElementById('suggest-ctx-btn');
+        const contextInput = document.getElementById('context');
+
+        suggestCtxBtn.addEventListener('click', async () => {
+            const text = promptInput.value.trim();
+            if (!text) { alert("Digite algo no prompt primeiro!"); return; }
+            
+            suggestCtxBtn.disabled = true;
+            suggestCtxBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i>';
+            lucide.createIcons();
+
+            try {
+                const response = await fetch('/api/gerar-sql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: "[SUGERIR CONTEXTO] " + text })
+                });
+                const data = await response.json();
+                contextInput.value = data.resultado.trim();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                suggestCtxBtn.disabled = false;
+                suggestCtxBtn.innerHTML = '<i data-lucide="sparkles" style="width: 12px;"></i> SUGERIR CONTEXTO';
+                lucide.createIcons();
+            }
+        });
 
         btn.addEventListener('click', async () => {
             const text = promptInput.value.trim();

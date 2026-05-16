@@ -37,9 +37,9 @@
         .label { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; letter-spacing: 1.5px; }
         textarea { width: 100%; height: 100px; background: transparent; border: none; color: var(--text); font-size: 18px; resize: none; outline: none; font-weight: 300; }
         .actions { display: flex; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 24px; }
+        
         .btn-generate { background: linear-gradient(to right, #3b82f6, #2563eb); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: transform 0.2s; font-size: 14px; }
         
-        /* TABS SYSTEM */
         .tab-container { display: flex; gap: 4px; padding: 8px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); }
         .tab { padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
         .tab:hover { background: rgba(255,255,255,0.05); color: var(--text); }
@@ -90,11 +90,19 @@
             <textarea id="prompt" placeholder="Descreva a consulta, cursor ou relatório SQL desejado..."></textarea>
             
             <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
-                <div class="label" style="color: var(--muted);"><i data-lucide="table"></i> Contexto de Tabelas/Campos (Opcional)</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="label" style="color: var(--muted); margin-bottom: 0;"><i data-lucide="table"></i> Contexto de Tabelas/Campos (Opcional)</div>
+                    <button id="suggest-ctx-btn" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: var(--primary); padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                        <i data-lucide="sparkles" style="width: 12px;"></i> SUGERIR CONTEXTO
+                    </button>
+                </div>
                 <textarea id="context" style="height: 60px; font-size: 14px;" placeholder="Cole aqui a estrutura da tabela ou campos específicos para maior precisão..."></textarea>
             </div>
 
-            <div class="actions">
+            <div class="actions" style="justify-content: space-between; align-items: center;">
+                <button onclick="loadExample()" style="background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); padding: 8px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="lightbulb" style="width: 14px;"></i> Ver Exemplo
+                </button>
                 <button id="generate-btn" class="btn-generate">
                     Gerar Solução Completa <i data-lucide="arrow-right" style="width: 16px;"></i>
                 </button>
@@ -144,44 +152,6 @@
 
     <script>
         lucide.createIcons();
-        function loadExample() {
-            promptInput.value = "Análise de Margem de Lucro por Pedido para Comissões";
-            document.getElementById('context').value = "Tabelas: E120IPD (Itens do Pedido)\nCampos: PERMAR (Margem), NUMPED (Pedido)";
-            
-            resultsArea.style.display = "block";
-            document.getElementById('mapa-content').innerText = `📍 FASE 1: ROADMAP (ESTRUTURA DE DADOS)
-
-1. OBJETIVO:
-   - Identificar a margem de lucro média de um pedido para alimentar a regra de comissão.
-
-2. LOCALIZAÇÃO:
-   - Banco de Dados: Oracle/SQL Server.
-   - Tabela: E120IPD (Itens de Pedido de Venda).
-
-3. INTEGRAÇÃO:
-   - Este SQL será chamado via cursor dentro da Regra LSP VEN-120CALC01.`;
-
-            document.getElementById('sql-content').innerText = `-- FASE 2: SQL PROFISSIONAL
-SELECT 
-    AVG(PERMAR) AS MARGEM_MEDIA 
-FROM 
-    E120IPD 
-WHERE 
-    CODEMP = :CodEmp AND 
-    CODFIL = :CodFil AND 
-    NUMPED = :NumPed;`;
-
-            document.getElementById('lsp-content').innerText = `@ FASE 3: CONSUMO EM LSP @
-Definir Numero vMargem;
-vMargem = ExecutarSQL("Fase 2");
-
-Se (vMargem < 15)
-  @ Aplica Redutor @
-...`;
-            showTab('mapa');
-            lucide.createIcons();
-        }
-
         function logout() {
             localStorage.removeItem('google_authenticated');
             localStorage.removeItem('user_role');
@@ -199,15 +169,64 @@ Se (vMargem < 15)
             alert("Copiado!");
         }
         
+        function loadExample() {
+            promptInput.value = "Análise de Margem de Lucro por Pedido para Comissões";
+            document.getElementById('context').value = "Tabelas: E120IPD (Itens do Pedido)\nCampos: PERMAR (Margem), NUMPED (Pedido)";
+            resultsArea.style.display = "block";
+            document.getElementById('mapa-content').innerText = `📍 FASE 1: ROADMAP (ESTRUTURA DE DADOS)
+
+1. OBJETIVO:
+   - Identificar a margem de lucro média de um pedido para alimentar a regra de comissão.
+
+2. LOCALIZAÇÃO:
+   - Banco de Dados: Oracle/SQL Server.
+   - Tabela: E120IPD (Itens de Pedido de Venda).
+
+3. INTEGRAÇÃO:
+   - Este SQL será chamado via cursor dentro da Regra LSP VEN-120CALC01.`;
+            document.getElementById('sql-content').innerText = `-- FASE 2: SQL PROFISSIONAL
+SELECT AVG(PERMAR) AS MARGEM_MEDIA FROM E120IPD WHERE CODEMP = :CodEmp AND CODFIL = :CodFil AND NUMPED = :NumPed;`;
+            document.getElementById('lsp-content').innerText = `@ FASE 3: CONSUMO EM LSP @
+Definir Numero vMargem;
+vMargem = ExecutarSQL("Fase 2");
+Se (vMargem < 15) Inicio vComissao = vComissao * 0.5; Fim;`;
+            showTab('mapa');
+            lucide.createIcons();
+        }
+
         const btn = document.getElementById('generate-btn');
+        const suggestCtxBtn = document.getElementById('suggest-ctx-btn');
         const promptInput = document.getElementById('prompt');
+        const contextInput = document.getElementById('context');
         const resultsArea = document.getElementById('results-area');
         const loading = document.getElementById('loading');
         const errorToast = document.getElementById('error-toast');
 
+        suggestCtxBtn.addEventListener('click', async () => {
+            const text = promptInput.value.trim();
+            if (!text) { alert("Digite algo no prompt primeiro!"); return; }
+            suggestCtxBtn.disabled = true;
+            suggestCtxBtn.innerHTML = '<i class="animate-spin" data-lucide="loader-2"></i>';
+            lucide.createIcons();
+            try {
+                const response = await fetch('/api/gerar-sql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: "[SUGERIR CONTEXTO] " + text })
+                });
+                const data = await response.json();
+                contextInput.value = data.resultado.trim();
+            } catch (err) { console.error(err); }
+            finally {
+                suggestCtxBtn.disabled = false;
+                suggestCtxBtn.innerHTML = '<i data-lucide="sparkles" style="width: 12px;"></i> SUGERIR CONTEXTO';
+                lucide.createIcons();
+            }
+        });
+
         btn.addEventListener('click', async () => {
             const text = promptInput.value.trim();
-            const context = document.getElementById('context').value.trim();
+            const context = contextInput.value.trim();
             if (!text) return;
             const fullPrompt = `[MODO SQL] REQUISITO: ${text}${context ? '\nCONTEXTO DE TABELAS: ' + context : ''}`;
             btn.disabled = true;

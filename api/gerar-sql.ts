@@ -15,7 +15,32 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const modelToUse = 'gemini-flash-latest';
     
-    // Prompt ultra-especializado para Senior Sistemas
+    // Lógica para sugestão de contexto técnico
+    if (prompt.startsWith('[SUGERIR CONTEXTO]')) {
+      const suggestPrompt = `Você é um Analista de Sistemas Senior. 
+O usuário descreveu um requisito e você deve sugerir quais Tabelas, Campos e Telas do ERP Sapiens/Vetorh estão envolvidos.
+Retorne APENAS uma lista curta e direta.
+
+Exemplo de resposta:
+Tabelas: E120PED, E120IPD
+Campos: CodCli, VlrPed, Situac
+Telas: F120GPD
+
+Requisição do usuário: ${prompt.replace('[SUGERIR CONTEXTO]', '')}`;
+
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: suggestPrompt }] }]
+        })
+      });
+      const data = await geminiRes.json();
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Tabelas: \nCampos: ';
+      return res.status(200).json({ resultado: responseText });
+    }
+
+    // Prompt ultra-especializado para Senior Sistemas (3 Fases)
     const systemPrompt = `Você é um Arquiteto de Soluções Sênior especialista em ERP Senior (Sapiens/Vetorh).
 Sua missão é entregar uma solução dividida em 3 FASES distintas.
 
