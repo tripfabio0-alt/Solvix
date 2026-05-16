@@ -1,8 +1,14 @@
 {
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/app/:path*/ferramentas/lsp",
+      "destination": "/ferramenta-lsp.html",
+      "permanent": false
+    },
+    {
+      "source": "/app/:path*/ferramentas/sql",
+      "destination": "/ferramenta-sql.html",
+      "permanent": false
     }
   ]
 }

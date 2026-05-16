@@ -33,9 +33,11 @@ export const Sidebar: React.FC = memo(() => {
   const handleClientClick = useCallback(
     (clientSlug: string) => {
       setActiveClientBySlug(clientSlug);
-      navigate({ to: `/app/consultoria/senior/${clientSlug}` });
+      // Redirecionamento direto para a ferramenta ultraleve
+      const toolType = expandedTool === 'senior-sql' ? 'sql' : 'lsp';
+      window.location.href = `/ferramenta-${toolType}.html`;
     },
-    [setActiveClientBySlug, navigate]
+    [setActiveClientBySlug, expandedTool]
   );
 
   const handleSegmentClick = useCallback(
