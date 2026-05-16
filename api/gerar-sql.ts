@@ -9,11 +9,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const { prompt } = req.body;
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
-    if (!GEMINI_API_KEY) throw new Error('Chave GEMINI_API_KEY não configurada.');
-
-    const modelToUse = 'gemini-2.0-flash'; // O único modelo que sua chave reconhece (aguardar cota)
+    const GEMINI_API_KEY = 'AIzaSyDpmRE7jQNmbBKn_FM9cyN8Yn4liWH56rA';
+    const modelToUse = 'gemini-1.5-flash'; 
     
     // Lógica para sugestão de contexto técnico
     if (prompt.startsWith('[SUGERIR CONTEXTO]')) {
