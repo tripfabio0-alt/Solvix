@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router';
+import { createFileRoute, createFileRoute, Outlet, useLocation } from '@tanstack/react-router';
 import { SegmentProvider } from '../hooks/SegmentContext';
 import { AppShell } from '../components/layout/AppShell';
 import { useState, useEffect } from 'react';
@@ -40,13 +40,13 @@ function AppLayout() {
         <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-amber-500/10 blur-[128px] animate-pulse"></div>
 
         <div className="glass-card w-full max-w-md rounded-3xl border border-border/40 bg-card/20 p-8 text-center backdrop-blur-2xl shadow-[0_0_50px_rgba(99,102,241,0.15)] transition-all duration-500">
-          
+
           {/* Logo */}
           <div className="flex flex-col items-center justify-center mb-8">
-            <img 
-              src={logo} 
-              alt="Solvix" 
-              className="h-44 w-44 object-contain drop-shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-transform duration-500 hover:scale-105" 
+            <img
+              src={logo}
+              alt="Solvix"
+              className="h-44 w-44 object-contain drop-shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-transform duration-500 hover:scale-105"
             />
           </div>
 

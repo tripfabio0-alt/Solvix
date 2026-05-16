@@ -1,5 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useLocation } from '@tanstack/react-router';
 import { useSegment } from '../../hooks/SegmentContext';
 import {
   LogOut,
@@ -22,6 +22,12 @@ export const Sidebar: React.FC = memo(() => {
   } = useSegment();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Se estiver em uma ferramenta, a sidebar some 100% para dar performance
+  if (location.pathname.includes('/ferramentas/')) {
+    return null;
+  }
 
   // expandedTool é estado LOCAL do Sidebar — não toca no contexto global
   const [expandedTool, setExpandedTool] = useState<string | null>('senior');

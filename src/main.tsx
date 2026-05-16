@@ -6,8 +6,12 @@ import './styles.css'
 
 const router = getRouter();
 
+// Utilitário de emergência para limpar cache/login se travar
+(window as any).solvixReset = () => {
+  localStorage.clear();
+  window.location.href = '/';
+};
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
+  <RouterProvider router={router} />
 )
