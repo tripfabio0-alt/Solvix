@@ -349,7 +349,10 @@ FinalizarRegra();`;
                     body: JSON.stringify({ prompt: fullPrompt })
                 });
 
-                if (!response.ok) throw new Error('Erro na geração');
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error || 'Erro na comunicação com a IA');
+                }
                 
                 const data = await response.json();
                 const raw = data.resultado;

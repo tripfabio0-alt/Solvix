@@ -13,31 +13,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!GEMINI_API_KEY) throw new Error('Chave GEMINI_API_KEY não configurada.');
 
-    const modelToUse = 'gemini-flash-latest';
+    const modelToUse = 'gemini-1.5-flash'; // Nome correto do modelo para estabilidade
     
     // Lógica para sugestão de contexto técnico
     if (prompt.startsWith('[SUGERIR CONTEXTO]')) {
-      const suggestPrompt = `Você é um Analista de Sistemas Senior. 
-O usuário descreveu um requisito e você deve sugerir quais Tabelas, Campos e Telas do ERP Sapiens/Vetorh estão envolvidos.
-Retorne APENAS uma lista curta e direta.
+      const suggestPrompt = `Você é um Analista Senior Senior. 
+Sugira Tabelas, Campos e Telas Senior (Sapiens) para o requisito abaixo. Seja curto.
+Ex: Tabelas: E120PED | Campos: CodCli | Telas: F120GPD.
+Requisito: ${prompt.replace('[SUGERIR CONTEXTO]', '')}`;
 
-Exemplo de resposta:
-Tabelas: E120PED, E120IPD
-Campos: CodCli, VlrPed, Situac
-Telas: F120GPD
-
-Requisição do usuário: ${prompt.replace('[SUGERIR CONTEXTO]', '')}`;
-
-      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: suggestPrompt }] }]
-        })
-      });
-      const data = await geminiRes.json();
-      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Tabelas: \nCampos: ';
-      return res.status(200).json({ resultado: responseText });
+      try {
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: suggestPrompt }] }]
+          })
+        });
+        const data = await geminiRes.json();
+        if (data.error) throw new Error(data.error.message);
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Tabelas: \nCampos: ';
+        return res.status(200).json({ resultado: responseText });
+      } catch (e: any) {
+        return res.status(500).json({ error: 'Erro ao sugerir contexto: ' + e.message });
+      }
     }
 
     // Prompt ultra-especializado para Senior Sistemas (3 Fases)
@@ -65,20 +64,23 @@ REGRAS CRÍTICAS:
 - Mantenha o texto limpo e profissional.
 - Se o usuário usar [MODO SQL], foque a inteligência no SQL, mas mantenha o MAPA e a tag LSP vazia/com a mensagem padrão.`;
 
-    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nRequisição: ${prompt}` }] }]
-      })
-    });
+    try {
+      const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nRequisição: ${prompt}` }] }]
+        })
+      });
 
-    const data = await geminiRes.json();
-    
-    if (data.error) throw new Error(`Erro Google: ${data.error.message}`);
+      const data = await geminiRes.json();
+      if (data.error) throw new Error(data.error.message);
 
-    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta da IA';
-    return res.status(200).json({ resultado: responseText });
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sem resposta da IA';
+      return res.status(200).json({ resultado: responseText });
+    } catch (e: any) {
+      return res.status(500).json({ error: 'Erro na Google API: ' + e.message });
+    }
 
   } catch (err: any) {
     return res.status(500).json({ error: err.message });

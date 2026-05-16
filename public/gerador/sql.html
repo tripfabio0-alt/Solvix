@@ -239,7 +239,10 @@ Se (vMargem < 15) Inicio vComissao = vComissao * 0.5; Fim;`;
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: fullPrompt })
                 });
-                if (!response.ok) throw new Error('Erro');
+                if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error || 'Erro na comunicação com a IA');
+                }
                 const data = await response.json();
                 const raw = data.resultado;
                 const getTag = (tag, fallback) => {
