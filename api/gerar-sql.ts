@@ -5,7 +5,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const { prompt } = req.body;
-    const GEMINI_API_KEY = 'AIzaSyDpmRE7jQNmbBKn_FM9cyN8Yn4liWH56rA';
+    
+    // USANDO VARIÁVEL DE AMBIENTE (SEGURANÇA)
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({ error: 'Configuração Pendente: A chave GEMINI_API_KEY não foi encontrada nas Variáveis de Ambiente da Vercel.' });
+    }
     
     // 1. DESCOBERTA AUTOMÁTICA DE MODELOS
     const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
@@ -15,7 +21,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new Error(`Erro ao listar modelos: ${listData.error.message}`);
     }
 
-    // Filtra modelos que suportam geração de conteúdo
     const availableModels = listData.models
       ?.filter((m: any) => m.supportedGenerationMethods.includes('generateContent'))
       ?.map((m: any) => m.name);
@@ -24,7 +29,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       throw new Error('Nenhum modelo de geração encontrado para esta chave.');
     }
 
-    // Tenta usar o melhor disponível (preferência por flash para velocidade)
     const modelToUse = availableModels.find((n: string) => n.includes('flash')) || availableModels[0];
 
     let systemPrompt = `Você é um Arquiteto de Soluções Sênior especialista em ERP Senior (Sapiens/Vetorh).
@@ -40,7 +44,7 @@ CAMPOS: [Nomes dos Campos]
 NUNCA use introduções, saudações ou explicações. Seja 100% técnico e direto.`;
     }
 
-    // 2. GERAÇÃO DE CONTEÚDO COM O MODELO DESCOBERTO
+    // 2. GERAÇÃO DE CONTEÚDO
     const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/${modelToUse}:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
