@@ -35,7 +35,7 @@ export const Sidebar: React.FC = memo(() => {
       setActiveClientBySlug(clientSlug);
       // Redirecionamento direto para a ferramenta ultraleve
       const toolType = expandedTool === 'senior-sql' ? 'sql' : 'lsp';
-      window.location.href = `/ferramenta-${toolType}.html`;
+      window.location.href = `/${toolType}.html`;
     },
     [setActiveClientBySlug, expandedTool]
   );

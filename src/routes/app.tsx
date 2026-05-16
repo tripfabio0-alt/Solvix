@@ -32,6 +32,9 @@ function AppLayout() {
   if (!isAuthenticated) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background p-6 overflow-hidden">
+        <div className="absolute top-4 left-4 z-50 bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-bold border border-emerald-500/30">
+          SOLVIX V5.0 - PERFORMANCE MODE ENABLED
+        </div>
         <div className="pointer-events-none absolute inset-0 -z-10" style={{ background: "radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%)" }} />
         
         <div className="glass-card w-full max-w-md p-8 text-center backdrop-blur-2xl">

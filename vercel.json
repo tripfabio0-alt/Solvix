@@ -2,12 +2,12 @@
   "redirects": [
     {
       "source": "/app/:path*/ferramentas/lsp",
-      "destination": "/ferramenta-lsp.html",
+      "destination": "/lsp.html",
       "permanent": false
     },
     {
       "source": "/app/:path*/ferramentas/sql",
-      "destination": "/ferramenta-sql.html",
+      "destination": "/sql.html",
       "permanent": false
     }
   ]
