@@ -2,23 +2,19 @@
   "redirects": [
     {
       "source": "/app/:path*/ferramentas/lsp",
-      "destination": "/lsp.html",
+      "destination": "/gerador/",
       "permanent": false
     },
     {
       "source": "/app/:path*/ferramentas/sql",
-      "destination": "/sql.html",
+      "destination": "/gerador/sql.html",
       "permanent": false
     }
   ],
   "rewrites": [
     {
-      "source": "/lsp.html",
-      "destination": "/lsp.html"
-    },
-    {
-      "source": "/sql.html",
-      "destination": "/sql.html"
+      "source": "/gerador/(.*)",
+      "destination": "/gerador/$1"
     }
   ]
 }

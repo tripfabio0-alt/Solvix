@@ -33,9 +33,9 @@ export const Sidebar: React.FC = memo(() => {
   const handleClientClick = useCallback(
     (clientSlug: string) => {
       setActiveClientBySlug(clientSlug);
-      // Redirecionamento direto para a ferramenta ultraleve
-      const toolType = expandedTool === 'senior-sql' ? 'sql' : 'lsp';
-      window.location.href = `/${toolType}.html`;
+      // Redirecionamento forçado para a pasta independente (Bypass React)
+      const toolUrl = expandedTool === 'senior-sql' ? '/gerador/sql.html' : '/gerador/';
+      window.location.href = toolUrl;
     },
     [setActiveClientBySlug, expandedTool]
   );
