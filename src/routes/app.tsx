@@ -1,4 +1,4 @@
-import { createFileRoute, createFileRoute, Outlet, useLocation } from '@tanstack/react-router';
+import { createFileRoute, Outlet, useLocation } from '@tanstack/react-router';
 import { SegmentProvider } from '../hooks/SegmentContext';
 import { AppShell } from '../components/layout/AppShell';
 import { useState, useEffect } from 'react';
