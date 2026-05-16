@@ -186,10 +186,16 @@
         <div class="error-toast" id="error-toast"></div>
         <div class="input-section">
             <div class="label"><i data-lucide="zap"></i> Requisitar Inteligência de Engenharia</div>
-            <textarea id="prompt" placeholder="Descreva a regra de negócio ou lógica LSP desejada..."></textarea>
+            <textarea id="prompt" placeholder="Descreva a regra de negócio ou lógica desejada..."></textarea>
+            
+            <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                <div class="label" style="color: var(--muted);"><i data-lucide="layout"></i> Contexto da Tela (Opcional)</div>
+                <textarea id="context" style="height: 60px; font-size: 14px;" placeholder="Cole aqui campos da tela, variáveis disponíveis ou metadados para maior precisão..."></textarea>
+            </div>
+
             <div class="actions">
                 <button id="generate-btn" class="btn-generate">
-                    Gerar Solução Sênior <i data-lucide="arrow-right" style="width: 16px;"></i>
+                    Gerar Solução Completa <i data-lucide="arrow-right" style="width: 16px;"></i>
                 </button>
             </div>
         </div>
@@ -264,7 +270,11 @@
 
         btn.addEventListener('click', async () => {
             const text = promptInput.value.trim();
+            const context = document.getElementById('context').value.trim();
             if (!text) return;
+            
+            const fullPrompt = context ? `REQUISITO: ${text}\nCONTEXTO DA TELA: ${context}` : text;
+            
             btn.disabled = true;
             loading.style.display = "block";
             resultsGrid.style.display = "none";
@@ -273,7 +283,7 @@
                 const response = await fetch('/api/gerar-sql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text })
+                    body: JSON.stringify({ prompt: fullPrompt })
                 });
                 if (!response.ok) { const err = await response.json(); throw new Error(err.error || 'Erro'); }
                 const data = await response.json();

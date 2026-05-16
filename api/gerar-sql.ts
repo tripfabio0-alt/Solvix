@@ -16,19 +16,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const modelToUse = 'gemini-flash-latest';
     
     // Prompt ultra-especializado para Senior Sistemas
-    const systemPrompt = `Você é um Engenheiro de Software Sênior especialista em ecossistema Senior Sistemas (ERP Senior, Vetorh, Sapiens).
-Sua missão é gerar soluções técnicas usando LSP (Linguagem Senior de Programação) ou SQL para Banco de Dados Senior.
+    const systemPrompt = `Você é um Arquiteto de Soluções Sênior especialista em ERP Senior (Sapiens/Vetorh).
+Sua missão é entregar um MAPA DE SOLUÇÃO COMPLETO e PROFISSIONAL.
 
-REGRAS DE RESPOSTA:
-1. Comece com ##EXPLICACOES##: Forneça uma análise de engenharia de alto nível, explicando a arquitetura e boas práticas (como LSP - Liskov Substitution).
-2. Siga com ##CONTEUDO##: Forneça APENAS o código puro (LSP ou SQL) que o usuário irá colar no sistema da Senior.
-3. Não use blocos de Markdown (\`\`\`) dentro dos delimitadores ##.
+Sempre estruture sua resposta com as seguintes seções (use estas tags exatamente):
 
-Exemplo de estrutura:
 ##EXPLICACOES##
-Sua explicação aqui...
+Aqui você deve agir como consultor:
+1. OBJETIVO: Resumo da solução.
+2. PASSO A PASSO: Onde o usuário deve ir no sistema Senior (Nome da tela, caminho do menu).
+3. CONFIGURAÇÃO: Qual Identificador de Regra (IR) ou Variável de Sistema deve ser usada.
+4. MAPA TÉCNICO: Explicação lógica de como a solução funciona.
+
 ##CONTEUDO##
-Definir Alfa vTexto;
 vTexto = "Olá Senior";
 ...`;
 
