@@ -109,7 +109,12 @@ function App() {
           "Authorization": "Bearer " + SUPABASE_ANON_KEY,
           "apikey": SUPABASE_ANON_KEY,
         },
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:SYSTEM_PROMPT,messages}),
+        body:JSON.stringify({
+          model:"claude-3-5-sonnet-20240620", 
+          max_tokens:4000, 
+          system:SYSTEM_PROMPT, 
+          messages
+        }),
       });
       if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error("API " + res.status + ": " + (e?.error?.message||res.statusText));}
       const data=await res.json();
@@ -193,7 +198,7 @@ function App() {
             data-enable-grammarly="false"
             onKeyDown={e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey))generate();}}
             placeholder={mode==="image"?"Ex: Quero validar o campo Qtde antes de salvar, bloqueando se for zero...":"Ex: Quero uma regra que ao apontar uma OP verifique se o operador tem permissão e registre um log..."}
-            style={{width:"100%",minHeight:90,background:"transparent",border:"none",borderTop:"1px solid #1e293b",outline:"none",padding:16,color:"#cbd5e1",fontSize:13,fontFamily:"inherit",resize:"vertical",lineHeight:1.6,boxSizing:"border-box"}}
+            style={{width:"100%",minHeight:120,background:"transparent",border:"none",borderTop:"1px solid #1e293b",outline:"none",padding:16,color:"#cbd5e1",fontSize:13,fontFamily:"inherit",resize:"none",lineHeight:1.6,boxSizing:"border-box"}}
           />
 
           <div style={{padding:"10px 16px",borderTop:"1px solid #1e293b",display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap"}}>

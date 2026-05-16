@@ -36,7 +36,7 @@ export function Dashboard() {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-400">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>Plataforma Solvix crIAr v2</span>
+              <span>Plataforma Solvix v2</span>
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
               Olá, Admin Solvix
