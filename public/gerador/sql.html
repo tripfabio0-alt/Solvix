@@ -242,16 +242,18 @@ Se (vMargem < 15) Inicio vComissao = vComissao * 0.5; Fim;`;
                 if (!response.ok) throw new Error('Erro');
                 const data = await response.json();
                 const raw = data.resultado;
-                const getTag = (tag) => {
+                const getTag = (tag, fallback) => {
                     const s = raw.indexOf("##" + tag + "##");
-                    if (s === -1) return "";
+                    if (s === -1) return fallback;
                     const after = s + tag.length + 4;
                     const e = raw.indexOf("##", after);
-                    return (e === -1 ? raw.slice(after) : raw.slice(after, e)).trim();
+                    let content = (e === -1 ? raw.slice(after) : raw.slice(after, e)).trim();
+                    return content || fallback;
                 };
-                document.getElementById('mapa-content').innerText = getTag("MAPA") || "Sem mapa.";
-                document.getElementById('sql-content').innerText = getTag("SQL") || "Sem SQL.";
-                document.getElementById('lsp-content').innerText = getTag("LSP") || "Sem LSP.";
+
+                document.getElementById('mapa-content').innerText = getTag("MAPA", "📍 Mapa de implementação não disponível.");
+                document.getElementById('sql-content').innerText = getTag("SQL", "-- Nenhum script SQL necessário.");
+                document.getElementById('lsp-content').innerText = getTag("LSP", "@ Nenhuma regra LSP necessária.");
                 loading.style.display = "none";
                 resultsArea.style.display = "block";
                 showTab('mapa');
