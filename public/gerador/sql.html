@@ -19,6 +19,7 @@
         pre { margin: 0; color: #79c0ff; font-size: 14px; white-space: pre-wrap; line-height: 1.6; }
         .back-link { color: #8b949e; text-decoration: none; font-size: 13px; border: 1px solid #30363d; padding: 6px 12px; border-radius: 6px; }
         .back-link:hover { border-color: #8b949e; color: white; }
+        .error-msg { color: #ff7b72; font-size: 13px; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -38,6 +39,7 @@
                 <button id="generate-btn">GERAR SQL E CURSOR</button>
             </div>
         </div>
+        <div id="error-display" class="error-msg"></div>
 
         <div id="result"></div>
     </div>
@@ -46,6 +48,7 @@
         const btn = document.getElementById('generate-btn');
         const promptInput = document.getElementById('prompt');
         const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error-display');
 
         btn.addEventListener('click', async () => {
             const text = promptInput.value.trim();
@@ -53,6 +56,8 @@
 
             btn.disabled = true;
             btn.innerText = "GERANDO...";
+            errorDiv.style.display = "none";
+            resultDiv.innerHTML = "";
 
             try {
                 const response = await fetch('/api/gerar-sql', {
@@ -60,6 +65,11 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: "[MODO SQL] " + text })
                 });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `Erro do Servidor (${response.status})`);
+                }
 
                 const data = await response.json();
                 const raw = data.resultado;
@@ -74,14 +84,24 @@
 
                 const content = getTag("SQL_CURSOR");
 
-                resultDiv.innerHTML = `
-                    <div class="result-box">
-                        <div style="color: #8b949e; font-size: 11px; margin-bottom: 10px;">SQL / CURSOR GERADO</div>
-                        <pre>${content}</pre>
-                    </div>
-                `;
+                if (!content) {
+                    resultDiv.innerHTML = `
+                        <div class="result-box">
+                            <div style="color: #8b949e; font-size: 11px; margin-bottom: 10px;">RESULTADO (SQL PURO)</div>
+                            <pre>${raw}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result-box">
+                            <div style="color: #8b949e; font-size: 11px; margin-bottom: 10px;">SQL / CURSOR GERADO</div>
+                            <pre>${content}</pre>
+                        </div>
+                    `;
+                }
             } catch (err) {
-                alert("Erro ao conectar com a IA");
+                errorDiv.innerText = "Falha na Conexão: " + err.message;
+                errorDiv.style.display = "block";
             } finally {
                 btn.disabled = false;
                 btn.innerText = "GERAR SQL E CURSOR";
