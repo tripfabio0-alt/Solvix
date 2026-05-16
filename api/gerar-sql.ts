@@ -22,7 +22,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 Gere respostas técnicas precisas seguindo rigorosamente os delimitadores ## indicados no prompt do usuário.
 Não adicione texto explicativo fora dos blocos delimitados.`;
 
-    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -33,7 +33,12 @@ Não adicione texto explicativo fora dos blocos delimitados.`;
     const data = await geminiRes.json();
     
     if (data.error) {
-      throw new Error(data.error.message);
+      // Se der erro de modelo, vamos tentar avisar o que está acontecendo
+      throw new Error(`Google API Error: ${data.error.message} (Status: ${data.error.status})`);
+    }
+
+    if (!data.candidates || data.candidates.length === 0) {
+      throw new Error('A IA não retornou nenhuma resposta válida.');
     }
 
     const responseText = data.candidates[0].content.parts[0].text;
@@ -42,6 +47,6 @@ Não adicione texto explicativo fora dos blocos delimitados.`;
 
   } catch (err: any) {
     console.error('Erro na Vercel Function:', err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message || 'Erro interno no servidor de IA' });
   }
 }
