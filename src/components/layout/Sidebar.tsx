@@ -5,7 +5,6 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
-  ArrowLeft,
   ShieldCheck,
 } from 'lucide-react';
 
@@ -33,7 +32,6 @@ export const Sidebar: React.FC = memo(() => {
   const handleClientClick = useCallback(
     (clientSlug: string) => {
       setActiveClientBySlug(clientSlug);
-      // Redirecionamento forçado com prioridade de servidor
       const toolUrl = expandedTool === 'senior-sql' ? '/gerador/sql/' : '/gerador/';
       window.location.href = toolUrl;
     },
@@ -48,9 +46,14 @@ export const Sidebar: React.FC = memo(() => {
     [setActiveSegmentBySlug, navigate]
   );
 
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('google_authenticated');
+    localStorage.removeItem('user_role');
+    navigate({ to: '/' });
+  }, [navigate]);
+
   return (
     <aside className="fixed bottom-0 top-0 left-0 z-30 flex h-full w-[280px] flex-col border-r border-border/40 bg-card">
-      {/* Brand Header */}
       <div className="flex flex-col items-center justify-center border-b border-border/40 p-6">
         <Link to="/" className="group flex flex-col items-center gap-3">
           <img
@@ -159,7 +162,7 @@ export const Sidebar: React.FC = memo(() => {
       <div className="p-4 border-t border-border/40 space-y-1">
         <button
           type="button"
-          onClick={() => navigate({ to: '/' })}
+          onClick={handleLogout}
           className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-500/10 transition-colors"
         >
           <LogOut className="h-4 w-4" />

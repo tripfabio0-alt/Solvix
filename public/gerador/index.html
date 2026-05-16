@@ -47,7 +47,6 @@
 
         .logo { font-weight: 800; font-size: 24px; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
         .logo span { color: var(--accent); }
-        .logo img { height: 32px; }
 
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; flex: 1; }
 
@@ -106,16 +105,16 @@
         }
 
         .btn-generate:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); background: #0ee49b; }
-        .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; display: none; }
         @media (max-width: 900px) { .results-grid { grid-template-columns: 1fr; } }
 
-        .result-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.3s; }
+        .result-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; }
         .result-header { padding: 20px 24px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .result-body { padding: 24px; flex: 1; font-size: 15px; }
 
-        pre { margin: 0; white-space: pre-wrap; font-family: 'Fira Code', 'Cascadia Code', monospace; color: #a5d6ff; line-height: 1.6; }
+        pre { margin: 0; white-space: pre-wrap; font-family: 'Fira Code', monospace; color: #a5d6ff; line-height: 1.6; }
         .explanation-text { color: var(--muted); white-space: pre-wrap; font-weight: 400; }
 
         .btn-copy {
@@ -129,11 +128,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
-            font-weight: 600;
         }
-
-        .btn-copy:hover { background: var(--border); border-color: var(--muted); }
 
         .footer {
             padding: 40px 0;
@@ -143,18 +138,8 @@
             margin-top: 60px;
         }
 
-        .footer-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--muted); margin-bottom: 10px; }
-        .footer-text { color: #4b5563; font-size: 12px; }
-
-        .loading-shimmer {
-            height: 200px;
-            background: linear-gradient(90deg, var(--card) 25%, #1e1e2d 50%, var(--card) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 20px;
-            display: none;
-        }
-
+        .footer-logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--muted); }
+        .loading-shimmer { height: 200px; background: linear-gradient(90deg, var(--card) 25%, #1e1e2d 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 20px; display: none; }
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .error-toast { background: #450a0a; border: 1px solid #991b1b; color: #fecaca; padding: 16px 24px; border-radius: 12px; margin-bottom: 24px; display: none; }
     </style>
@@ -163,57 +148,51 @@
     <nav class="navbar">
         <a href="/" class="logo">SOLVIX<span>PRO</span></a>
         <div style="display: flex; gap: 20px; align-items: center;">
-            <a href="/app/dashboard" style="color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500;">Voltar ao Dashboard</a>
+            <a href="/app/dashboard" style="color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 500;">Painel</a>
+            <button onclick="logout()" style="background: none; border: none; color: #f87171; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <i data-lucide="log-out" style="width: 14px;"></i> Sair
+            </button>
             <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, var(--primary), var(--accent));"></div>
         </div>
     </nav>
 
     <div class="container">
         <div class="error-toast" id="error-toast"></div>
-
         <div class="input-section">
             <div class="label"><i data-lucide="zap"></i> Requisitar Inteligência de Engenharia</div>
             <textarea id="prompt" placeholder="Descreva a regra de negócio ou lógica LSP desejada..."></textarea>
             <div class="actions">
-                <button id="generate-btn" class="btn-generate">
-                    <i data-lucide="sparkles"></i> Gerar Solução Sênior
-                </button>
+                <button id="generate-btn" class="btn-generate"><i data-lucide="sparkles"></i> Gerar Solução Sênior</button>
             </div>
         </div>
-
         <div id="loading" class="loading-shimmer"></div>
-
         <div id="results-grid" class="results-grid">
             <div class="result-card">
-                <div class="result-header">
-                    <div class="label" style="margin:0; color: var(--primary);"><i data-lucide="info"></i> Análise de Arquitetura</div>
-                </div>
-                <div class="result-body">
-                    <div id="explanation" class="explanation-text"></div>
-                </div>
+                <div class="result-header"><div class="label" style="margin:0; color: var(--primary);"><i data-lucide="info"></i> Análise de Arquitetura</div></div>
+                <div class="result-body"><div id="explanation" class="explanation-text"></div></div>
             </div>
-
             <div class="result-card" style="border-color: rgba(16, 185, 129, 0.3);">
                 <div class="result-header">
                     <div class="label" style="margin:0;"><i data-lucide="terminal"></i> Código Senior (LSP)</div>
-                    <button class="btn-copy" onclick="copyCode()">
-                        <i data-lucide="copy"></i> Copiar Código
-                    </button>
+                    <button class="btn-copy" onclick="copyCode()"><i data-lucide="copy"></i> Copiar Código</button>
                 </div>
-                <div class="result-body" style="background: #010409;">
-                    <pre id="code-content"></pre>
-                </div>
+                <div class="result-body" style="background: #010409;"><pre id="code-content"></pre></div>
             </div>
         </div>
     </div>
 
     <footer class="footer">
         <div class="footer-logo">SOLVIX<span>PRO</span></div>
-        <div class="footer-text">© 2026 Solvix AI Solutions. Tecnologia de Ponta para Ecossistema Senior.</div>
+        <div style="color: #4b5563; font-size: 12px; margin-top: 10px;">© 2026 Solvix AI Solutions. Tecnologia de Ponta para Ecossistema Senior.</div>
     </footer>
 
     <script>
         lucide.createIcons();
+        function logout() {
+            localStorage.removeItem('google_authenticated');
+            localStorage.removeItem('user_role');
+            window.location.href = '/';
+        }
         
         const btn = document.getElementById('generate-btn');
         const promptInput = document.getElementById('prompt');
@@ -226,27 +205,19 @@
         btn.addEventListener('click', async () => {
             const text = promptInput.value.trim();
             if (!text) return;
-
             btn.disabled = true;
             loading.style.display = "block";
             resultsGrid.style.display = "none";
             errorToast.style.display = "none";
-
             try {
                 const response = await fetch('/api/gerar-sql', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ prompt: text })
                 });
-
-                if (!response.ok) {
-                    const err = await response.json();
-                    throw new Error(err.error || 'Erro interno');
-                }
-
+                if (!response.ok) { const err = await response.json(); throw new Error(err.error || 'Erro'); }
                 const data = await response.json();
                 const raw = data.resultado;
-
                 const getTag = (tag) => {
                     const s = raw.indexOf("##" + tag + "##");
                     if (s === -1) return "";
@@ -254,32 +225,22 @@
                     const e = raw.indexOf("##", after);
                     return (e === -1 ? raw.slice(after) : raw.slice(after, e)).trim();
                 };
-
                 const explanation = getTag("EXPLICACOES");
                 const code = getTag("CONTEUDO");
-
-                if (!code && !explanation) {
-                    explanationDiv.innerText = "Resposta direta da IA.";
-                    codePre.innerText = raw;
-                } else {
-                    explanationDiv.innerText = explanation;
-                    codePre.innerText = code;
-                }
-
+                if (!code && !explanation) { explanationDiv.innerText = "IA Response"; codePre.innerText = raw; }
+                else { explanationDiv.innerText = explanation; codePre.innerText = code; }
                 loading.style.display = "none";
                 resultsGrid.style.display = "grid";
             } catch (err) {
                 loading.style.display = "none";
                 errorToast.innerText = "Erro: " + err.message;
                 errorToast.style.display = "block";
-            } finally {
-                btn.disabled = false;
-            }
+            } finally { btn.disabled = false; }
         });
 
         function copyCode() {
             navigator.clipboard.writeText(codePre.innerText);
-            alert("Sucesso! Código copiado para sua área de transferência.");
+            alert("Código copiado!");
         }
     </script>
 </body>
